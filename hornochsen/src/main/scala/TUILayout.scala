@@ -16,7 +16,7 @@ case class Spielfeld(val reihen: Vector[Reihe]){
         "Spielfeld:\n\t" + reihen.mkString("\n\t") + "\n"
     }
 }
-
+// Das ist ein collision command
 @main
 def start() =  {
     val p = new Spieler("Patrick", Vector(2), 0)
