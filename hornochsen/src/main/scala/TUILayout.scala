@@ -17,6 +17,7 @@ case class Spielfeld(val reihen: Vector[Reihe]){
     }
 }
 
+// Das ist ein Kommentar der nichts bringt. 
 @main
 def start() =  {
     val p = new Spieler("Patrick", Vector(2), 0)
