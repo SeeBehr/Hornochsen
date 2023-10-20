@@ -1,0 +1,1 @@
+addSbtPlugin("org.scoverage" % "sbt-scovealls" % "1.3.1")

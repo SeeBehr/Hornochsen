@@ -1,30 +1,30 @@
 // add case in front so you don't have to write new
-case class Spieler(val name: String, val karten: Vector[Int], val ochsen: Int) {
+case class Player(val name: String, val cards: Vector[Int], val ochsen: Int) {
     override def toString(): String = {
-        name + ":\n\tKarten: " + karten.mkString(", ") + "\n\tOchsen: " + ochsen.toString() + "\n"
+        name + ":\n\tcards: " + cards.mkString(", ") + "\n\tOchsen: " + ochsen.toString() + "\n"
     }
 }
 
 // add case in front so you don't have to write new
-case class Reihe(val nummer: Int, val karten: Vector[Int]) {
+case class Row(val nummer: Int, val cards: Vector[Int]) {
     override def toString(): String = {
-        "Reihe " + nummer + ": " + karten.mkString(", ")
+        "Row " + nummer + ": " + cards.mkString(", ")
     }
 }
 
 // add case in front so you don't have to write new
-case class Spielfeld(val reihen: Vector[Reihe]){
+case class Board(val Rown: Vector[Row]){
     override def toString(): String = { 
-        "Spielfeld:\n\t" + reihen.mkString("\n\t") + "\n"
+        "Board:\n\t" + Rown.mkString("\n\t") + "\n"
     }
 }
 
 // Start of the Programm.
 @main
 def start() =  {
-    // create Spieler p as value
-    val p = new Spieler("Patrick", Vector(2), 0)
-    // create Spielfeld s as value
-    val s = new Spielfeld(Vector(Reihe(1, Vector(7))))
+    // create Player p as value
+    val p = new Player("Patrick", Vector(2), 0)
+    // create Board s as value
+    val s = new Board(Vector(Row(1, Vector(7))))
     println(p.toString() + "\n" + s.toString())
 }
