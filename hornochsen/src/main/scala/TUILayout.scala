@@ -29,3 +29,7 @@ def start() =  {
     val s = new Spielfeld(Vector(Reihe(1, Vector(7))))
     println(p.toString() + "\n" + s.toString())
 }
+
+void javaInvasion() {
+    System.out.println("Hallo Welt! ");
+}
