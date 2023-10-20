@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 // add case in front so you don't have to write new
 case class Spieler(val name: String, val karten: Vector[Int], val ochsen: Int) {
     override def toString(): String = {
