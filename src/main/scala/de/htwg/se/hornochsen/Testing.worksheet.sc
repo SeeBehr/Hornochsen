@@ -1,21 +1,10 @@
-case class Spieler(val name: String, val karten: Vector[Int], val ochsen: Int) {
-        override def toString(): String = {
-        name + ":\n\t" + karten.mkString(", ") + "\n\tOchsen: " + ochsen.toString() + "\n"
-    }
-}
+import de.htwg.se.hornochsen._
 
-case class Reihe(val nummer: Int, val karten: Vector[Int]) {
-    override def toString(): String = {
-        "Reihe " + nummer + ": " + karten.mkString(", ")
-    }
-}
 
-case class Spielfeld(val reihen: Vector[Reihe]) {
-    override def toString(): String = {
-        "Spielfeld:\n\t" + reihen.mkString("\n\t") + "\n"
-    }
-}
-
-val p = new Spieler("Patrick", Vector(2), 0)
-val f = new Spielfeld(Vector(Reihe(1, Vector(7))))
-println(p.toString() + "\n" + f.toString())
+val p1 = Player("Patrick", Vector(2), 0)
+val p2 = Player("Sebastian", Vector(7,15), 3)
+val ap = AllPlayer(Vector(p1, p2))
+val r1 = Row(1, Vector(7))
+val r2 = Row(2, Vector(1,5))
+val f = Board(Vector(r1, r2))
+println(ap.toString() + "\n" + f.toString())
