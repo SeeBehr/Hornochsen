@@ -7,7 +7,7 @@ class HornochsenSpec extends AnyWordSpec {
   "Hornochsen" should {
     val player1 = Player(name = "Sebastian", cards = Vector(1, 2), ochsen = 0)
     val player2 = Player(name = "Patrick", cards = Vector(11, 25, 17), ochsen = 1)
-    val allplayer = AllPlayer(player = Vector(player1, player2))
+    val allplayers = AllPlayers(player = Vector(player1, player2))
     val row1 = Row(nummer = 1, cards = Vector(3, 4))
     val row2 = Row(nummer = 2, cards = Vector(7, 20, 23))
     val board1 = Board(rows = Vector(row1))
@@ -18,7 +18,7 @@ class HornochsenSpec extends AnyWordSpec {
       player2.toString() should be("Patrick:\n\tcards: 11, 25, 17\n\tOchsen: 1\n")
     }
     "have all Player's" in {
-      allplayer.toString() should be("Sebastian:\n\tcards: 1, 2\n\tOchsen: 0\n\nPatrick:\n\tcards: 11, 25, 17\n\tOchsen: 1\n")
+      allplayers.toString() should be("Sebastian:\n\tcards: 1, 2\n\tOchsen: 0\n\nPatrick:\n\tcards: 11, 25, 17\n\tOchsen: 1\n")
     }
 
     "have scalable Row" in {

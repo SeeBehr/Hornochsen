@@ -5,7 +5,7 @@ case class Player(val name: String, val cards: Vector[Int], val ochsen: Int) {
         name + ":\n\tcards: " + cards.mkString(", ") + "\n\tOchsen: " + ochsen.toString() + "\n"
     }
 }
-case class AllPlayer(player: Vector[Player]) {
+case class AllPlayers(player: Vector[Player]) {
     override def toString(): String = {
         player.mkString("\n")
     }
