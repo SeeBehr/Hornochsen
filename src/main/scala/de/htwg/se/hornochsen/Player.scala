@@ -10,3 +10,9 @@ case class AllPlayers(player: Vector[Player]) {
         player.mkString("\n")
     }
 }
+def initAllPlayers(numPlayer: Int, numHandCards: Int, input:()=>String):AllPlayers = {
+    AllPlayers(player=Vector.tabulate(numPlayer)(index =>{
+        println(s"Spielername${index+1}: ")
+        Player(name=input(), cards=Vector.tabulate(numHandCards)(count => count), ochsen=0)
+    }))
+}

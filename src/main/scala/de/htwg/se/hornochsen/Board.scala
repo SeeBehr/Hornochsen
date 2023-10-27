@@ -12,3 +12,9 @@ case class Board(val rows: Vector[Row]){
         "Board:\n\t" + rows.mkString("\n\t") + "\n"
     }
 }
+
+def intiBoard(numRows: Int, numRowCards: Int): Board = {
+    Board(rows=Vector.tabulate(numRows)(index =>{
+        Row(nummer=index+1, cards=Vector.tabulate(numRowCards)(count => 0))
+    }))
+}
