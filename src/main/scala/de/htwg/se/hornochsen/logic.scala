@@ -1,20 +1,10 @@
 package de.htwg.se.hornochsen
 
-def whichCardToPut(cards: Vector[Int]): (Int, Vector[Int]) = {
-    var min: Int = Int.MaxValue
-    cards.foreach(f => if f < min then min = f)
-    (min, Vector.tabulate(cards.length-1)(cards.filterNot(x => x == min)))
+def which(cards: Vector[(Int, Player)]): ((Int, Player), Vector[(Int, Player)]) = {
+    var min = cards.min((x,y)=>y._1-x._1)
+    return (min, cards.filter(x => x._1 != min._1))
 }
 
-def whereToPut(b: Board, card: Int): (Int, Int) = {
-    var dist: Int = Int.MaxValue
-    var row: Int = -1;
-    b.rows.foreach(f => if ((card - f.cards[f.filled]) > 0) && ((card - f.cards[f.filled]) < dist) then{
-        dist = card - f.cards[f.filled]
-        row = f.nummer;
-    })
-    (dist, row)
-}
 
 def where(b: Board, card: Int): Int = {
     val lastElements: Vector[Int] = b.rows.map(row => row[row.filled])
