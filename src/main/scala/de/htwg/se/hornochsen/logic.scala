@@ -7,7 +7,11 @@ def which(cards: Vector[(Int, Player)]): ((Int, Player), Vector[(Int, Player)]) 
 
 
 def where(b: Board, card: Int): Int = {
-    val lastElements: Vector[Int] = b.rows.map(row => row[row.filled])
+    val lastElements: Vector[Int] = b.rows.map(row => row.cards(row.filled))
     val minRow = lastElements.min((x,y) => y-x)
     return lastElements.indexOf(minRow)
+}
+
+def canAdd(b: Board, index: Int): Boolean = {
+    return b.rows(index).filled < 6
 }

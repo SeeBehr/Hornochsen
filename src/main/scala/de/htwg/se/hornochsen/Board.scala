@@ -19,6 +19,13 @@ case class Board(val rows: Vector[Row], val playedCards: Vector[(Int, Player)]){
         Board(rows=rows.updated(num, Row(num, rows(num).cards.updated(rows(num).cards(rows(num).filled), playedCard)))
         ,playedCards=playedCards.filter(x=>x._1!=playedCard))
     }
+
+    def takeRow(card: Int, index: Int): (Board, Int) = {
+        (Board(rows = rows.updated(index,
+        Row(nummer=index, cards=rows(index).cards.zipWithIndex.map(f=>if f._2==0 then card else 0),
+        filled=1)),playedCards=this.playedCards),
+        this.rows(index).cards.map(f=>if f%10==0 then 10 else if f%5==0 then 5 else 1).sum)
+    }
 }
 
 def intiBoard(numRows: Int, numRowCards: Int): Board = {
