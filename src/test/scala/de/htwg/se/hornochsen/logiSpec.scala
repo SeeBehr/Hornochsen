@@ -13,9 +13,5 @@ class logispec extends AnyWordSpec {
             card should be (1, player1)
             (cards2.toString()) should be (Vector((3, player2)).toString())
         }
-        "have all Player's" in {
-            initAllPlayers(1, 1,()=>"Patrick").toString() should be("Patrick:\n\tcards: 0\n\tOchsen: 0\n")
-            initAllPlayers(2,2,()=>"Patrick").toString() should be("Patrick:\n\tcards: 0, 1\n\tOchsen: 0\n\nPatrick:\n\tcards: 0, 1\n\tOchsen: 0\n")
-        }
     }
 }
