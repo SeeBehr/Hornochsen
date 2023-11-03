@@ -4,10 +4,6 @@ case class Row(val nummer: Int, val cards: Vector[Int], val filled: Int = 1) {
     override def toString(): String = {
         "Row " + nummer + ": " + cards.mkString(", ") + " filled: " + filled.toString() + "\n"
     }
-
-    def addCard(playedCard: Int): Row = {
-        Row(nummer, cards.appended(playedCard), filled + 1)
-    }
 }
 
 case class Board(val rows: Vector[Row], val playedCards: Vector[(Int, Player)]=Vector.empty){
