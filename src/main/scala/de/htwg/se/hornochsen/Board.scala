@@ -2,7 +2,7 @@ package de.htwg.se.hornochsen
 
 case class Row(val nummer: Int, val cards: Vector[Int], val filled: Int = 1) {
     override def toString(): String = {
-        "Row " + nummer + ": " + cards.mkString(", ")
+        "Row " + nummer + ": " + cards.mkString(", ") + " filled: " + filled.toString() + "\n"
     }
 
     def addCard(playedCard: Int): Row = {
@@ -12,7 +12,7 @@ case class Row(val nummer: Int, val cards: Vector[Int], val filled: Int = 1) {
 
 case class Board(val rows: Vector[Row], val playedCards: Vector[(Int, Player)]=Vector.empty){
     override def toString(): String = { 
-        "Board:\n\t" + rows.mkString("\n\t") + "\n"
+        "Board:\n\t" + rows.mkString("\n\t") + "\nPlayed cards: " + playedCards.mkString(", ") + "\n"
     }
 
     def addCard(playedCard: Int, num: Int): Board = {
