@@ -21,14 +21,14 @@ def start() =  {
     println("Wie viele Karten pro Reihe: ")
     val numRowCards: Int = readLine().toInt
 
-    val board: Board = intiBoard(numRows=numRows, numRowCards=numRowCards)
-
+    val board: Board = initBoard(numRows=numRows, numRowCards=numRowCards)
     var gameState: GameState = GameState(allP, board)
 
     println("Spielbeginn: ")
     
 
     while true do {
+        println(allP.toString() + "\n" + board.toString())
         var playersWithPlayedCards: Vector[(Int, Player)] = gameState.players.player.collect[(Int, Player)](
             (player) => ({
                 val playedCard = readLine(s"Welche karte soll gelegt werden, ${player.name}? ").toInt
@@ -42,5 +42,4 @@ def start() =  {
             playersWithPlayedCards = playersWithPlayedCards1
         }
     }
-
 }
