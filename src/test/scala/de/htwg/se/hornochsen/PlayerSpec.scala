@@ -2,6 +2,7 @@ package de.htwg.se.hornochsen
 import de.htwg.se.hornochsen._
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
+import model.{initAllPlayers, Player}
 
 class PlayerSpec extends AnyWordSpec {
   "Player" should {

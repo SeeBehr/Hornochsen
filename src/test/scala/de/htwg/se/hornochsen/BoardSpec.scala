@@ -2,6 +2,8 @@ package de.htwg.se.hornochsen
 import de.htwg.se.hornochsen._
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
+import model.{Row, Board, initBoard}
+import model.Player
 
 class BoardSpec extends AnyWordSpec {
     "Board" should {

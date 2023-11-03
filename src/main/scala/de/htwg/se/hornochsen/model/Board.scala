@@ -1,4 +1,4 @@
-package de.htwg.se.hornochsen
+package de.htwg.se.hornochsen.model
 
 case class Row(val nummer: Int, val cards: Vector[Int], val filled: Int = 1) {
     override def toString(): String = {

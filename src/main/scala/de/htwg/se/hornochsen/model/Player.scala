@@ -1,4 +1,4 @@
-package de.htwg.se.hornochsen
+package de.htwg.se.hornochsen.model
 
 case class Player(val name: String, val cards: Vector[Int], val ochsen: Int) {
     override def toString(): String = {

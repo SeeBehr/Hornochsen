@@ -2,6 +2,11 @@ package de.htwg.se.hornochsen
 import de.htwg.se.hornochsen._
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
+import controler.{where, which, canAdd}
+import controler.{where, which, canAdd}
+import controler.{where, which, canAdd}
+import model.{Row, Board}
+import model.{AllPlayers, Player}
 
 class logispec extends AnyWordSpec {
     "The logic" should {

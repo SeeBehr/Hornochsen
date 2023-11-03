@@ -1,4 +1,6 @@
-package de.htwg.se.hornochsen
+package de.htwg.se.hornochsen.controler
+import de.htwg.se.hornochsen.model.Board
+import de.htwg.se.hornochsen.model.Player
 
 def which(cards: Vector[(Int, Player)]): ((Int, Player), Vector[(Int, Player)]) = {
     var min = cards.min((x,y)=>x._1-y._1)

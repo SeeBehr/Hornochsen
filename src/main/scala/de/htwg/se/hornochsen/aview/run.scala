@@ -1,6 +1,9 @@
-package de.htwg.se.hornochsen
+package de.htwg.se.hornochsen.aview
 
 import scala.io.StdIn.readLine
+import de.htwg.se.hornochsen.controler.which
+import de.htwg.se.hornochsen.model.{Board, initBoard}
+import de.htwg.se.hornochsen.model.{Player, initAllPlayers, AllPlayers}
 
 case class GameState(players: AllPlayers, board: Board) {
 
