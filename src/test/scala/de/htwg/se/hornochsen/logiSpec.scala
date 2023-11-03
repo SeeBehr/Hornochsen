@@ -27,7 +27,7 @@ class logispec extends AnyWordSpec {
         "show where to put the selected card" in {
             where(boardselect,card._1) should be(-1)
         }
-        "able to put card" in {
+        "be able to put card" in {
             canAdd(boardselect,-1) should be (false)
             canAdd(boardselect, 0) should be (true)
         }
