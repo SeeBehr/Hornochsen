@@ -4,6 +4,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
 import model.{Row, Board, initBoard}
 import model.Player
+import de.htwg.se.hornochsen.model.initDeck
 
 class BoardSpec extends AnyWordSpec {
     "Board" should {
@@ -14,13 +15,13 @@ class BoardSpec extends AnyWordSpec {
         }
 
         "have scalable Board" in {
-        initBoard(1,1).toString() should be("Board:\n\tRow 1: 0 filled: 1\n\nPlayed cards: \n")
-        initBoard(2,2).toString() should be("Board:\n\tRow 1: 0, 0 filled: 1\n\n\tRow 2: 0, 0 filled: 1\n\nPlayed cards: \n")
+        initBoard(numRows=1, numRowCards=1, deck=initDeck(5))._1.toString() should be("Board:\n\tRow 1: 0 filled: 1\n\nPlayed cards: \n")
+        initBoard(numRows=2, numRowCards=2, deck=initDeck(5))._1.toString() should be("Board:\n\tRow 1: 0, 0 filled: 1\n\n\tRow 2: 1, 0 filled: 1\n\nPlayed cards: \n")
         }
 
         "take Row should be" in {
-            val ret = initBoard(2,2).takeRow(5,0) 
-            ret._1.toString() should be ("Board:\n\tRow 1: 5, 0 filled: 1\n\n\tRow 2: 0, 0 filled: 1\n\nPlayed cards: \n")
+            val ret = initBoard(2, 2, initDeck(5))._1.takeRow(5,0) 
+            ret._1.toString() should be ("Board:\n\tRow 1: 5, 0 filled: 1\n\n\tRow 2: 1, 0 filled: 1\n\nPlayed cards: \n")
             ret._2 should be (20)
         }
         "add Card should be" in {

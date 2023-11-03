@@ -3,6 +3,7 @@ import de.htwg.se.hornochsen._
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
 import model.{initAllPlayers, Player}
+import de.htwg.se.hornochsen.model.initDeck
 
 class PlayerSpec extends AnyWordSpec {
   "Player" should {
@@ -11,8 +12,8 @@ class PlayerSpec extends AnyWordSpec {
             player1.toString() should be("Sebastian:\n\tcards: 1, 2\n\tOchsen: 0\n")
         }
         "have all Player's" in {
-            initAllPlayers(1, 1,()=>"Patrick").toString() should be("Patrick:\n\tcards: 0\n\tOchsen: 0\n")
-            initAllPlayers(2,2,()=>"Patrick").toString() should be("Patrick:\n\tcards: 0, 1\n\tOchsen: 0\n\nPatrick:\n\tcards: 0, 1\n\tOchsen: 0\n")
+            initAllPlayers(1, 1,()=>"Patrick", initDeck(1)).toString() should be("Patrick:\n\tcards: 0\n\tOchsen: 0\n")
+            initAllPlayers(2,2,()=>"Patrick", initDeck(4)).toString() should be("Patrick:\n\tcards: 0, 1\n\tOchsen: 0\n\nPatrick:\n\tcards: 0, 1\n\tOchsen: 0\n")
         }
     }
 }

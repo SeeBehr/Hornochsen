@@ -2,10 +2,9 @@ package de.htwg.se.hornochsen.aview
 
 import scala.io.StdIn.readLine
 import de.htwg.se.hornochsen.controler.which
-import de.htwg.se.hornochsen.model.{Board, initBoard}
-import de.htwg.se.hornochsen.model.{Player, initAllPlayers, AllPlayers}
+import de.htwg.se.hornochsen.model.{Board, initBoard, Player, initAllPlayers, AllPlayers, Deck, initDeck}
 
-case class GameState(players: AllPlayers, board: Board) {
+case class GameState(players: AllPlayers, board: Board, remDeck: Deck) {
 
 }
 
@@ -16,16 +15,15 @@ def start() =  {
     val numHandCards: Int = readLine().toInt
     println("Anzahl Spieler: ")
     val numPlayer: Int = readLine().toInt
-
-    val allP: AllPlayers = initAllPlayers(numPlayer=numPlayer, numHandCards=numHandCards, input=readLine)
     
     println("Mit wie vielen Reihen wird gespielt: ")
     val numRows: Int = readLine().toInt
     println("Wie viele Karten pro Reihe: ")
     val numRowCards: Int = readLine().toInt
-
-    val board: Board = initBoard(numRows=numRows, numRowCards=numRowCards)
-    var gameState: GameState = GameState(allP, board)
+    var deck = initDeck(120).shuffle()
+    val (board, playerdeck) = initBoard(numRows=numRows, numRowCards=numRowCards, deck=deck)
+    val (allP, refilldeck) = initAllPlayers(numPlayer=numPlayer, numHandCards=numHandCards, input=readLine, deck = playerdeck)
+    var gameState: GameState = GameState(allP, board, refilldeck)
 
     println("Spielbeginn: ")
     

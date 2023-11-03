@@ -24,8 +24,9 @@ case class Board(val rows: Vector[Row], val playedCards: Vector[(Int, Player)]=V
     }
 }
 
-def initBoard(numRows: Int, numRowCards: Int): Board = {
-    Board(rows=Vector.tabulate(numRows)(index =>{
-        Row(nummer=index+1, cards=Vector.tabulate(numRowCards)(count => 0))
-    }), playedCards=Vector.empty)
+def initBoard(numRows: Int, numRowCards: Int, deck: Deck): (Board, Deck) = {
+    (Board(rows=Vector.tabulate(numRows)(index =>{
+        Row(nummer=index+1, cards=Vector.tabulate(numRowCards)(count => if count == 0 then deck.cards(index) else 0))
+    }), playedCards=Vector.empty),
+    deck.remcount(numRows))
 }
