@@ -10,8 +10,3 @@ case class Player(val name: String, val cards: Vector[Int], val ochsen: Int) {
     Player(name, cards.filterNot(_ == cardNr), ochsen)
   }
 }
-case class AllPlayers(player: Vector[Player]) {
-  override def toString(): String = {
-    player.mkString("\n")
-  }
-}

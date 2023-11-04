@@ -68,16 +68,35 @@ def initAllPlayers(
   )
 }
 
+/*
 def updateGamestate(
     gameState: GameState,
-    cardToPlay: Vector[(Int, Player)]
+    cardsToPlay: Vector[(Int, Player)]
+): GameState = {
+  val board = cardsToPlay
+    .sortBy((c, p) => c)
+    .foreach((card, player) =>
+      val index: Int = where(gameState.board, card)
+      if index != -1 && canAdd(gameState.board, index)
+      then gameState.board.addCard(card, index)
+	  else //Take Row with method
+    )
+
+  val players = gameState.players = gameState.players.map(p =>
+    p.playCard(cardsToPlay.filter(pl => pl._2 == p).head._1))
+}
+ */
+
+def selectAllCards(
+    gameState: GameState,
+    cardsToPlay: Vector[(Int, Player)]
 ): GameState = {
   gameState.copy(
     playersWithPlayedCards = for {
       pl <- gameState.players
-      card <- cardToPlay.filter(f => f._2 == pl).head._1
-      updatedPlayer = pl.playCard(card)
-    } yield (card, updatedPlayer),
+      card <- cardsToPlay.filter(f => f._2 == pl)
+      updatedPlayer = pl.playCard(card._1)
+    } yield (card._1, updatedPlayer),
     players = gameState.players.map { pl =>
       gameState.playersWithPlayedCards
         .collectFirst {

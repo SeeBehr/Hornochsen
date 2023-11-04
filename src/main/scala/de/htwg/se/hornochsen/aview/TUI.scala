@@ -31,12 +31,11 @@ def start() = {
   while true do {
     println(allP.mkString("\n") + "\n" + board.toString())
 
-    gameState = updateGamestate(
+    gameState = selectAllCards(
       gameState,
-      (gameState.players
-        .foreach { case pl =>
-          (readLine(s"Welche Karte soll ${pl.name} legen? ").toInt, pl)
-        })
+      (gameState.players.map(p =>
+        (readLine(s"Welche Karte soll ${p.name} legen? ").toInt, p)
+      ))
     )
   }
 }
