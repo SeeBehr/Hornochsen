@@ -6,7 +6,7 @@ case class GameState(
     players: Vector[Player],
     board: Board,
     remDeck: Deck,
-    playersWithPlayedCards: Vector[(Int, Player)]
+    playersWithPlayedCards: Vector[(Int, Player)] = Vector.empty
 ) {}
 
 def which(
@@ -91,19 +91,23 @@ def selectAllCards(
     gameState: GameState,
     cardsToPlay: Vector[(Int, Player)]
 ): GameState = {
-  gameState.copy(
-    playersWithPlayedCards = for {
-      pl <- gameState.players
-      card <- cardsToPlay.filter(f => f._2 == pl)
-      updatedPlayer = pl.playCard(card._1)
-    } yield (card._1, updatedPlayer),
+  return GameState(
+    board = Board(
+      rows = gameState.board.rows,
+      playedCards = gameState.board.playedCards.appendedAll(for {
+        pl <- gameState.players
+        card <- cardsToPlay.filter(f => f._2 == pl)
+        updatedPlayer = pl.playCard(card._1)
+      } yield (card._1, updatedPlayer))
+    ),
     players = gameState.players.map { pl =>
-      gameState.playersWithPlayedCards
+      gameState.board.playedCards
         .collectFirst {
           case (card, updatedPlayer) if updatedPlayer.name == pl.name =>
             updatedPlayer
         }
         .getOrElse(pl)
-    }
+    },
+    remDeck = gameState.remDeck
   )
 }
