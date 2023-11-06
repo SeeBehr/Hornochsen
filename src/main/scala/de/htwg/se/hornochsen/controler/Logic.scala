@@ -5,8 +5,7 @@ import de.htwg.se.hornochsen.model._
 case class GameState(
     players: Vector[Player],
     board: Board,
-    remDeck: Deck,
-    playersWithPlayedCards: Vector[(Int, Player)] = Vector.empty
+    remDeck: Deck
 ) {}
 
 def which(
@@ -19,7 +18,7 @@ def which(
 def where(b: Board, card: Int): Int = {
     val lastElements: Vector[Int] = b.rows.map(row => row.cards(row.filled))
     val minRow =
-        lastElements.map(x => card - x).filter(x => x > 0).min((x, y) => y - x)
+        lastElements.map(x => card - x).filter(x => x > 0).min((x, y) => x - y)
     return lastElements.indexOf(minRow)
 }
 
@@ -73,8 +72,28 @@ def updateGamestate(
     cardsToPlay: Vector[(Int, Player)],
     WhichRowTake: String => Int
 ): GameState = {
-  val (newboard: Board, updatedPlayers: Vector[Player]) = cardsToPlay
-    .sortBy((c, p) => c)
+	val (newboard: Board, updatedPlayers: Vector[Player]) = cardsToPlay.sortBy((card, player) => card)
+	.foldLeft((gameState.board, gameState.players)) { case ((board, players), (card, player)) =>
+		val index: Int = where(board, card)
+		if index != -1 && canAdd(board, index)
+		then
+			val newBoard = board.addCard(card, index)
+			val updatedPlayer = player.playCard(card)
+			(newBoard, players.updated(players.indexOf(player), updatedPlayer))
+		if index != -1
+		then
+			val (newBoard, ochsen) = board.takeRow(card, index)
+			val updatedPlayer = player.playCard(card).addOchsen(ochsen)
+			(newBoard, players.updated(players.indexOf(player), updatedPlayer))
+		else
+			val nim = WhichRowTake(player.name)
+			val (newBoard, ochsen) = board.takeRow(card, nim)
+			val updatedPlayer = player.playCard(card).addOchsen(ochsen)
+			(newBoard, players.updated(players.indexOf(player), updatedPlayer))
+	}
+	GameState(players=updatedPlayers, board=newboard, remDeck=gameState.remDeck)
+    /*
+
     .foreach((card, player) =>
         val index: Int = where(gameState.board, card)
         if index == -1
@@ -93,7 +112,7 @@ def updateGamestate(
                 val board = gameState.board.addCard(card, index)
                 val updatedPlayer = player.playCard(card)
                 (board, updatedPlayer)
-    )
+    )*/
 }
 
 def selectAllCards(
