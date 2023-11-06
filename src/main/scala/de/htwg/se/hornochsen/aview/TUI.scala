@@ -41,5 +41,5 @@ def start() = {
 	}
 }
 def whichRowTake(name: String): Int = {
-  	readLine(s"Welche Reihe nimmt ${name}? ").toInt
+  	return readLine(s"Welche Reihe nimmt ${name}? ").toInt
 }

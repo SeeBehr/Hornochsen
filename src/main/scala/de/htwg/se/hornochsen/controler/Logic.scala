@@ -16,10 +16,12 @@ def which(
 }
 
 def where(b: Board, card: Int): Int = {
-    val lastElements: Vector[Int] = b.rows.map(row => row.cards(row.filled-1))
-    val minRow =
-        lastElements.map(x => card - x).filter(x => x > 0).min((x, y) => x - y)
-    return lastElements.indexOf(minRow)
+	val lastElements: Vector[Int] = b.rows.map(row => row.cards(row.filled-1))
+	val minRow = lastElements.map(x => card - x).filter(x => x > 0)
+	if minRow.size == 0
+	then
+		return -1
+	return lastElements.indexOf(minRow.min((x, y) => x - y))
 }
 
 def canAdd(b: Board, index: Int): Boolean = {
@@ -72,8 +74,10 @@ def updateGamestate(
     cardsToPlay: Vector[(Int, Player)],
     WhichRowTake: String => Int
 ): GameState = {
-	val (newboard: Board, updatedPlayers: Vector[Player]) = cardsToPlay.sortBy((card: Int, player: Player) => card: Int)
-	
+	print("start update")
+	val update: Vector[(Board, Player)] =
+		cardsToPlay.sortBy((card: Int, player: Player) => card: Int)
+	/*
 	.foldLeft((gameState.board, gameState.players)) { case ((board, players), (card, player)) =>
 		val index: Int = where(board, card)
 		if index != -1 && canAdd(board, index)
@@ -92,27 +96,30 @@ def updateGamestate(
 				val (nBoard, ochsen) = board.takeRow(card, take)
 				val uplayer = player.playCard(card).addOchsen(ochsen)
 				(nBoard, players.updated(players.indexOf(player), uplayer))
-	}
-    /*
-    .foreach((card, player) =>
-        val index: Int = where(gameState.board, card)
-        if index == -1
-        then 
-            val nim = WhichRowTake(player.name)
-            val (board, ochsen) = gameState.board.takeRow(card, nim)
-            val updatedPlayer = player.playCard(card).addOchsen(ochsen)
-            (board, updatedPlayer)
-        else 
-            if !canAdd(gameState.board, index)
-            then
-                val (board, ochsen) = gameState.board.takeRow(card, index)
-                val updatedPlayer = player.playCard(card).addOchsen(ochsen)
-                (board, updatedPlayer)
-            else
-                val board = gameState.board.addCard(card, index)
-                val updatedPlayer = player.playCard(card)
-                (board, updatedPlayer)
-    )*/
+	}*/
+    
+	.map[(Board, Player)]((card, player) =>
+		val index: Int = where(gameState.board, card)
+		if index == -1
+		then 
+			val nim = WhichRowTake(player.name)
+			val (board, ochsen) = gameState.board.takeRow(card, nim)
+			val updatedPlayer = player.playCard(card).addOchsen(ochsen)
+			print("update")
+			(board, updatedPlayer)
+		else 
+			if !canAdd(gameState.board, index)
+			then
+				val (board, ochsen) = gameState.board.takeRow(card, index)
+				val updatedPlayer = player.playCard(card).addOchsen(ochsen)
+				print("update")
+				(board, updatedPlayer)
+				else
+					val board = gameState.board.addCard(card, index)
+					val updatedPlayer = player.playCard(card)
+					print("update")
+					(board, updatedPlayer)
+	)
 	/*
 	.foreach((card: Int, player: Player) =>
 		val index: Int = where(gameState.board, card)
@@ -132,7 +139,8 @@ def updateGamestate(
 			val uplayer = player.playCard(card).addOchsen(ochsen)
 			(newBoard, gameState.players.updated(gameState.players.indexOf(player), uplayer)))
 	}*/
-	GameState(players=updatedPlayers, board=newboard, remDeck=gameState.remDeck)
+	val updatedPlayers: Vector[Player] = update.map((d, player) => player)
+	GameState(players=updatedPlayers, board=update.last._1, remDeck=gameState.remDeck)
 }
 
 def selectAllCards(
