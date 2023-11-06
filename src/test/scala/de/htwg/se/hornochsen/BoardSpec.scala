@@ -1,10 +1,8 @@
 package de.htwg.se.hornochsen
-import de.htwg.se.hornochsen._
+import de.htwg.se.hornochsen.model._
+import de.htwg.se.hornochsen.controler.{initBoard, initDeck}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
-import model.{Row, Board, initBoard}
-import model.Player
-import de.htwg.se.hornochsen.model.initDeck
 
 class BoardSpec extends AnyWordSpec {
     "Board" should {
