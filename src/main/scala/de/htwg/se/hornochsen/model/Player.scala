@@ -9,4 +9,7 @@ case class Player(val name: String, val cards: Vector[Int], val ochsen: Int) {
   def playCard(cardNr: Int): Player = {
     Player(name, cards.filterNot(_ == cardNr), ochsen)
   }
+  def addOchsen(anzahlOchsen: Int): Player = {
+    Player(name = this.name, cards = this.cards,ochsen=ochsen + anzahlOchsen)
+  }
 }
