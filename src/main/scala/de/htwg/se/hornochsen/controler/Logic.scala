@@ -1,6 +1,7 @@
 package de.htwg.se.hornochsen.controler
 
 import de.htwg.se.hornochsen.model._
+import scala.annotation.retains
 
 def which(
     cards: Vector[(Int, Player)]
@@ -47,14 +48,13 @@ def initBoard(numRows: Int, numRowCards: Int, deck: Deck): (Board, Deck) = {
 def initAllPlayers(
     numPlayer: Int,
     numHandCards: Int,
-    input: () => String,
+    input: (index: Int) => String,
     deck: Deck
 ): (Vector[Player], Deck) = {
     (
         Vector.tabulate(numPlayer)(index => {
-        println(s"Spielername${index + 1}: ")
         Player(
-            name = input(),
+            name = input(index + 1),
             cards = Vector.tabulate(numHandCards)(count =>
             deck.cards(count + numHandCards * index)
             ),
@@ -67,10 +67,10 @@ def initAllPlayers(
 
 def updateGamestate(
     gameState: GameState,
-    playCards: Vector[Player] => Vector[(Int, Player)],
+    cardsToPlay: Vector[(Int, Player)],
     WhichRowTake: String => Int
 ): GameState = {
-    val cardsToPlay = playCards(gameState.players)
+    //val cardsToPlay = playCards(gameState.players)
     print(cardsToPlay)
     val update: Vector[Player] =
         cardsToPlay.sortBy((card: Int, player: Player) => card: Int)
@@ -83,21 +83,17 @@ def updateGamestate(
                 val nim = WhichRowTake(player.name)
                 val (board, ochsen) = gameState.board.takeRow(card, nim)
                 val updatedPlayer = player.playCard(card).addOchsen(ochsen)
-                println("value return: " + board + updatedPlayer)
                 (board, updatedPlayer)
             else 
                 if !canAdd(gameState.board, index)
                 then
                     val (board, ochsen) = gameState.board.takeRow(card, index+1)
                     val updatedPlayer = player.playCard(card).addOchsen(ochsen)
-                    println("value return: " + board + updatedPlayer)
                     (board, updatedPlayer)
                     else
                         val board = gameState.board.addCard(card, index+1)
                         val updatedPlayer = player.playCard(card)
-                        println("value return: " + board + updatedPlayer)
                         (board, updatedPlayer))
-            println("update returns: " + update)
             gameState.board = update._1
             update._2
     )
