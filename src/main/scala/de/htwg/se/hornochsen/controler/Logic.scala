@@ -2,12 +2,6 @@ package de.htwg.se.hornochsen.controler
 
 import de.htwg.se.hornochsen.model._
 
-case class GameState(
-    var players: Vector[Player],
-    var board: Board,
-    var remDeck: Deck
-) {}
-
 def which(
     cards: Vector[(Int, Player)]
 ): ((Int, Player), Vector[(Int, Player)]) = {
