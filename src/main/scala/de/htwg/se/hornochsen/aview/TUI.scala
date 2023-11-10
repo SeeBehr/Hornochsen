@@ -2,6 +2,7 @@ package de.htwg.se.hornochsen.aview
 
 import scala.io.StdIn.readLine
 import de.htwg.se.hornochsen.controler._
+import de.htwg.se.hornochsen.model._
 
 // Start of the Programm.
 @main
@@ -33,13 +34,18 @@ def start() = {
 
 		gameState = updateGamestate(
 		gameState,
-		(gameState.players.map(p =>
-			(readLine(s"Welche Karte soll ${p.name} legen? ").toInt, p)
-		)),
+		playCards,
 		whichRowTake
 		)
 	}
 }
+
+def playCards(players: Vector[Player]): Vector[(Int, Player)] = {
+    players.map(p =>
+        (readLine(s"Welche Karte soll ${p.name} legen? ").toInt, p)
+        )
+}
+
 def whichRowTake(name: String): Int = {
   	return readLine(s"Welche Reihe nimmt ${name}? ").toInt
 }

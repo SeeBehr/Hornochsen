@@ -23,7 +23,7 @@ case class Board(
 			Row(
 			nummer = num,
 			rows((num - 1)).cards
-				.updated(rows(num - 1).cards(rows(num - 1).filled), playedCard),
+				.updated((rows(num - 1).cards(rows(num - 1).filled)), playedCard),
 			filled = rows((num - 1)).filled + 1
 			)
 		),
@@ -32,7 +32,8 @@ case class Board(
 	}
 
 	def takeRow(card: Int, nummer: Int): (Board, Int) = {
-		(
+        val returnRow = this.rows(nummer-1)
+        (
 		Board(
 			rows = rows.updated(
 			nummer-1,
@@ -46,11 +47,8 @@ case class Board(
 			),
 			playedCards = this.playedCards
 		),
-		this
-			.rows(nummer-1)
-			.cards
-			.map(f => if f % 10 == 0 then 10 else if f % 5 == 0 then 5 else 1)
-			.sum
+		returnRow.cards
+			.map(f => if f % 10 == 0 then 10 else if f % 5 == 0 then 5 else 1).sum
 		)
-	}
+    }
 }

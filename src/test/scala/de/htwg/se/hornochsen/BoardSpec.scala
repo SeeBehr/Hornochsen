@@ -18,7 +18,7 @@ class BoardSpec extends AnyWordSpec {
         }
 
         "take Row should be" in {
-            val ret = initBoard(2, 2, initDeck(5))._1.takeRow(5,0) 
+            val ret = initBoard(2, 2, initDeck(5))._1.takeRow(5,1) 
             ret._1.toString() should be ("Board:\n\tRow 1: 5, 0 filled: 1\n\n\tRow 2: 1, 0 filled: 1\n\nPlayed cards: \n")
             ret._2 should be (20)
         }
