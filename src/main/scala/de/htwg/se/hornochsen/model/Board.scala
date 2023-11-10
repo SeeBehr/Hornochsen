@@ -9,27 +9,22 @@ case class Row(val nummer: Int, val cards: Vector[Int], val filled: Int = 1) {
 
 case class Board(
     val rows: Vector[Row],
-    val playedCards: Vector[(Int, Player)] = Vector.empty
+    var playedCards: Vector[(Int, Player)] = Vector.empty
 ) {
 	override def toString(): String = {
-		"Board:\n\t" + rows.mkString("\n\t") + "\nPlayed cards: " + playedCards
-		.mkString(", ") + "\n"
+		"Board:\n\t" + rows.mkString("\n\t") + "\nPlayed cards: \n" + playedCards.map(p=>s"${p._1}, von ${p._2.name}\n").mkString("")
 	}
 	
 	def addCard(playedCard: Int, num: Int): Board = {
-		Board(
-		rows = rows.updated(
-			(num - 1),
-			Row(
-			nummer = num,
-			rows((num - 1)).cards
-				.updated((rows(num - 1).cards(rows(num - 1).filled)), playedCard),
-			filled = rows((num - 1)).filled + 1
-			)
-		),
-		playedCards = playedCards.filter(x => x._1 != playedCard)
-		)
-	}
+        val indexR: Int = num-1
+        val indexC: Int = rows(indexR).filled
+        println("index:" + indexC)
+        Board(rows = rows.updated((num - 1),
+            Row(nummer = num, rows(indexR).cards.updated(indexC, playedCard),
+            filled = rows((num - 1)).filled + 1)),
+            playedCards = playedCards.filter(x => x._1 != playedCard)
+            )
+    }
 
 	def takeRow(card: Int, nummer: Int): (Board, Int) = {
         val returnRow = this.rows(nummer-1)

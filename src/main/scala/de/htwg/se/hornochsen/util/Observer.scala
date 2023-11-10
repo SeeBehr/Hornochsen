@@ -12,4 +12,5 @@ trait Observable:
 
 enum Event:
     case Quit
-    case playRound
+    case RoundFinished
+    case CardsSelected
