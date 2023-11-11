@@ -20,17 +20,21 @@ case class TUI(controller: Controler) extends Observer{
 
     def run = {
         while play do
-            controller.updatePlayedCards(playCards(controller.gameState.players))
+            controller.updatePlayedCards(playCards(controller.gameState.players, readLine))
             controller.updateGamestate(WhichRowTake)
     }
 
-    def playCards(players: Vector[Player]): Vector[(Int,Player)] = {
+    def playCards(players: Vector[Player], read: () => String): Vector[(Int,Player)] = {
         players.map(p=>
-            (readLine(s"Welche Karte soll ${p.name} legen?: ").toInt, p)
+            println(s"Welche Karte soll ${p.name} legen?: ")
+            val input = read()
+            (input.toInt, p)
             )
     }
 
-    def WhichRowTake(name: String): Int = {
-        return readLine(s"Welche Reihe nimmt ${name}? ").toInt
+    def WhichRowTake(name: String, read: () => String): Int = {
+        println(s"Welche Reihe nimmt ${name}? ")
+        val input = read()
+        input.toInt
     }
 }

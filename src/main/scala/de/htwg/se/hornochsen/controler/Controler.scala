@@ -2,11 +2,11 @@ package de.htwg.se.hornochsen.controler
 
 import de.htwg.se.hornochsen.util._
 import de.htwg.se.hornochsen.model._
+import scala.io.StdIn.readLine
 
 class Controler(var gameState: GameState) extends Observable{
-    def which(
-        cards: Vector[(Int, Player)]
-    ): ((Int, Player), Vector[(Int, Player)]) = {
+    def which(cards: Vector[(Int, Player)]):
+        ((Int, Player), Vector[(Int, Player)]) = {
         var min = cards.min((x, y) => x._1 - y._1)
         return (min, cards.filter(x => x._1 != min._1))
     }
@@ -17,7 +17,6 @@ class Controler(var gameState: GameState) extends Observable{
         if possibleRows.length == 0
         then
             return -1
-        println(lastElements.toString + possibleRows + card)
         return (lastElements.indexOf(possibleRows.sortBy(x=>(card-x)).head))
     }
 
@@ -27,41 +26,41 @@ class Controler(var gameState: GameState) extends Observable{
     }
 
     def updatePlayedCards(cardsToPlay: Vector[(Int, Player)]): GameState = {
-        gameState.board.playedCards = cardsToPlay.sortBy((card: Int, player: Player) => card: Int)
+        val sorted = cardsToPlay.sortBy((card: Int, player: Player) => card: Int)
         notifyObservers(Event.CardsSelected)
-        return gameState
+        return GameState(players=gameState.players, board=gameState.board.copy(playedCards=sorted), remDeck=gameState.remDeck)
     }
 
 
-    def updateGamestate(
-        WhichRowTake: String => Int
-    ): GameState = {
+    def updateGamestate(WhichRowTake: (String, () => String) => Int): GameState = {
+        var tempboard = gameState.board
         val update: Vector[Player] =
             gameState.board.playedCards
         .map[Player]((card, player) =>
-            val index: Int = where(gameState.board, card)
+            val index: Int = where(tempboard, card)
             val update =(
                 if index == -1
                 then
-                    val nim: Int = WhichRowTake(player.name)
-                    val (board: Board, ochsen: Int) = gameState.board.takeRow(card, nim)
+                    val nim: Int = WhichRowTake(player.name, readLine)
+                    val (board: Board, ochsen: Int) = tempboard.takeRow(card, nim)
                     val updatedPlayer: Player = player.playCard(card).addOchsen(ochsen)
                     (board: Board, updatedPlayer: Player)
                 else 
-                    if !canAdd(gameState.board, index)
+                    if !canAdd(tempboard, index)
                     then
-                        val (board: Board, ochsen: Int) = gameState.board.takeRow(card, index+1)
+                        val (board: Board, ochsen: Int) = tempboard.takeRow(card, index+1)
                         val updatedPlayer: Player = player.playCard(card).addOchsen(ochsen)
                         (board: Board, updatedPlayer: Player)
                     else
-                        val board: Board = gameState.board.addCard(card, index+1)
+                        val board: Board = tempboard.addCard(card, index+1)
                         val updatedPlayer: Player = player.playCard(card)
                         (board: Board, updatedPlayer: Player))
-            gameState.board = update._1
+            tempboard = update._1
             update._2
         )
+        val newGameState = GameState(players=update, board=tempboard, remDeck=gameState.remDeck)
         notifyObservers(Event.RoundFinished)
-        GameState(players=update, board=gameState.board, remDeck=gameState.remDeck)
+        newGameState
     }
 }
 
