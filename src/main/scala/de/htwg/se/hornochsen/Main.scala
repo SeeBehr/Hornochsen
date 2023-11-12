@@ -17,5 +17,10 @@ def start() = {
     controler.add(tui)
     
     tui.update(Event.RoundFinished)
-    tui.run
+    for (i <- Seq(0,3)) {
+        for (j <- Seq(0,6)) {
+            tui.run
+        }
+        
+    }
 }

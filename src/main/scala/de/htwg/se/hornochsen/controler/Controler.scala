@@ -26,11 +26,10 @@ class Controler(var gameState: GameState) extends Observable{
     }
 
     def updatePlayedCards(cardsToPlay: Vector[(Int, Player)]): GameState = {
+        println("Ausgewählte karten: " + cardsToPlay.toString())
         val sorted = cardsToPlay.sortBy((card: Int, player: Player) => card: Int)
-        notifyObservers(Event.CardsSelected)
         return GameState(players=gameState.players, board=gameState.board.copy(playedCards=sorted), remDeck=gameState.remDeck)
     }
-
 
     def updateGamestate(WhichRowTake: (String, () => String) => Int): GameState = {
         var tempboard = gameState.board
@@ -59,12 +58,11 @@ class Controler(var gameState: GameState) extends Observable{
             update._2
         )
         val newGameState = GameState(players=update, board=tempboard, remDeck=gameState.remDeck)
-        notifyObservers(Event.RoundFinished)
         newGameState
     }
 }
 
-def initDeck(number: Int): Deck = Deck(Vector.tabulate(number)(x => x))
+def initDeck(number: Int): Deck = Deck(Vector.tabulate(number)(x => x+1))
 
 def initBoard(numRows: Int, numRowCards: Int, deck: Deck): (Board, Deck) = {
     (

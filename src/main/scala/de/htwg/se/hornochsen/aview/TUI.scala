@@ -19,9 +19,10 @@ case class TUI(controller: Controler) extends Observer{
     }
 
     def run = {
-        while play do
-            controller.updatePlayedCards(playCards(controller.gameState.players, readLine))
-            controller.updateGamestate(WhichRowTake)
+        controller.gameState = controller.updatePlayedCards(playCards(controller.gameState.players, readLine))
+        controller.notifyObservers(Event.CardsSelected)
+        controller.gameState = controller.updateGamestate(WhichRowTake)
+        controller.notifyObservers(Event.RoundFinished)
     }
 
     def playCards(players: Vector[Player], read: () => String): Vector[(Int,Player)] = {
