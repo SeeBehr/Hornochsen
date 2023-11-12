@@ -21,6 +21,6 @@ def start() = {
         for (j <- Seq(0,6)) {
             tui.run
         }
-        
+        controler.gameState = controler.giveCards(6)
     }
 }
