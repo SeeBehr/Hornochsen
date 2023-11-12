@@ -11,4 +11,8 @@ case class Player(val name: String, val cards: Vector[Int], val ochsen: Int = 0)
     def addOchsen(anzahlOchsen: Int): Player = {
       	Player(name = this.name, cards = this.cards,ochsen=ochsen + anzahlOchsen)
     }
+
+    def drawCards(cards: Vector[Int]): Player = {
+        Player(name, cards.appendedAll(cards), ochsen)
+    }
 }
