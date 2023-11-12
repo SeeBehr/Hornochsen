@@ -46,16 +46,4 @@ case class TUI(controller: Controler) extends Observer{
         val input = read()
         input.toInt
     }
-
-    def giveCards(cardCount: Int = 6): GameState = {
-        val toBeDropped = this.controller.gameState.players.length * cardCount
-
-        val drawnCards = this.controller.gameState.remDeck.cards.take(toBeDropped)
-        val remDeck = this.controller.gameState.remDeck.remcount(toBeDropped)
-
-        val newPlayers = this.controller.gameState.players.zipWithIndex.map((indexAndPlayer) => {
-            indexAndPlayer._1.drawCards(drawnCards.slice(indexAndPlayer._2 * cardCount, (indexAndPlayer._2 + 1) * cardCount))
-        })
-        GameState(players = newPlayers, board = this.controller.gameState.board, remDeck = remDeck)
-    }
 }

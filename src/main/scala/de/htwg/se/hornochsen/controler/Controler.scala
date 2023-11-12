@@ -60,6 +60,18 @@ class Controler(var gameState: GameState) extends Observable{
         val newGameState = GameState(players=update, board=tempboard, remDeck=gameState.remDeck)
         newGameState
     }
+
+    def giveCards(cardCount: Int = 6): GameState = {
+        val toBeDropped = this.gameState.players.length * cardCount
+
+        val drawnCards = this.gameState.remDeck.cards.take(toBeDropped)
+        val remDeck = this.gameState.remDeck.remcount(toBeDropped)
+
+        val newPlayers = this.gameState.players.zipWithIndex.map((indexAndPlayer) => {
+            indexAndPlayer._1.drawCards(drawnCards.slice(indexAndPlayer._2 * cardCount, (indexAndPlayer._2 + 1) * cardCount))
+        })
+        GameState(players = newPlayers, board = this.gameState.board, remDeck = remDeck)
+    }
 }
 
 def initDeck(number: Int): Deck = Deck(Vector.tabulate(number)(x => x+1))
