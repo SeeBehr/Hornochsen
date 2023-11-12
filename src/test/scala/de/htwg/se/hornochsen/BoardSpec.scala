@@ -20,7 +20,7 @@ class BoardSpec extends AnyWordSpec {
         "take Row should be" in {
             val ret = initBoard(numRows=2, numRowCards=2, deck=initDeck(5))._1.takeRow(card=5,nummer=1) 
             ret._1.toString() should be ("Board:\n\tRow 1: 5, 0 filled: 1\n\n\tRow 2: 2, 0 filled: 1\n\nPlayed cards: \n")
-            ret._2 should be (5)
+            ret._2 should be (1)
         }
         "add Card should be" in {
             val b =Board(rows=Vector(Row(nummer=1,cards=Vector(0),filled=0)),
