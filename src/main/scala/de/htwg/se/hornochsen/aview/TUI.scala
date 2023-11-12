@@ -27,8 +27,16 @@ case class TUI(controller: Controler) extends Observer{
 
     def playCards(players: Vector[Player], read: () => String): Vector[(Int,Player)] = {
         players.map(p=>
-            println(s"Welche Karte soll ${p.name} legen?: ")
-            val input = read()
+            var gueltig = true
+            var input = ""
+            while gueltig do
+                println(s"Welche Karte soll ${p.name} legen?: ")
+                input = read()
+                if (p.cards.contains(input.toInt))
+                then
+                    gueltig = false
+                else
+                    println("Karte nicht vorhanden!")
             (input.toInt, p)
             )
     }
