@@ -42,8 +42,8 @@ class Controlerspec extends AnyWordSpec {
         }
 
         "have all Player's" in {
-            initAllPlayers(1, 1,(Int)=>"Patrick", initDeck(1)).toString should be ((Vector(Player("Patrick", Vector(0), 0)),Deck(cards=Vector.empty)).toString)
-            initAllPlayers(2,2,(Int)=>"Patrick", initDeck(4)).toString should be((Vector(Player("Patrick", Vector(0, 1), 0), Player("Patrick", Vector(2, 3), 0)),Deck(cards=Vector.empty)).toString)
+            initAllPlayers(1, 1,(Int)=>"Patrick", initDeck(1)).toString should be ((Vector(Player("Patrick", Vector(1), 0)),Deck(cards=Vector.empty)).toString)
+            initAllPlayers(2, 2,(Int)=>"Patrick", initDeck(4)).toString should be((Vector(Player("Patrick", Vector(1, 2), 0), Player("Patrick", Vector(3, 4), 0)),Deck(cards=Vector.empty)).toString)
         }
     }
 }
