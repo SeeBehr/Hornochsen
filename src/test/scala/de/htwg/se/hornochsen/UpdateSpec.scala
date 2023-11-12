@@ -23,7 +23,7 @@ class UpdateSpec extends AnyWordSpec {
             controler1.updateGamestate(WhichRowTake=(s:String, f:()=>String)=>1)._1.toString() should be ("Vector(Patrick:\n\tcards: \n\tOchsen: 0\n)") 
             controler1.updateGamestate(WhichRowTake=(s:String, f:()=>String)=>1)._2.toString() should be ("Board:\n\tRow 1: 1, 2 filled: 2\n\nPlayed cards: \n")
 
-            controler2.updateGamestate(WhichRowTake=(s:String, f:()=>String)=>1)._1.toString() should be ("Vector(Patrick:\n\tcards: \n\tOchsen: 11\n)") 
+            controler2.updateGamestate(WhichRowTake=(s:String, f:()=>String)=>1)._1.toString() should be ("Vector(Patrick:\n\tcards: \n\tOchsen: 1\n)") 
             controler2.updateGamestate(WhichRowTake=(s:String, f:()=>String)=>1)._2.toString() should be ("Board:\n\tRow 1: 0, 0 filled: 1\n\nPlayed cards: \n0, von Patrick\n")
         }
     }

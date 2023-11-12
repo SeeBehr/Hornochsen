@@ -13,7 +13,7 @@ class Controlerspec extends AnyWordSpec {
         val p1 = player1.playCard(2)
         val p2 = player2.playCard(3)
         val boardselect = Board(rows=board1.rows,playedCards=Vector((2,p1),(3,p2)))
-        val gameState = GameState(players=Vector(player1, player2), board=boardselect, remDeck=initDeck(0))
+        val gameState = GameState(players=Vector(player1, player2), board=boardselect, remDeck=initDeck(1))
         var controler = Controler(gameState)
         val (card, cardsrem) = controler.which(boardselect.playedCards)
         
@@ -44,6 +44,18 @@ class Controlerspec extends AnyWordSpec {
         "have all Player's" in {
             initAllPlayers(1, 1,(Int)=>"Patrick", initDeck(1)).toString should be ((Vector(Player("Patrick", Vector(1), 0)),Deck(cards=Vector.empty)).toString)
             initAllPlayers(2, 2,(Int)=>"Patrick", initDeck(4)).toString should be((Vector(Player("Patrick", Vector(1, 2), 0), Player("Patrick", Vector(3, 4), 0)),Deck(cards=Vector.empty)).toString)
+        }
+
+        "give the players cards from the deck" in {
+            val deckSP = initDeck(50)
+            val (boardSP, playerdeckSP) = initBoard(numRows = 1, numRowCards = 1, deck = deckSP)
+            val (playerSP, refilldeckSP) = initAllPlayers(numPlayer = 1, numHandCards = 1, input = (a)=>"Seebastian", deck = playerdeckSP)
+            val gameStateSP = GameState(playerSP, boardSP, refilldeckSP)
+            val controlerSP = Controler(gameStateSP)
+            
+            val gameStateWithExtraCards = controlerSP.giveCards(1)
+            val newPlayer = gameStateWithExtraCards._1(0)
+            newPlayer.toString() should be("Seebastian:\n\tcards: 2, 3\n	Ochsen: 0\n")
         }
     }
 }

@@ -15,7 +15,7 @@ class TUISpec extends AnyWordSpec {
         val tui = TUI(controler)
 
         "have a playCards method" in {
-            tui.playCards(Vector(p1), ()=>"1").toString() should be ("Vector((1,Patrick:\n\tcards: 2\n\tOchsen: 0\n))")
+            tui.playCards(Vector(p1), ()=>"2").toString() should be ("Vector((2,Patrick:\n\tcards: 2\n\tOchsen: 0\n))")
         }
 
         "have a WhichRowTake method" in {
