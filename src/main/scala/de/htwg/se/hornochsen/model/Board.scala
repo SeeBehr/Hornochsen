@@ -40,7 +40,7 @@ case class Board(val rows: Vector[Row], var playedCards: Vector[(Int, Player)] =
 			playedCards = this.playedCards
 		),
 		returnRow.cards
-			.map(f => if f % 10 == 0 then 10 else if f % 5 == 0 then 5 else 1).sum
+			.map(f => if f == 0 then 0 else if f % 10 == 0 then 10 else if f % 5 == 0 then 5 else 1).sum
 		)
     }
 }
