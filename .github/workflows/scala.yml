@@ -18,7 +18,7 @@ jobs:
         distribution: 'adopt'
     
     - name: Install sbt
-      run: ./install_sbt.sh
+      run: pwd && ./install_sbt.sh
 
     - name: compile
       run: sbt compile
