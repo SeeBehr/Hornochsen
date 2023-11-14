@@ -17,6 +17,9 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
         cache: 'sbt'
+    
+    - name: Install sbt
+      run: sudo apt-get install sbt
 
     - name: compile
       run: sbt compile
