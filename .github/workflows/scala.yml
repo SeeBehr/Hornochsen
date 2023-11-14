@@ -18,7 +18,7 @@ jobs:
         distribution: 'adopt'
     
     - name: Install sbt
-      run: pwd && ./install_sbt.sh
+      run: ./.github/workflows/install_sbt.sh
 
     - name: compile
       run: sbt compile
@@ -38,7 +38,7 @@ jobs:
           distribution: 'adopt'
           cache: 'sbt'
       - name: Install sbt
-        run: ./install_sbt.sh
+        run: ./.github/workflows/install_sbt.sh
       - name: Run Tests
         run: sbt clean coverage test
       - name: Upload Coverage Report
