@@ -12,6 +12,7 @@ jobs:
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN_HORNOCHSEN }}
 
     steps:
     - uses: actions/checkout@v3
