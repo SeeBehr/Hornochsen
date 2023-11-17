@@ -20,7 +20,7 @@ case class TUI(controller: Controler) extends Observer{
     def run = {
         controller.gameState = controller.updatePlayedCards(playCards(controller.gameState.players, readLine))
         controller.notifyObservers(Event.CardsSelected)
-        controller.gameState = controller.updateGamestate(WhichRowTake)
+        controller.gameState = controller.updateGamestate(readLine, WhichRowTake)
         controller.notifyObservers(Event.RoundFinished)
     }
 

@@ -2,6 +2,7 @@ package de.htwg.se.hornochsen.controler
 
 import de.htwg.se.hornochsen.util._
 import de.htwg.se.hornochsen.model._
+import de.htwg.se.hornochsen.controler._
 import scala.io.StdIn.readLine
 
 class Controler(var gameState: GameState) extends Observable{
@@ -31,29 +32,25 @@ class Controler(var gameState: GameState) extends Observable{
         return GameState(players=gameState.players, board=gameState.board.copy(playedCards=sorted), remDeck=gameState.remDeck)
     }
 
-    def updateGamestate(WhichRowTake: (String, () => String) => Int): GameState = {
+    def updateGamestate(read: () => String, WhichRowTake: (String, () => String) => Int): GameState = {
         var tempboard = gameState.board
         val update: Vector[Player] =
             gameState.board.playedCards
         .map[Player]((card, player) =>
+            val state = ActionState
             val index: Int = where(tempboard, card)
-            val update =(
+            val execute = (
                 if index == -1
                 then
-                    val nim: Int = WhichRowTake(player.name, readLine)
-                    val (board: Board, ochsen: Int) = tempboard.takeRow(card, nim)
-                    val updatedPlayer: Player = player.playCard(card).addOchsen(ochsen)
-                    (board: Board, updatedPlayer: Player)
+                    state.handle(ActionEvent.selectRow)
                 else 
                     if !canAdd(tempboard, index)
                     then
-                        val (board: Board, ochsen: Int) = tempboard.takeRow(card, index+1)
-                        val updatedPlayer: Player = player.playCard(card).addOchsen(ochsen)
-                        (board: Board, updatedPlayer: Player)
+                        state.handle(ActionEvent.takeRow)
                     else
-                        val board: Board = tempboard.addCard(card, index+1)
-                        val updatedPlayer: Player = player.playCard(card)
-                        (board: Board, updatedPlayer: Player))
+                        state.handle(ActionEvent.addCard))
+            val update = execute(tempboard, card, index, player, WhichRowTake, read)                
+
             tempboard = update._1
             update._2
         )
