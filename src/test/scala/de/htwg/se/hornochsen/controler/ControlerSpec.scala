@@ -1,4 +1,4 @@
-package de.htwg.se.hornochsen
+package de.htwg.se.hornochsen.controler
 import de.htwg.se.hornochsen._
 import model._
 import controler._

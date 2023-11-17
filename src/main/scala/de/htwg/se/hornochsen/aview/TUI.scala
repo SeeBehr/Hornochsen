@@ -7,7 +7,6 @@ import scala.io.StdIn.readLine
 
 // Start of the Programm.
 case class TUI(controller: Controler) extends Observer{
-    var play = true
     override def update(e: Event) = {
         e match
         case Event.RoundFinished => 
@@ -15,7 +14,7 @@ case class TUI(controller: Controler) extends Observer{
             println(controller.gameState.players.mkString("\n"))
         case Event.CardsSelected =>
             println(controller.gameState.board.toString())
-        case Event.Quit => play = false
+        case Event.Quit => println("Bye")
     }
 
     def run = {

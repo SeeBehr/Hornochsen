@@ -1,4 +1,4 @@
-package de.htwg.se.hornochsen
+package de.htwg.se.hornochsen.model
 import de.htwg.se.hornochsen.model._
 import de.htwg.se.hornochsen.controler.{initBoard, initDeck}
 import org.scalatest.wordspec.AnyWordSpec
