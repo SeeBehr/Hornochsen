@@ -23,19 +23,23 @@ class ActionStateSpec extends AnyWordSpec {
         val board = Board(rows=Vector[Row](Row(nummer=1, cards=Vector[Int](4,0),filled=1)))
 
         "have a default state" in {
-            defaultState(board,5,1,player, method1, method2) should be ()
+            defaultState(board,5,1,player, method1, method2)._1.toString should be ("Board:\n\tRow 1: 4, 0 filled: 1\n\nPlayed cards: \n")
+            defaultState(board,5,1,player, method1, method2)._2.toString should be ("Patrick:\n\tcards: 2, 5\n\tOchsen: 0\n")
         }
 
         "have a addCard state" in {
-            addCardState(board,5,1,player, method1, method2) should be ()
+            addCardState(board,5,0,player, method1, method2)._1.toString should be ("Board:\n\tRow 1: 4, 5 filled: 2\n\nPlayed cards: \n")
+            addCardState(board,5,0,player, method1, method2)._2.toString should be ("Patrick:\n\tcards: 2\n\tOchsen: 0\n")
         }
 
         "have a takeRow state" in {
-            takeRowState(board,2,1,player, method1, method2) should be ()
+            takeRowState(board,2,0,player, method1, method2)._1.toString should be ("Board:\n\tRow 1: 2, 0 filled: 1\n\nPlayed cards: \n")
+            takeRowState(board,2,0,player, method1, method2)._2.toString should be ("Patrick:\n\tcards: 5\n\tOchsen: 1\n")
         }
         
         "have a selectRow state" in {
-            selectRowState(board,2,1,player, method1, method2) should be ()
+            selectRowState(board,2,0,player, method1, method2)._1.toString should be ("Board:\n\tRow 1: 2, 0 filled: 1\n\nPlayed cards: \n")
+            selectRowState(board,2,0,player, method1, method2)._2.toString should be ("Patrick:\n\tcards: 5\n\tOchsen: 1\n")
         }
     }
 }
