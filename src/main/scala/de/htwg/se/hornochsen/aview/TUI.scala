@@ -45,6 +45,12 @@ case class TUI(controller: Controler) extends Observer{
         val input = read()
         input.toInt
     }
+    def end = {
+        println("Spiel beendet")
+        for (p <- controller.gameState.players.sortBy(_.ochsen)) {
+            println(s"${p.name} hat ${p.ochsen} Ochsen")
+        }
+    }
 }
 def TUIplayerNames(a: Int): String = {
     println(s"Spielername $a")

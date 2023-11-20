@@ -23,4 +23,5 @@ def start() = {
         tui.run
         controler.gameState = controler.giveCards(6)
     }
+    tui.end
 }
