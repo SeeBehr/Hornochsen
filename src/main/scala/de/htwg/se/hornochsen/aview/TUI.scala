@@ -46,3 +46,7 @@ case class TUI(controller: Controler) extends Observer{
         input.toInt
     }
 }
+def TUIplayerNames(a: Int): String = {
+    println(s"Spielername $a")
+    readLine
+}

@@ -10,7 +10,7 @@ import scala.io.StdIn.readLine
 def start() = {
     val deck = initDeck(120).shuffle()
     val (board, playerdeck) = initBoard(numRows = 4, numRowCards = 6, deck = deck)
-    val (allP, refilldeck) = initAllPlayers(numPlayer = 4, numHandCards = 6, input = (a)=>{println(s"Spielername $a"); readLine}, deck = playerdeck)
+    val (allP, refilldeck) = initAllPlayers(numPlayer = 4, numHandCards = 6, input = TUIplayerNames, deck = playerdeck)
     val gameState: GameState = GameState(allP, board, refilldeck)
     val controler = Controler(gameState)
     var tui = new TUI(controler)
