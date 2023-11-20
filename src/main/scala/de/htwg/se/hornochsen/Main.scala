@@ -2,17 +2,12 @@ package de.htwg.se.hornochsen
 
 import de.htwg.se.hornochsen.aview._
 import de.htwg.se.hornochsen.controler._
-import de.htwg.se.hornochsen.model._
 import de.htwg.se.hornochsen.util._
 import scala.io.StdIn.readLine
 
 @main
 def start() = {
-    val deck = initDeck(120).shuffle()
-    val (board, playerdeck) = initBoard(numRows = 4, numRowCards = 6, deck = deck)
-    val (allP, refilldeck) = initAllPlayers(numPlayer = 4, numHandCards = 6, input = TUIplayerNames, deck = playerdeck)
-    val gameState: GameState = GameState(allP, board, refilldeck)
-    val controler = Controler(gameState)
+    val controler = Controler(Fasade.initialiseGame())
     var tui = new TUI(controler)
     controler.add(tui)
     
