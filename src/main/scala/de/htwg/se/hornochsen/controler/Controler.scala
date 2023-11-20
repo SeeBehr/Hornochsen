@@ -90,18 +90,20 @@ def initBoard(numRows: Int, numRowCards: Int, deck: Deck): (Board, Deck) = {
     )
 }
 
-def initAllPlayers(numPlayer: Int, numHandCards: Int, input: (index: Int) => String, deck: Deck):
-    (Vector[Player], Deck) = {
-    (
-        Vector.tabulate(numPlayer)(index => {
-        Player(
-            name = input(index + 1),
-            cards = Vector.tabulate(numHandCards)(count =>
-            deck.cards(count + numHandCards * index)
-            ),
-            ochsen = 0
+object PlayerFactory {
+    def getInstance(playerCount: Int, numHandCards: Int, input: (index: Int) => String, deck: Deck): 
+        (Vector[Player], Deck) = {
+        (
+            Vector.tabulate(playerCount)(index => {
+            Player(
+                name = input(index + 1),
+                cards = Vector.tabulate(numHandCards)(count =>
+                deck.cards(count + numHandCards * index)
+                ),
+                ochsen = 0
+            )
+            }),
+            deck.remcount(numHandCards * playerCount)
         )
-        }),
-        deck.remcount(numHandCards * numPlayer)
-    )
+    }
 }

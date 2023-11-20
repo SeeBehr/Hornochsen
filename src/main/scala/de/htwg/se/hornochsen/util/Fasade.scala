@@ -12,7 +12,7 @@ object Fasade {
             initDeck(sizeDeck)
         }
         val (board, playerdeck) = initBoard(numRows, numRowCards, deck)
-        val (allP, refilldeck) = initAllPlayers(numPlayer, numHandCards, input, playerdeck)
+        val (allP, refilldeck) = PlayerFactory.getInstance(playerCount = numPlayer, numHandCards = numHandCards, input = input, deck = playerdeck)
         GameState(allP, board, refilldeck)
     }
 }
