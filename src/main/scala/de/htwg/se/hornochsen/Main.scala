@@ -19,7 +19,7 @@ def start() = {
     tui.update(Event.RoundFinished)
     for (i <- Seq(0,3);
          j <- Seq(0,6)) {
-         
+        
         tui.run
         controler.gameState = controler.giveCards(6)
     }
