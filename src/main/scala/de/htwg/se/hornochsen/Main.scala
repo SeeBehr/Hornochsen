@@ -7,7 +7,7 @@ import scala.io.StdIn.readLine
 
 @main
 def start() = {
-    val controler = Controler(Fasade.initialiseGame())
+    val controler = Controler(Facade.initializeGame())
     var tui = new TUI(controler)
     controler.add(tui)
     

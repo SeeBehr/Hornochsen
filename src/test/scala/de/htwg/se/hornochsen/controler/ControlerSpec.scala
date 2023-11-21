@@ -42,14 +42,38 @@ class Controlerspec extends AnyWordSpec {
         }
 
         "have all Player's" in {
-            initAllPlayers(1, 1,(Int)=>"Patrick", initDeck(1)).toString should be ((Vector(Player("Patrick", Vector(1), 0)),Deck(cards=Vector.empty)).toString)
-            initAllPlayers(2, 2,(Int)=>"Patrick", initDeck(4)).toString should be((Vector(Player("Patrick", Vector(1, 2), 0), Player("Patrick", Vector(3, 4), 0)),Deck(cards=Vector.empty)).toString)
+            // Test with one player
+            val (players, remainingDeck) = PlayerFactory.getInstance(
+                playerCount = 1, 
+                numHandCards = 1, 
+                input = (a)=>"Seebastian", 
+                deck = initDeck(2)
+            )
+            players.toString() should be (
+                Vector(Player(name = "Seebastian", cards = Vector(1), ochsen = 0)).toString
+            )
+            remainingDeck.toString() should be("Deck: 2\n")
+
+            // Test with two players
+            val (players_2, remainingDeck_2) = PlayerFactory.getInstance(
+                playerCount = 2, 
+                numHandCards = 2, 
+                input = (a)=>"Seebastiaan", 
+                deck = initDeck(5)
+            )
+            players_2.toString() should be (
+                Vector(
+                    Player(name = "Seebastiaan", cards = Vector(1, 2), ochsen = 0), 
+                    Player(name = "Seebastiaan", cards = Vector(3, 4), ochsen = 0), 
+                ).toString
+            )
+            remainingDeck_2.toString() should be("Deck: 5\n")
         }
 
         "give the players cards from the deck" in {
             val deckSP = initDeck(50)
             val (boardSP, playerdeckSP) = initBoard(numRows = 1, numRowCards = 1, deck = deckSP)
-            val (playerSP, refilldeckSP) = initAllPlayers(numPlayer = 1, numHandCards = 1, input = (a)=>"Seebastian", deck = playerdeckSP)
+            val (playerSP, refilldeckSP) = PlayerFactory.getInstance(playerCount = 1, numHandCards = 1, input = (a)=>"Seebastian", deck = playerdeckSP)
             val gameStateSP = GameState(playerSP, boardSP, refilldeckSP)
             val controlerSP = Controler(gameStateSP)
             

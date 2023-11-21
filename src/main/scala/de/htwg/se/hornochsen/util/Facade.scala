@@ -4,8 +4,8 @@ import de.htwg.se.hornochsen.model._
 import de.htwg.se.hornochsen.controler._
 import de.htwg.se.hornochsen.aview._
 
-object Fasade {
-    def initialiseGame(shuffle: Boolean = true, sizeDeck: Int = 120, numRows: Int = 4, numRowCards: Int = 6, numPlayer: Int = 4, numHandCards: Int = 6, input: Int => String = TUIplayerNames): GameState = {
+object Facade {
+    def initializeGame(shuffle: Boolean = true, sizeDeck: Int = 120, numRows: Int = 4, numRowCards: Int = 6, numPlayer: Int = 4, numHandCards: Int = 6, input: Int => String = TUIplayerNames): GameState = {
         val deck = if (shuffle) {
             initDeck(sizeDeck).shuffle()
         } else {
