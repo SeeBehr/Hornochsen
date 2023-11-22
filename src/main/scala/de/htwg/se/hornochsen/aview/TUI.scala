@@ -9,12 +9,13 @@ import scala.io.StdIn.readLine
 case class TUI(controller: Controler) extends Observer{
     override def update(e: Event) = {
         e match
+        case Event.PlayRound => run
         case Event.RoundFinished => 
             println(controller.gameState.board.toString())
             println(controller.gameState.players.mkString("\n"))
         case Event.CardsSelected =>
             println(controller.gameState.board.toString())
-        case Event.Quit => println("Bye")
+        case Event.End => println("Bye")
     }
 
     def run = {

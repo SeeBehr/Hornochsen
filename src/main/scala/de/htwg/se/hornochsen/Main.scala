@@ -11,12 +11,12 @@ def start() = {
     var tui = new TUI(controler)
     controler.add(tui)
     
-    tui.update(Event.RoundFinished)
+    controler.notifyObservers(Event.RoundFinished)
     for (i <- Seq(0,3);
          j <- Seq(0,6)) {
         
-        tui.run
+        controler.notifyObservers(Event.PlayRound)
         controler.gameState = controler.giveCards(6)
     }
-    tui.end
+    controler.notifyObservers(Event.End)
 }
