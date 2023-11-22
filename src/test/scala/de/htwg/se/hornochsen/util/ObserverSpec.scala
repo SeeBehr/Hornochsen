@@ -20,7 +20,7 @@ class ObserverSpec extends AnyWordSpec {
             controler.subscribers should be (Vector(tui))
         }
         "have a notify method" in {
-            controler.notifyObservers(Event.Quit) should be (())
+            controler.notifyObservers(Event.End) should be (())
         }
         "have a remove method" in {
             controler.remove(tui) should be (())
