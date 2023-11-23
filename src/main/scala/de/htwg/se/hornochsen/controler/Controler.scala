@@ -6,6 +6,7 @@ import de.htwg.se.hornochsen.controler._
 import scala.io.StdIn.readLine
 
 class Controler(var gameState: GameState) extends Observable{
+    var history = new History()
     def which(cards: Vector[(Int, Player)]):
         ((Int, Player), Vector[(Int, Player)]) = {
         var min = cards.min((x, y) => x._1 - y._1)
@@ -27,12 +28,14 @@ class Controler(var gameState: GameState) extends Observable{
     }
 
     def updatePlayedCards(cardsToPlay: Vector[(Int, Player)]): GameState = {
+        history.save(ConcreteMemento(gameState))
         println("Ausgewählte karten: " + cardsToPlay.toString())
         val sorted = cardsToPlay.sortBy((card: Int, player: Player) => card: Int)
         return GameState(players=gameState.players, board=gameState.board.copy(playedCards=sorted), remDeck=gameState.remDeck)
     }
 
     def updateGamestate(read: () => String, WhichRowTake: (String, () => String) => Int): GameState = {
+        history.save(ConcreteMemento(gameState))
         var tempboard = gameState.board
         val update: Vector[Player] =
             gameState.board.playedCards
@@ -68,6 +71,12 @@ class Controler(var gameState: GameState) extends Observable{
             indexAndPlayer._1.drawCards(drawnCards.slice(indexAndPlayer._2 * cardCount, (indexAndPlayer._2 + 1) * cardCount))
         })
         GameState(players = newPlayers, board = this.gameState.board, remDeck = remDeck)
+    }
+    def undo = {
+        if history.mementos.nonEmpty then
+            val undoGamestate = history.restore()
+            gameState = undoGamestate.originator
+            notifyObservers(Event.Undo)
     }
 }
 

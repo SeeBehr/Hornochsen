@@ -14,3 +14,4 @@ enum Event:
     case RoundFinished
     case CardsSelected
     case PlayRound
+    case Undo

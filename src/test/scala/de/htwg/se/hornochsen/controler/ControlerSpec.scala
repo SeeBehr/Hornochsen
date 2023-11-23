@@ -4,6 +4,7 @@ import model._
 import controler._
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
+import de.htwg.se.hornochsen.util.ConcreteMemento
 
 class Controlerspec extends AnyWordSpec {
     "The logic" should {
@@ -80,6 +81,12 @@ class Controlerspec extends AnyWordSpec {
             val gameStateWithExtraCards = controlerSP.giveCards(1)
             val newPlayer = gameStateWithExtraCards._1(0)
             newPlayer.toString() should be("Seebastian:\n\tcards: 2, 3\n	Ochsen: 0\n")
+        }
+
+        "have a history" in {
+            //controler.history.toString() should be("History: ()\n")
+            controler.history.save(ConcreteMemento(controler.gameState))
+            controler.history.toString() should be("History: \nGamestate: \n\nPlayers: \nVector(Sebastian:\n\tcards: 2, 5\n\tOchsen: 0\n, Nicht Sebastian:\n\tcards: 1, 3\n\tOchsen: 0\n)\nBoard:\n\tRow 1: 1, 0, 0, 0, 0, 0 filled: 1\n\nPlayed cards: \n2, von Sebastian\n3, von Nicht Sebastian\nDeck: 1\n\n\n")
         }
     }
 }
