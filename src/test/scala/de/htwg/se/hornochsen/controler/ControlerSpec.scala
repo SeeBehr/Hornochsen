@@ -83,6 +83,12 @@ class Controlerspec extends AnyWordSpec {
             newPlayer.toString() should be("Seebastian:\n\tcards: 2, 3\n	Ochsen: 0\n")
         }
 
+        "return a Gamestate" in {
+            initializeGame(shuffle=false, sizeDeck=2, numRows=1, numRowCards=1, numPlayer=1, numHandCards=1, input = Int => "A")._1.toString() should be ("Vector(A:\n\tcards: 2\n\tOchsen: 0\n)")
+            initializeGame(shuffle=false, sizeDeck=2, numRows=1, numRowCards=1, numPlayer=1, numHandCards=1, input = Int => "A")._2.toString() should be ("Board:\n\tRow 1: 1 filled: 1\n\nPlayed cards: \n")
+            initializeGame(shuffle=false, sizeDeck=2, numRows=1, numRowCards=1, numPlayer=1, numHandCards=1, input = Int => "A")._3.toString() should be ("Deck: \n")
+        }
+
         "have a history" in {
             controler.history.toString() should be("History: \n\n")
             controler.history.save(ConcreteMemento(controler.gameState))
