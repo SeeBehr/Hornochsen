@@ -10,7 +10,7 @@ case class TUI(controller: Controler) extends Observer{
     override def update(e: Event) = {
         e match
         case Event.Undo =>
-            println("Undo:\n new Gamestate:")
+            println("Undo/Redo:\n new Gamestate:")
             println(controller.gameState.board.toString())
             println(controller.gameState.players.mkString("\n"))
         case Event.PlayRound => run

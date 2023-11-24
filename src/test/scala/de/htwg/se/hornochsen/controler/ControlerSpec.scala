@@ -2,9 +2,9 @@ package de.htwg.se.hornochsen.controler
 import de.htwg.se.hornochsen._
 import model._
 import controler._
+import util._
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
-import de.htwg.se.hornochsen.util.ConcreteMemento
 
 class Controlerspec extends AnyWordSpec {
     "The logic" should {
@@ -17,6 +17,7 @@ class Controlerspec extends AnyWordSpec {
         val gameState = GameState(players=Vector(player1, player2), board=boardselect, remDeck=initDeck(1))
         var controler = Controler(gameState)
         val (card, cardsrem) = controler.which(boardselect.playedCards)
+        var command = SetCommand(controler)
         
         "select the lowest drawn card number" should {
             "Played card + player" in {
@@ -89,19 +90,21 @@ class Controlerspec extends AnyWordSpec {
             initializeGame(shuffle=false, sizeDeck=2, numRows=1, numRowCards=1, numPlayer=1, numHandCards=1, input = Int => "A")._3.toString() should be ("Deck: \n")
         }
 
-        "have a history" in {
-            controler.history.toString() should be("History: \n\n")
-            controler.history.save(ConcreteMemento(controler.gameState))
-            controler.history.toString() should be("History: \nGamestate: \n\nPlayers: \nVector(Sebastian:\n\tcards: 2, 5\n\tOchsen: 0\n, Nicht Sebastian:\n\tcards: 1, 3\n\tOchsen: 0\n)\nBoard:\n\tRow 1: 1, 0, 0, 0, 0, 0 filled: 1\n\nPlayed cards: \n2, von Sebastian\n3, von Nicht Sebastian\nDeck: 1\n\n\n")
+        "have a undoHistory" in {
+            controler.undoHistory.toString() should be("History: \n\n")
+            controler.undoHistory.save(ConcreteMemento(controler.gameState))
+            controler.undoHistory.toString() should be("History: \nGamestate: \n\nPlayers: \nVector(Sebastian:\n\tcards: 2, 5\n\tOchsen: 0\n, Nicht Sebastian:\n\tcards: 1, 3\n\tOchsen: 0\n)\nBoard:\n\tRow 1: 1, 0, 0, 0, 0, 0 filled: 1\n\nPlayed cards: \n2, von Sebastian\n3, von Nicht Sebastian\nDeck: 1\n\n\n")
         }
 
         "history schould work tike this" in {
-            val vergleich = controler.gameState
-            controler.history.save(ConcreteMemento(controler.gameState))
+            var vergleich = controler.gameState
             controler.gameState = controler.updateGamestate(()=>"1", (String, input) => 1)
             controler.beginNextRound((String) => (), () => "Next") should be(true)
+            vergleich == controler.gameState should be (false)
             controler.beginNextRound((String) => (), () => "Undo") should be(false)
             vergleich == controler.gameState should be (true)
+            controler.beginNextRound((String) => (), () => "Redo") should be(false)
+            vergleich == controler.gameState should be (false)
         }
     }
 }

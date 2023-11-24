@@ -7,7 +7,9 @@ import de.htwg.se.hornochsen.aview._
 import scala.io.StdIn.readLine
 
 class Controler(var gameState: GameState) extends Observable{
-    var history = new History()
+    var undoHistory = new History()
+    var redoHistory = new History()
+    var command = SetCommand(this)
     def which(cards: Vector[(Int, Player)]):
         ((Int, Player), Vector[(Int, Player)]) = {
         var min = cards.min((x, y) => x._1 - y._1)
@@ -29,13 +31,14 @@ class Controler(var gameState: GameState) extends Observable{
     }
 
     def updatePlayedCards(cardsToPlay: Vector[(Int, Player)]): GameState = {
-        history.save(ConcreteMemento(gameState))
+        command.PlayRound
         println("Ausgewählte karten: " + cardsToPlay.toString())
         val sorted = cardsToPlay.sortBy((card: Int, player: Player) => card: Int)
         return GameState(players=gameState.players, board=gameState.board.copy(playedCards=sorted), remDeck=gameState.remDeck)
     }
 
     def updateGamestate(read: () => String, WhichRowTake: (String, () => String) => Int): GameState = {
+        command.PlayRound
         var tempboard = gameState.board
         val update: Vector[Player] =
             gameState.board.playedCards
@@ -72,17 +75,15 @@ class Controler(var gameState: GameState) extends Observable{
         })
         GameState(players = newPlayers, board = this.gameState.board, remDeck = remDeck)
     }
-    def undo = {
-        if history.mementos.nonEmpty then
-            val undoGamestate = history.restore()
-            gameState = undoGamestate.originator
-    }
     def beginNextRound(output:(String) => Unit,input:() => String): Boolean = {
-        output("Nächste Runde beginnen, oder letzte runde wiederherstellen?(Next/Undo)\n")
+        output("Nächste Runde beginnen, oder letzte runde wiederherstellen?(Next/Undo/Redo)\n")
         val eingabe = input()
         val nextOP: Boolean = 
             if (eingabe == "Undo") {
-                this.undo
+                command.UndoRound
+                false
+            } else if (eingabe == "Redo"){
+                command.RedoRound
                 false
             } else true
         return nextOP
