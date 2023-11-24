@@ -24,10 +24,17 @@ class History {
         mementos = memento :: mementos
     }
 
-    def restore(): Memento = {
-        val memento = mementos.head
-        mementos = mementos.tail
-        memento
+    def restore(): Option[Memento] = {
+        val geht = mementos.isEmpty
+        
+        val memento: Option[Memento] = if (geht)
+            then
+                val temp = mementos.head 
+                mementos = mementos.tail
+                Option(temp)
+            else None
+        
+            memento
     }
     override def toString(): String = {
         "History: \n" + mementos.map(m=> m.toString()).mkString(", ") + "\n"

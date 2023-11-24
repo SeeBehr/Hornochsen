@@ -1,6 +1,7 @@
 package de.htwg.se.hornochsen.util
 
 import de.htwg.se.hornochsen.controler.Controler
+import de.htwg.se.hornochsen.model.GameState
 
 trait Command {
     def PlayRound: Unit
@@ -13,15 +14,27 @@ class SetCommand(controller: Controler) extends Command{
         controller.undoHistory.save(ConcreteMemento(controller.gameState))
     }
     override def RedoRound: Unit = {
-        if controller.redoHistory.mementos.nonEmpty then
-            val redoGamestate = controller.redoHistory.restore()
-            controller.undoHistory.save(ConcreteMemento(controller.gameState))
-            controller.gameState = redoGamestate.originator
+        val geht = controller.redoHistory.mementos.isEmpty
+        val memento: Option[Memento] = if (geht)
+            then
+                val redoGamestate = controller.redoHistory.restore()
+                redoGamestate
+            else None
+        memento match {
+            case Some(value) =>
+                controller.gameState = value.originator
+        }
     }
     override def UndoRound: Unit = {
-        if controller.undoHistory.mementos.nonEmpty then
-            val undoGamestate = controller.undoHistory.restore()
-            controller.redoHistory.save(ConcreteMemento(controller.gameState))
-            controller.gameState = undoGamestate.originator
+        val geht = controller.undoHistory.mementos.isEmpty
+        val memento: Option[Memento] = if (geht)
+            then
+                val undoGamestate = controller.undoHistory.restore()
+                undoGamestate
+            else None
+        memento match {
+            case Some(value) => 
+                controller.gameState = value.originator
+        }
     }
 }

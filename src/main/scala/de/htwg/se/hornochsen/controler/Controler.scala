@@ -38,7 +38,6 @@ class Controler(var gameState: GameState) extends Observable{
     }
 
     def updateGamestate(read: () => String, WhichRowTake: (String, () => String) => Int): GameState = {
-        command.PlayRound
         var tempboard = gameState.board
         val update: Vector[Player] =
             gameState.board.playedCards
