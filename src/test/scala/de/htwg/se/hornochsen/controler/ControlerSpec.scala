@@ -84,7 +84,7 @@ class Controlerspec extends AnyWordSpec {
         }
 
         "have a history" in {
-            controler.history.toString() should be("History: ()\n")
+            controler.history.toString() should be("History: \n\n")
             controler.history.save(ConcreteMemento(controler.gameState))
             controler.history.toString() should be("History: \nGamestate: \n\nPlayers: \nVector(Sebastian:\n\tcards: 2, 5\n\tOchsen: 0\n, Nicht Sebastian:\n\tcards: 1, 3\n\tOchsen: 0\n)\nBoard:\n\tRow 1: 1, 0, 0, 0, 0, 0 filled: 1\n\nPlayed cards: \n2, von Sebastian\n3, von Nicht Sebastian\nDeck: 1\n\n\n")
         }
