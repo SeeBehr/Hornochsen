@@ -10,6 +10,7 @@ case class TUI(controller: Controler) extends Observer{
     override def update(e: Event) = {
         e match
         case Event.Undo =>
+            println("Undo:\n new Gamestate:")
             println(controller.gameState.board.toString())
             println(controller.gameState.players.mkString("\n"))
         case Event.PlayRound => run
@@ -19,6 +20,10 @@ case class TUI(controller: Controler) extends Observer{
         case Event.CardsSelected =>
             println(controller.gameState.board.toString())
         case Event.End => end
+        case Event.NextRound =>
+            println(controller.gameState.board.toString())
+            println(controller.gameState.players.mkString("\n"))
+
     }
 
     def run = {
@@ -26,6 +31,9 @@ case class TUI(controller: Controler) extends Observer{
         controller.notifyObservers(Event.CardsSelected)
         controller.gameState = controller.updateGamestate(readLine, WhichRowTake)
         controller.notifyObservers(Event.RoundFinished)
+        if (controller.beginNextRound(TUIwhatToDo, readLine) == false)
+            controller.notifyObservers(Event.Undo)
+        else controller.notifyObservers(Event.NextRound)
     }
 
     def playCards(players: Vector[Player], read: () => String): Vector[(Int,Player)] = {
@@ -59,4 +67,7 @@ case class TUI(controller: Controler) extends Observer{
 def TUIplayerNames(a: Int): String = {
     println(s"Spielername $a")
     readLine
+}
+def TUIwhatToDo(ausgabe:String) = {
+    print(ausgabe)
 }

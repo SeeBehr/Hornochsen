@@ -35,7 +35,6 @@ class Controler(var gameState: GameState) extends Observable{
     }
 
     def updateGamestate(read: () => String, WhichRowTake: (String, () => String) => Int): GameState = {
-        history.save(ConcreteMemento(gameState))
         var tempboard = gameState.board
         val update: Vector[Player] =
             gameState.board.playedCards
@@ -76,7 +75,16 @@ class Controler(var gameState: GameState) extends Observable{
         if history.mementos.nonEmpty then
             val undoGamestate = history.restore()
             gameState = undoGamestate.originator
-            notifyObservers(Event.Undo)
+    }
+    def beginNextRound(output:(String) => Unit,input:() => String): Boolean = {
+        output("Nächste Runde beginnen, oder letzte runde wiederherstellen?(Next/Undo)\n")
+        val eingabe = input()
+        val nextOP: Boolean = 
+            if (eingabe == "Undo") {
+                this.undo
+                false
+            } else true
+        return nextOP
     }
 }
 
