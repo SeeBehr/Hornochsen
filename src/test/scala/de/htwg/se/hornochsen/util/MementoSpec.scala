@@ -32,5 +32,15 @@ class MementoSpec extends AnyWordSpec {
             history.toString() should be ("History: \n" + memento.toString() + "\n")
             history.restore() should be (Some(memento))
         }
+        "have a max undo" in {
+            val history = new History()
+            history.save(memento)
+            history.save(memento)
+            history.save(memento)
+            history.save(memento)
+            history.save(memento)
+            history.save(memento)
+            history.mementos.length should be (5)
+        }
     }
 }

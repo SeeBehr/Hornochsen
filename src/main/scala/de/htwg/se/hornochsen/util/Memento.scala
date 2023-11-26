@@ -18,10 +18,13 @@ class ConcreteMemento(origin: GameState) extends Memento {
 }
 
 class History {
+    val maxUndo = 5
     var mementos: List[Memento] = List()
-
-    def save(memento: Memento): Unit = {
-        mementos = memento :: mementos
+    def save(newMemento: Memento): Unit = {
+        if (mementos.length >= maxUndo)
+        then
+            mementos = mementos.take(maxUndo-1)
+        mementos = newMemento :: mementos
     }
 
     def restore(): Option[Memento] = {
