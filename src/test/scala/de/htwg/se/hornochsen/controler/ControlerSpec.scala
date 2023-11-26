@@ -1,4 +1,5 @@
 package de.htwg.se.hornochsen.controler
+
 import de.htwg.se.hornochsen._
 import model._
 import controler._
@@ -97,6 +98,10 @@ class Controlerspec extends AnyWordSpec {
             vergleich == controler.gameState should be (false)
             controler.beginNextRound((String) => (), () => "Undo") should be(false)
             controler.gameState.toString() should be (vergleich.toString())
+            controler.beginNextRound((String) => (), () => "Undo") should be(false)
+            controler.gameState.toString() should be (vergleich.toString())
+            controler.beginNextRound((String) => (), () => "Redo") should be(false)
+            controler.gameState.toString() should not be (vergleich.toString())
             controler.beginNextRound((String) => (), () => "Redo") should be(false)
             controler.gameState.toString() should not be (vergleich.toString())
         }
