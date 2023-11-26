@@ -14,27 +14,36 @@ class SetCommand(controller: Controler) extends Command{
         controller.undoHistory.save(ConcreteMemento(controller.gameState))
     }
     override def RedoRound: Unit = {
-        val geht = controller.redoHistory.mementos.isEmpty
+        printf("Redo\n")
+        val geht = !controller.redoHistory.mementos.isEmpty
         val memento: Option[Memento] = if (geht)
             then
                 val redoGamestate = controller.redoHistory.restore()
+                controller.undoHistory.save(ConcreteMemento(controller.gameState))
                 redoGamestate
             else None
         memento match {
             case Some(value) =>
                 controller.gameState = value.originator
+            case None => 
+                println("Redo geht nicht")
         }
     }
     override def UndoRound: Unit = {
-        val geht = controller.undoHistory.mementos.isEmpty
-        val memento: Option[Memento] = if (geht)
-            then
-                val undoGamestate = controller.undoHistory.restore()
-                undoGamestate
-            else None
+        printf("Undo\n")
+        val geht = !controller.undoHistory.mementos.isEmpty
+        val memento: Option[Memento] = if (geht == true) {
+            val undoGamestate = controller.undoHistory.restore()
+            controller.redoHistory.save(ConcreteMemento(controller.gameState))	
+            undoGamestate
+        } else {
+            None
+        }
         memento match {
             case Some(value) => 
                 controller.gameState = value.originator
+            case None => 
+                println("Undo geht nicht")
         }
     }
 }

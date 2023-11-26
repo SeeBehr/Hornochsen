@@ -25,7 +25,7 @@ class History {
     }
 
     def restore(): Option[Memento] = {
-        val geht = mementos.isEmpty
+        val geht = !mementos.isEmpty
         
         val memento: Option[Memento] = if (geht)
             then

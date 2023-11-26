@@ -84,7 +84,12 @@ class Controler(var gameState: GameState) extends Observable{
             } else if (eingabe == "Redo"){
                 command.RedoRound
                 false
-            } else true
+            } else if (eingabe == "Next"){
+                true
+            } else {
+                output("Falsche Eingabe\n")
+                beginNextRound(output, input)
+            }
         return nextOP
     }
 }
