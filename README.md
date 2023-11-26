@@ -1,3 +1,3 @@
 Branch for production
 
-[![Coverage Status](https://coveralls.io/repos/github/SeeBehr/Hornochsen/badge.svg?branch=UndoManager)](https://coveralls.io/github/SeeBehr/Hornochsen?branch=UndoManager)
+[![Coverage Status](https://coveralls.io/repos/github/SeeBehr/Hornochsen/badge.svg?branch=TextUI)](https://coveralls.io/github/SeeBehr/Hornochsen?branch=TextUI)
