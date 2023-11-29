@@ -85,6 +85,7 @@ class Controler(var gameState: GameState) extends Observable{
                 command.RedoRound
                 false
             } else if (eingabe == "Next"){
+                redoHistory.clear()
                 true
             } else {
                 output("Falsche Eingabe\n")

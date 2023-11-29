@@ -39,6 +39,9 @@ class History {
         
             memento
     }
+    def clear() : Unit = {
+        mementos = List()
+    }
     override def toString(): String = {
         "History: \n" + mementos.map(m=> m.toString()).mkString(", ") + "\n"
     }
