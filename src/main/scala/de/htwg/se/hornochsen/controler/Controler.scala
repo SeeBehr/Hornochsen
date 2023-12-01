@@ -10,6 +10,15 @@ class Controler(var gameState: GameState) extends Observable{
     var undoHistory = new History()
     var redoHistory = new History()
     var command = SetCommand(this)
+
+    def run(playCards: Vector[(Int, Player)], input: () => String, WhichRowTake: (String, () => String) => Int, output: String => Unit): Unit = {
+        this.gameState = this.updatePlayedCards(playCards)
+        this.notifyObservers(Event.CardsSelected)
+        this.gameState = this.updateGamestate(input, WhichRowTake)
+        this.notifyObservers(Event.RoundFinished)
+        this.beginNextRound(output, input)
+    }
+
     def which(cards: Vector[(Int, Player)]):
         ((Int, Player), Vector[(Int, Player)]) = {
         var min = cards.min((x, y) => x._1 - y._1)
@@ -30,15 +39,14 @@ class Controler(var gameState: GameState) extends Observable{
         return b.rows(index).filled < b.rows(index).cards.length
     }
 
-    def updatePlayedCards(cardsToPlay: Vector[(Int, Player)]): Unit = {
+    def updatePlayedCards(cardsToPlay: Vector[(Int, Player)]): GameState = {
         command.PlayRound
         println("Ausgewählte karten: " + cardsToPlay.toString())
         val sorted = cardsToPlay.sortBy((card: Int, player: Player) => card: Int)
-        this.gameState = GameState(players=gameState.players, board=gameState.board.copy(playedCards=sorted), remDeck=gameState.remDeck)
-        this.notifyObservers(Event.CardsSelected)
+        GameState(players=gameState.players, board=gameState.board.copy(playedCards=sorted), remDeck=gameState.remDeck)
     }
 
-    def updateGamestate(read: () => String, WhichRowTake: (String, () => String) => Int): Unit = {
+    def updateGamestate(read: () => String, WhichRowTake: (String, () => String) => Int): GameState = {
         var tempboard = gameState.board
         val update: Vector[Player] =
             gameState.board.playedCards
@@ -60,7 +68,7 @@ class Controler(var gameState: GameState) extends Observable{
             tempboard = update._1
             update._2
         )
-        this.gameState = GameState(players=update, board=tempboard, remDeck=gameState.remDeck)
+        GameState(players=update, board=tempboard, remDeck=gameState.remDeck)
     }
 
     def giveCards(cardCount: Int = 6): GameState = {

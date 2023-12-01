@@ -93,7 +93,7 @@ class Controlerspec extends AnyWordSpec {
 
         "have a history" in {
             var vergleich = controler.gameState
-            controler.updatePlayedCards(Vector((1,player1)))
+            controler.gameState = controler.updatePlayedCards(Vector((1,player1)))
             controler.beginNextRound((String) => (), () => "Next")
             vergleich == controler.gameState should be (false)
             controler.beginNextRound((String) => (), () => "Undo")

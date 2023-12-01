@@ -26,11 +26,7 @@ case class TUI(controller: Controler) extends Observer{
 
     }
 
-    def run = {
-        controller.updatePlayedCards(playCards(controller.gameState.players, readLine))
-        controller.updateGamestate(readLine, WhichRowTake)
-        controller.beginNextRound(println, readLine)
-    }
+    def run = controller.run(playCards(controller.gameState.players, readLine), readLine, WhichRowTake, println)
 
     def playCards(players: Vector[Player], read: () => String): Vector[(Int,Player)] = {
         players.map(p=>
