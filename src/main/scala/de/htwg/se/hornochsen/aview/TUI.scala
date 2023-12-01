@@ -15,6 +15,9 @@ case class TUI(controller: Controler) extends UI{
             println("Undo/Redo:\n new Gamestate:")
             println(controller.gameState.board.toString())
             println(controller.gameState.players.mkString("\n"))
+        case Event.GameStart => 
+            println(controller.gameState.board.toString())
+            println(controller.gameState.players.mkString("\n"))
         case Event.PlayRound => 
             println(controller.gameState.board.toString())
             println(controller.gameState.players.mkString("\n"))

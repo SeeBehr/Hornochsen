@@ -16,3 +16,4 @@ enum Event:
     case PlayRound
     case NextRound
     case Undo
+    case GameStart

@@ -9,9 +9,11 @@ import scala.io.StdIn.readLine
 def start() = {
     val controler = Controler(initializeGame())
     var tui = new TUI(controler)
+    var gui = new GUI(controler)
     controler.add(tui)
+    controler.add(gui)
     
-    controler.notifyObservers(Event.PlayRound)
+    controler.notifyObservers(Event.GameStart)
     for (i <- Seq(0,3);
          j <- Seq(0,6)) {
         
