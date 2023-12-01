@@ -4,6 +4,8 @@ import de.htwg.se.hornochsen.controler._
 import de.htwg.se.hornochsen.model._
 import de.htwg.se.hornochsen.util._
 import scala.io.StdIn.readLine
+import scala.util.{Try, Success, Failure}
+import org.scalactic.Fail
 
 // Start of the Programm.
 case class TUI(controller: Controler) extends Observer{
@@ -30,19 +32,23 @@ case class TUI(controller: Controler) extends Observer{
 
     def playCards(players: Vector[Player], read: () => String): Vector[(Int,Player)] = {
         players.map(p=>
-            var gueltig = true
-            var input = ""
-            while gueltig do
+            var ungueltig = true
+            var cardNr: Int = 0
+            while ungueltig do
                 println(s"Welche Karte soll ${p.name} legen?: ")
-                input = read()
-                if (p.cards.contains(input.toInt))
+                val card = getCardFromConsole(read)
+                if (card.isSuccess && p.cards.contains(card.get))
                 then
-                    gueltig = false
+                    ungueltig = false
+                    cardNr = card.get
                 else
                     println("Karte nicht vorhanden!")
-            (input.toInt, p)
+   
+            (cardNr, p)
             )
     }
+
+    def getCardFromConsole(read: () => String): Try[Int] = Try {read().toInt}
 
     def WhichRowTake(name: String, read: () => String): Int = {
         println(s"Welche Reihe nimmt ${name}? ")
