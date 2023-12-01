@@ -13,7 +13,10 @@ case class TUI(controller: Controler) extends Observer{
             println("Undo/Redo:\n new Gamestate:")
             println(controller.gameState.board.toString())
             println(controller.gameState.players.mkString("\n"))
-        case Event.PlayRound => run
+        case Event.PlayRound => 
+            println(controller.gameState.board.toString())
+            println(controller.gameState.players.mkString("\n"))
+            run
         case Event.RoundFinished => 
             println(controller.gameState.board.toString())
             println(controller.gameState.players.mkString("\n"))
