@@ -6,7 +6,7 @@ import de.htwg.se.hornochsen.util._
 import scala.io.StdIn.readLine
 
 // Start of the Programm.
-case class TUI(controller: Controler) extends Observer{
+case class TUI(controller: Controler) extends UI{
     override def update(e: Event) = {
         e match
         case Event.Undo =>
@@ -29,9 +29,9 @@ case class TUI(controller: Controler) extends Observer{
 
     }
 
-    def run = controller.run(playCards(controller.gameState.players, readLine), readLine, WhichRowTake, println)
+    override def run = controller.run(playCards(controller.gameState.players, readLine), readLine, WhichRowTake, println)
 
-    def playCards(players: Vector[Player], read: () => String): Vector[(Int,Player)] = {
+    override def playCards(players: Vector[Player], read: () => String): Vector[(Int,Player)] = {
         players.map(p=>
             var gueltig = true
             var input = ""
@@ -47,12 +47,12 @@ case class TUI(controller: Controler) extends Observer{
             )
     }
 
-    def WhichRowTake(name: String, read: () => String): Int = {
+    override def WhichRowTake(name: String, read: () => String): Int = {
         println(s"Welche Reihe nimmt ${name}? ")
         val input = read()
         input.toInt
     }
-    def end = {
+    override def end = {
         println("Spiel beendet")
         for (p <- controller.gameState.players.sortBy(_.ochsen)) {
             println(s"${p.name} hat ${p.ochsen} Ochsen")
