@@ -3,54 +3,47 @@ package de.htwg.se.hornochsen.util
 import de.htwg.se.hornochsen.controler.Controler
 import de.htwg.se.hornochsen.model.GameState
 import scala.util.Try
+import scala.util.Success
+import scala.util.Failure
 
 trait Command {
     def PlayRound: Unit
-    def UndoRound: Unit
-    def RedoRound: Unit
+    def UndoRound: Try[(GameState, ConcreteMemento)]
+    def RedoRound: Try[(GameState, ConcreteMemento)]
 }
 
 class SetCommand(controller: Controler) extends Command{
     override def PlayRound: Unit = {
         controller.undoHistory.save(ConcreteMemento(controller.gameState))
     }
-    override def RedoRound: Unit = {
+    
+    override def RedoRound: Try[(GameState, ConcreteMemento)] = {
         printf("Redo\n")
-        val geht = !controller.redoHistory.mementos.isEmpty
-        val memento: Option[Memento] = if (geht)
-            then
-                val redoGamestate = controller.redoHistory.restore()
-                controller.undoHistory.save(ConcreteMemento(controller.gameState))
-                redoGamestate
-            else None
-        memento match {
-            case Some(value) =>
-                controller.gameState = value.originator
-            case None => 
-                println("Redo geht nicht")
-        }
-    }
-    override def UndoRound: Try[GameState] = {
-        printf("Undo\n")
-        val geht = !controller.undoHistory.mementos.isEmpty
-        val undoneGamestate: Try[GameState] = Try {
-            val undoGamestate: Try[Memento] = controller.undoHistory.restore()
-            if undoGamestate.isFailure
-            then
-                throw new IllegalStateException("Hae?!")
-            else
-                controller.redoHistory.save(ConcreteMemento(controller.gameState))	
-                undoGamestate.get.originator
-        }
-        /*
-        memento match {
-            case Some(value) => 
-                controller.gameState = value.originator
-            case None => 
-                println("Undo geht nicht")
-        }
+        val returnValue: Try[(GameState, ConcreteMemento)] = 
+            val redoGamestate = controller.redoHistory.restore()
 
-        memento
-        */
+            redoGamestate match
+                case Success(redoGamestate0) =>
+                    Try(
+                        (redoGamestate0.originator, ConcreteMemento(controller.gameState))
+                    )
+                case Failure(f0) =>
+                    throw f0
+        returnValue
+    }
+
+    override def UndoRound: Try[(GameState, ConcreteMemento)]= {
+        printf("Undo\n")
+        val returnValue: Try[(GameState, ConcreteMemento)] = 
+            val undoGamestate: Try[Memento] = controller.undoHistory.restore()
+
+            undoGamestate match
+                case Success(undoGamestate0) =>
+                    Try(
+                        (undoGamestate0.originator, ConcreteMemento(controller.gameState))
+                    )
+                case Failure(f0) =>
+                    throw f0
+        returnValue
     }
 }

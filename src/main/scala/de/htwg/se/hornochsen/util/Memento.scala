@@ -29,12 +29,16 @@ class History {
     }
 
     def restore(): Try[Memento] = {
-        val geht = !mementos.isEmpty
+        val geht = mementos.nonEmpty
         
         val memento: Try[Memento] = Try {
-            val temp = mementos.head 
-            mementos = mementos.tail
-            temp
+            if !geht
+            then
+                throw new IllegalStateException("Nooop, no redo here")
+            else
+                val temp = mementos.head
+                mementos = mementos.tail
+                temp
         }
         
         memento
