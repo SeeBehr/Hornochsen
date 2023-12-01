@@ -27,14 +27,12 @@ case class Board(val rows: Vector[Row], var playedCards: Vector[(Int, Player)] =
         (
 		Board(
 			rows = rows.updated(
-			nummer-1,
-			Row(
-				nummer = nummer,
-				cards = rows(nummer-1).cards.zipWithIndex.map(f =>
-				if f._2 == 0 then card else 0
-				),
-				filled = 1
-			)
+				nummer-1,
+				Row(
+					nummer = nummer,
+					cards = rows(nummer-1).cards.zipWithIndex.map(f => if f._2 == 0 then card else 0),
+					filled = 1
+				)
 			),
 			playedCards = this.playedCards
 		),
