@@ -30,14 +30,15 @@ class Controler(var gameState: GameState) extends Observable{
         return b.rows(index).filled < b.rows(index).cards.length
     }
 
-    def updatePlayedCards(cardsToPlay: Vector[(Int, Player)]): GameState = {
+    def updatePlayedCards(cardsToPlay: Vector[(Int, Player)]): Unit = {
         command.PlayRound
         println("Ausgewählte karten: " + cardsToPlay.toString())
         val sorted = cardsToPlay.sortBy((card: Int, player: Player) => card: Int)
-        return GameState(players=gameState.players, board=gameState.board.copy(playedCards=sorted), remDeck=gameState.remDeck)
+        this.gameState = GameState(players=gameState.players, board=gameState.board.copy(playedCards=sorted), remDeck=gameState.remDeck)
+        this.notifyObservers(Event.CardsSelected)
     }
 
-    def updateGamestate(read: () => String, WhichRowTake: (String, () => String) => Int): GameState = {
+    def updateGamestate(read: () => String, WhichRowTake: (String, () => String) => Int): Unit = {
         var tempboard = gameState.board
         val update: Vector[Player] =
             gameState.board.playedCards
@@ -59,11 +60,10 @@ class Controler(var gameState: GameState) extends Observable{
             tempboard = update._1
             update._2
         )
-        val newGameState = GameState(players=update, board=tempboard, remDeck=gameState.remDeck)
-        newGameState
+        this.gameState = GameState(players=update, board=tempboard, remDeck=gameState.remDeck)
     }
 
-    def giveCards(cardCount: Int = 6): GameState = {
+    def giveCards(cardCount: Int = 6): Unit = {
         val toBeDropped = this.gameState.players.length * cardCount
 
         val drawnCards = this.gameState.remDeck.cards.take(toBeDropped)
@@ -72,26 +72,23 @@ class Controler(var gameState: GameState) extends Observable{
         val newPlayers = this.gameState.players.zipWithIndex.map((indexAndPlayer) => {
             indexAndPlayer._1.drawCards(drawnCards.slice(indexAndPlayer._2 * cardCount, (indexAndPlayer._2 + 1) * cardCount))
         })
-        GameState(players = newPlayers, board = this.gameState.board, remDeck = remDeck)
+        this.gameState = GameState(players = newPlayers, board = this.gameState.board, remDeck = remDeck)
     }
-    def beginNextRound(output:(String) => Unit,input:() => String): Boolean = {
-        output("Nächste Runde beginnen, oder letzte runde wiederherstellen?(Next/Undo/Redo)\n")
+    def beginNextRound(output:(String) => Unit,input:() => String): Unit = {
+        output("Nächste Runde beginnen, oder letzte/vorherige runde wiederherstellen?(Next/Undo/Redo)\n")
         val eingabe = input()
-        val nextOP: Boolean = 
-            if (eingabe == "Undo") {
-                command.UndoRound
-                false
-            } else if (eingabe == "Redo"){
-                command.RedoRound
-                false
-            } else if (eingabe == "Next"){
-                redoHistory.clear()
-                true
-            } else {
-                output("Falsche Eingabe\n")
-                beginNextRound(output, input)
-            }
-        return nextOP
+        if (eingabe == "Undo") {
+            command.UndoRound
+            notifyObservers(Event.Undo)
+        } else if (eingabe == "Redo"){
+            notifyObservers(Event.Undo)
+            command.RedoRound
+        } else if (eingabe == "Next"){
+            redoHistory.clear()
+        } else {
+            output("Falsche Eingabe\n")
+            beginNextRound(output, input)
+        }
     }
 }
 

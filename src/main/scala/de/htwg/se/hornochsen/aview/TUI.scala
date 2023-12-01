@@ -27,13 +27,9 @@ case class TUI(controller: Controler) extends Observer{
     }
 
     def run = {
-        controller.gameState = controller.updatePlayedCards(playCards(controller.gameState.players, readLine))
-        controller.notifyObservers(Event.CardsSelected)
-        controller.gameState = controller.updateGamestate(readLine, WhichRowTake)
-        controller.notifyObservers(Event.RoundFinished)
-        if (controller.beginNextRound(TUIwhatToDo, readLine) == false)
-            controller.notifyObservers(Event.Undo)
-        else controller.notifyObservers(Event.NextRound)
+        controller.updatePlayedCards(playCards(controller.gameState.players, readLine))
+        controller.updateGamestate(readLine, WhichRowTake)
+        controller.beginNextRound(println, readLine)
     }
 
     def playCards(players: Vector[Player], read: () => String): Vector[(Int,Player)] = {
