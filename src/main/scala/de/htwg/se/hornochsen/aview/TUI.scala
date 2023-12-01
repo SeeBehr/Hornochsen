@@ -35,23 +35,23 @@ case class TUI(controller: Controler) extends UI{
 
     override def playCards(players: Vector[Player], read: () => String): Vector[(Int,Player)] = {
         players.map(p=>
-            var ungueltig = true
-            var cardNr: Int = 0
-            while ungueltig do
-                println(s"Welche Karte soll ${p.name} legen?: ")
-                val card = getCardFromConsole(read)
-                if (card.isSuccess && p.cards.contains(card.get))
-                then
-                    ungueltig = false
-                    cardNr = card.get
-                else
-                    println("Karte nicht vorhanden!")
-   
-            (cardNr, p)
-            )
+            dummyname(p, read)
+        )
+    }
+    
+    def dummyname(p: Player, read: () => String): (Int, Player) = {
+        println(s"Welche Karte soll ${p.name} legen?: ")
+        val card = getCardFromConsole(read)
+        if (card.isSuccess && p.cards.contains(card.get))
+        then
+            (card.get, p)
+        else
+            println("Karte nicht vorhanden!")
+            dummyname(p, read)
     }
 
-    def getCardFromConsole(read: () => String): Try[Int] = Try {read().toInt}
+
+    def getCardFromConsole(read: () => String): Try[Int] = Try {read().strip().toInt}
 
     override def WhichRowTake(name: String, read: () => String): Int = {
         println(s"Welche Reihe nimmt ${name}? ")
