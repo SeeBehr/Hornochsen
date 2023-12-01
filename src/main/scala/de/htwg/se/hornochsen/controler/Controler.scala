@@ -5,6 +5,7 @@ import de.htwg.se.hornochsen.model._
 import de.htwg.se.hornochsen.controler._
 import de.htwg.se.hornochsen.aview._
 import scala.io.StdIn.readLine
+import scala.util.Try
 
 class Controler(var gameState: GameState) extends Observable{
     var undoHistory = new History()
@@ -86,7 +87,10 @@ class Controler(var gameState: GameState) extends Observable{
         output("Nächste Runde beginnen, oder letzte/vorherige runde wiederherstellen?(Next/Undo/Redo)\n")
         val eingabe = input()
         if (eingabe == "Undo") {
-            command.UndoRound
+            val newGamestate: Try[GameState] = command.UndoRound
+            if newGamestate.isSuccess()
+            then
+                gameState = newGamestate.get
             notifyObservers(Event.Undo)
         } else if (eingabe == "Redo"){
             notifyObservers(Event.Undo)

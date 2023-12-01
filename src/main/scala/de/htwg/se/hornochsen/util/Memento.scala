@@ -1,6 +1,7 @@
 package de.htwg.se.hornochsen.util
 
 import de.htwg.se.hornochsen.model.GameState
+import scala.util.Try
 
 trait Memento {
     val originator: GameState
@@ -27,18 +28,18 @@ class History {
         mementos = newMemento :: mementos
     }
 
-    def restore(): Option[Memento] = {
+    def restore(): Try[Memento] = {
         val geht = !mementos.isEmpty
         
-        val memento: Option[Memento] = if (geht)
-            then
-                val temp = mementos.head 
-                mementos = mementos.tail
-                Option(temp)
-            else None
+        val memento: Try[Memento] = Try {
+            val temp = mementos.head 
+            mementos = mementos.tail
+            temp
+        }
         
-            memento
+        memento
     }
+
     def clear() : Unit = {
         mementos = List()
     }

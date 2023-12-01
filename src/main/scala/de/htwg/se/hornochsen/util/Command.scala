@@ -2,6 +2,7 @@ package de.htwg.se.hornochsen.util
 
 import de.htwg.se.hornochsen.controler.Controler
 import de.htwg.se.hornochsen.model.GameState
+import scala.util.Try
 
 trait Command {
     def PlayRound: Unit
@@ -29,21 +30,27 @@ class SetCommand(controller: Controler) extends Command{
                 println("Redo geht nicht")
         }
     }
-    override def UndoRound: Unit = {
+    override def UndoRound: Try[GameState] = {
         printf("Undo\n")
         val geht = !controller.undoHistory.mementos.isEmpty
-        val memento: Option[Memento] = if (geht == true) {
-            val undoGamestate = controller.undoHistory.restore()
-            controller.redoHistory.save(ConcreteMemento(controller.gameState))	
-            undoGamestate
-        } else {
-            None
+        val undoneGamestate: Try[GameState] = Try {
+            val undoGamestate: Try[Memento] = controller.undoHistory.restore()
+            if undoGamestate.isFailure
+            then
+                throw new IllegalStateException("Hae?!")
+            else
+                controller.redoHistory.save(ConcreteMemento(controller.gameState))	
+                undoGamestate.get.originator
         }
+        /*
         memento match {
             case Some(value) => 
                 controller.gameState = value.originator
             case None => 
                 println("Undo geht nicht")
         }
+
+        memento
+        */
     }
 }
