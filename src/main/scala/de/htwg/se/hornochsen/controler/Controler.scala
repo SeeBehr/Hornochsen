@@ -63,7 +63,7 @@ class Controler(var gameState: GameState) extends Observable{
         this.gameState = GameState(players=update, board=tempboard, remDeck=gameState.remDeck)
     }
 
-    def giveCards(cardCount: Int = 6): Unit = {
+    def giveCards(cardCount: Int = 6): GameState = {
         val toBeDropped = this.gameState.players.length * cardCount
 
         val drawnCards = this.gameState.remDeck.cards.take(toBeDropped)
@@ -72,7 +72,7 @@ class Controler(var gameState: GameState) extends Observable{
         val newPlayers = this.gameState.players.zipWithIndex.map((indexAndPlayer) => {
             indexAndPlayer._1.drawCards(drawnCards.slice(indexAndPlayer._2 * cardCount, (indexAndPlayer._2 + 1) * cardCount))
         })
-        this.gameState = GameState(players = newPlayers, board = this.gameState.board, remDeck = remDeck)
+        GameState(players = newPlayers, board = this.gameState.board, remDeck = remDeck)
     }
     def beginNextRound(output:(String) => Unit,input:() => String): Unit = {
         output("Nächste Runde beginnen, oder letzte/vorherige runde wiederherstellen?(Next/Undo/Redo)\n")

@@ -93,16 +93,16 @@ class Controlerspec extends AnyWordSpec {
 
         "have a history" in {
             var vergleich = controler.gameState
-            controler.gameState = controler.updatePlayedCards(Vector((1,player1)))
-            controler.beginNextRound((String) => (), () => "Next") should be(true)
+            controler.updatePlayedCards(Vector((1,player1)))
+            controler.beginNextRound((String) => (), () => "Next")
             vergleich == controler.gameState should be (false)
-            controler.beginNextRound((String) => (), () => "Undo") should be(false)
+            controler.beginNextRound((String) => (), () => "Undo")
             controler.gameState.toString() should be (vergleich.toString())
-            controler.beginNextRound((String) => (), () => "Undo") should be(false)
+            controler.beginNextRound((String) => (), () => "Undo")
             controler.gameState.toString() should be (vergleich.toString())
-            controler.beginNextRound((String) => (), () => "Redo") should be(false)
+            controler.beginNextRound((String) => (), () => "Redo")
             controler.gameState.toString() should not be (vergleich.toString())
-            controler.beginNextRound((String) => (), () => "Redo") should be(false)
+            controler.beginNextRound((String) => (), () => "Redo")
             controler.gameState.toString() should not be (vergleich.toString())
         }
     }

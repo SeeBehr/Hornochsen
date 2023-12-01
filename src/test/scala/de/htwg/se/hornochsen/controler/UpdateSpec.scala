@@ -16,15 +16,20 @@ class UpdateSpec extends AnyWordSpec {
     val controler2 = Controler(gameState2)
     "update" should {
         "sort played cards" in {
-            controler1.updatePlayedCards(cardsToPlay=Vector((2,p1),(0,p2)))._2.playedCards.toString() should be ("Vector((0,Patrick:\n\tcards: 0\n\tOchsen: 0\n)"
+            controler1.updatePlayedCards(cardsToPlay=Vector((2,p1),(0,p2)))
+            controler1.gameState.board.playedCards.toString() should be ("Vector((0,Patrick:\n\tcards: 0\n\tOchsen: 0\n)"
             +", (2,Patrick:\n\tcards: 2\n\tOchsen: 0\n))")
         }
         "return an updated gamestate" in {
-            controler1.updateGamestate(() => "1", WhichRowTake=(s:String, f:()=>String)=>1)._1.toString() should be ("Vector(Patrick:\n\tcards: \n\tOchsen: 0\n)") 
-            controler1.updateGamestate(() => "1", WhichRowTake=(s:String, f:()=>String)=>1)._2.toString() should be ("Board:\n\tRow 1: 1, 2 filled: 2\n\nPlayed cards: \n")
+            controler1.updateGamestate(() => "1", WhichRowTake=(s:String, f:()=>String)=>1)
+            controler1.gameState.players.toString() should be ("Vector(Patrick:\n\tcards: \n\tOchsen: 0\n)") 
+            controler1.updateGamestate(() => "1", WhichRowTake=(s:String, f:()=>String)=>1)
+            controler1.gameState.board.toString() should be ("Board:\n\tRow 1: 1, 2 filled: 2\n\nPlayed cards: \n")
 
-            controler2.updateGamestate(() => "1", WhichRowTake=(s:String, f:()=>String)=>1)._1.toString() should be ("Vector(Patrick:\n\tcards: \n\tOchsen: 1\n)") 
-            controler2.updateGamestate(() => "1", WhichRowTake=(s:String, f:()=>String)=>1)._2.toString() should be ("Board:\n\tRow 1: 0, 0 filled: 1\n\nPlayed cards: \n0, von Patrick\n")
+            controler2.updateGamestate(() => "1", WhichRowTake=(s:String, f:()=>String)=>1)
+            controler1.gameState.players.toString() should be ("Vector(Patrick:\n\tcards: \n\tOchsen: 1\n)") 
+            controler2.updateGamestate(() => "1", WhichRowTake=(s:String, f:()=>String)=>1)
+            controler1.gameState.board.toString() should be ("Board:\n\tRow 1: 0, 0 filled: 1\n\nPlayed cards: \n0, von Patrick\n")
         }
     }
 }

@@ -16,7 +16,7 @@ def start() = {
          j <- Seq(0,6)) {
         
         controler.notifyObservers(Event.PlayRound)
-        controler.giveCards(6)
+        controler.gameState = controler.giveCards(6)
     }
     controler.notifyObservers(Event.End)
 }
