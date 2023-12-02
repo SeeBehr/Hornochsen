@@ -14,105 +14,118 @@ import scalafx.geometry.Pos
 import scalafx.scene.text.TextAlignment
 import scalafx.Includes._
 import scalafx.stage.Screen
+import scalafx.scene.control.Button
 
-class GUI(controler: Controler, numRows: Int) extends UI{
+class GUI(controler: Controler) extends UI{
     object InitStage extends JFXApp3 {
         override def start(): Unit = {
             val windowHeight: Double = Screen.primary.bounds.height
             val windowWidth: Double = Screen.primary.bounds.width
             stage = new JFXApp3.PrimaryStage {
-                println("window height: " + windowHeight)
-                println("window width: " + windowWidth)
                 title = "Hornochsen"
                 scene = new Scene {
                     fill = Black
                     content = new VBox {
                         children = Seq(
-                        new HBox {
-                            children = Seq(
-                            new VBox {
-                                children = (for (i <- 1 to numRows) yield
-                                new HBox {
-                                    border = new Border(new BorderStroke(White, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
-                                    alignment = Pos.CenterLeft
-                                    children = Seq(
-                                    new Text {
-                                        textAlignment = TextAlignment.Center
-                                        text = "Button Take "
-                                        style = "-fx-font-size: 10pt"
-                                        fill = White
-                                        prefHeight = ((3.0/5)*windowHeight)/numRows
+                            new HBox {
+                                children = Seq(
+                                    new VBox {
+                                        children = (for (i <- 1 to controler.gameState.board.rows.size) yield
+                                            new HBox {
+                                                border = new Border(new BorderStroke(White, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
+                                                alignment = Pos.CenterLeft
+                                                children = Seq(
+                                                    new Button {
+                                                        text = "Take"
+                                                        style = "-fx-font-size: 10pt"
+                                                        onAction = (event) => {
+                                                            print("ButtonWorks!\n")
+                                                        }
+                                                    },
+                                                    new Text {
+                                                        textAlignment = TextAlignment.Center
+                                                        text = s"Row $i: "
+                                                        style = "-fx-font-size: 30pt"
+                                                        fill = White
+                                                        prefHeight = ((3.0/5)*windowHeight)/controler.gameState.board.rows.size
+                                                        prefWidth = (2.0/3)*windowWidth
+                                                    },
+                                                    new Text {
+                                                        textAlignment = TextAlignment.Center
+                                                        text = controler.gameState.board.rows(i-1).cards.mkString(", ")
+                                                        style = "-fx-font-size: 30pt"
+                                                        fill = White
+                                                        prefHeight = ((3.0/5)*windowHeight)/controler.gameState.board.rows.size
+                                                        prefWidth = (2.0/3)*windowWidth
+                                                    }
+                                                )
+                                            }
+                                        ).toList
+                                        prefHeight = (3.0/5)*windowHeight
                                         prefWidth = (2.0/3)*windowWidth
                                     },
-                                    new Text {
-                                        textAlignment = TextAlignment.Center
-                                        text = s"Row $i: "
-                                        style = "-fx-font-size: 30pt"
-                                        fill = White
-                                        prefHeight = ((3.0/5)*windowHeight)/numRows
-                                        prefWidth = (2.0/3)*windowWidth
-                                    },
-                                    new Text {
-                                        textAlignment = TextAlignment.Center
-                                        text = controler.gameState.board.rows(i-1).cards.mkString(", ")
-                                        style = "-fx-font-size: 30pt"
-                                        fill = White
-                                        prefHeight = ((3.0/5)*windowHeight)/numRows
-                                        prefWidth = (2.0/3)*windowWidth
-                                    })
-                                }).toList
-                                println("top height: " + ((3.0/5)*windowHeight)/numRows)
-                                prefHeight = (3.0/5)*windowHeight
-                                prefWidth = (2.0/3)*windowWidth
+                                    new VBox {
+                                        border = new Border(new BorderStroke(White, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
+                                        alignment = Pos.Center
+                                        children = Seq(
+                                            new Text {
+                                                textAlignment = TextAlignment.Center
+                                                text = "Undo"
+                                                style = "-fx-font-size: 30pt"
+                                                fill = White
+                                                prefHeight = ((3.0/5)*windowHeight)/2
+                                                prefWidth = (1.0/3)*windowWidth
+                                            },
+                                            new Text {
+                                                textAlignment = TextAlignment.Center
+                                                text = "Redo"
+                                                style = "-fx-font-size: 30pt"
+                                                fill = White
+                                                prefHeight = ((3.0/5)*windowHeight)/2
+                                                prefWidth = (1.0/3)*windowWidth
+                                            }
+                                        )
+                                    }
+                                )
                             },
-                            new VBox {
+                            new HBox {
+                                border = new Border(new BorderStroke(White, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
                                 alignment = Pos.Center
                                 children = Seq(
-                                new Text {
-                                    textAlignment = TextAlignment.Center
-                                    text = "Undo"
-                                    style = "-fx-font-size: 30pt"
-                                    fill = White
-                                    prefHeight = ((3.0/5)*windowHeight)/2
-                                    prefWidth = (1.0/3)*windowWidth
-                                },
-                                new Text {
-                                    textAlignment = TextAlignment.Center
-                                    text = "Redo"
-                                    style = "-fx-font-size: 30pt"
-                                    fill = White
-                                    prefHeight = ((3.0/5)*windowHeight)/2
-                                    prefWidth = (1.0/3)*windowWidth
-                                })
-                            })
-                        },
-                        new HBox {
-                            border = new Border(new BorderStroke(White, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
-                            alignment = Pos.Center
-                            padding = Insets(10)
-                            children = Seq(
-                            new Text {
-                                textAlignment = TextAlignment.Left
-                                text = "Spielername:" + controler.gameState.players(0).name
-                                style = "-fx-font-size: 30pt"
-                                fill = White
-                            },
-                            new Text {
-                                textAlignment = TextAlignment.Center
-                                text = "Handkarten: " + controler.gameState.players(0).cards.mkString(", ")
-                                style = "-fx-font-size: 30pt"
-                                fill = White
-                            },
-                            new Text {
-                                textAlignment = TextAlignment.Right
-                                text = "Ochsen: " + controler.gameState.players(0).ochsen
-                                style = "-fx-font-size: 30pt"
-                                fill = White
-                            })
-                            println("bottom height: " + (2.0/5)*windowHeight)
-                            prefHeight = (2.0/5)*windowHeight
-                            prefWidth = windowWidth
-                        })
+                                    new Text {
+                                        alignment = Pos.Center
+                                        textAlignment = TextAlignment.Left
+                                        text = controler.gameState.players(0).name
+                                        style = "-fx-font-size: 30pt"
+                                        fill = White
+                                        prefWidth = windowWidth/3
+                                    },
+                                    new HBox {
+                                        alignment = Pos.Center
+                                        children = (for (i <- 0 to controler.gameState.players(0).cards.length - 1) yield
+                                            new Button {
+                                                alignment = Pos.Center
+                                                text = controler.gameState.players(0).cards(i).toString
+                                                style = "-fx-font-size: 30pt"
+                                                onAction = (event) => {
+                                                    print(s"Play Card ${controler.gameState.players(0).cards(i)}")
+                                                }
+                                            }
+                                        ).toList
+                                    },
+                                    new Text {
+                                        alignment = Pos.Center
+                                        textAlignment = TextAlignment.Right
+                                        text = "Ochsen: " + controler.gameState.players(0).ochsen
+                                        style = "-fx-font-size: 30pt"
+                                        fill = White
+                                        prefWidth = windowWidth/3
+                                    }
+                                )
+                                prefHeight = (2.0/5)*windowHeight
+                                prefWidth = windowWidth
+                            }
+                        )
                     }
                 }
                 fullScreen = true

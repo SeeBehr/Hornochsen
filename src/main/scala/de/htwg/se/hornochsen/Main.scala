@@ -9,7 +9,7 @@ import scala.io.StdIn.readLine
 def start() = {
     val controler = Controler(initializeGame())
     var tui = new TUI(controler)
-    var gui = new GUI(controler, controler.gameState.board.rows.size)
+    var gui = new GUI(controler)
     controler.add(tui)
     controler.add(gui)
     
