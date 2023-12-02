@@ -28,9 +28,6 @@ case class TUI(controller: Controler) extends UI{
         case Event.CardsSelected =>
             println(controller.gameState.board.toString())
         case Event.End => end
-        case Event.NextRound =>
-            println(controller.gameState.board.toString())
-            println(controller.gameState.players.mkString("\n"))
 
     }
 

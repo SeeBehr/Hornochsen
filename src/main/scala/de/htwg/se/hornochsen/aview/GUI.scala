@@ -13,69 +13,104 @@ import scalafx.scene.text.Text
 import scalafx.geometry.Pos
 import scalafx.scene.text.TextAlignment
 import scalafx.Includes._
+import scalafx.stage.Screen
 
 class GUI(controler: Controler, numRows: Int) extends UI{
-    val windowWidth = 1920
-    val windowHeight = 1200
-    object Stage extends JFXApp3 {
+    object InitStage extends JFXApp3 {
         override def start(): Unit = {
+            val windowHeight: Double = Screen.primary.bounds.height
+            val windowWidth: Double = Screen.primary.bounds.width
             stage = new JFXApp3.PrimaryStage {
+                println("window height: " + windowHeight)
+                println("window width: " + windowWidth)
                 title = "Hornochsen"
                 scene = new Scene {
                     fill = Black
                     content = new VBox {
-                        prefHeight = windowHeight
-                        prefWidth = windowWidth
                         children = Seq(
-                            new VBox {
-                                prefHeight = (3/4)*windowHeight
-                                children = (for (i <- 1 to numRows) yield
-                                    new HBox {
-                                        prefHeight = (3/4)*windowHeight/numRows
+                            new HBox {
+                                content = Seq(
+                                    new VBox {
+                                        children = (for (i <- 1 to numRows) yield
+                                            new HBox {
+                                                border = new Border(new BorderStroke(White, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
+                                                alignment = Pos.CenterLeft
+                                                children = Seq(
+                                                    new Text {
+                                                        textAlignment = TextAlignment.Left
+                                                        text = "Button Take "
+                                                        style = "-fx-font-size: 10pt"
+                                                        fill = White
+                                                        prefHeight = ((3.0/5)*windowHeight)/numRows
+                                                        prefWidth = windowWidth
+                                                    },
+                                                    new Text {
+                                                        textAlignment = TextAlignment.Left
+                                                        text = s"Row $i: "
+                                                        style = "-fx-font-size: 30pt"
+                                                        fill = White
+                                                        prefHeight = ((3.0/5)*windowHeight)/numRows
+                                                        prefWidth = windowWidth
+                                                    },
+                                                    new Text {
+                                                        textAlignment = TextAlignment.Center
+                                                        text = controler.gameState.board.rows(i-1).cards.mkString(", ")
+                                                        style = "-fx-font-size: 30pt"
+                                                        fill = White
+                                                        prefHeight = ((3.0/5)*windowHeight)/numRows
+                                                        prefWidth = windowWidth
+                                                    }
+                                                )
+                                            }
+                                        ).toList
+                                        println("top height: " + ((3.0/5)*windowHeight)/numRows)
+                                        prefHeight = (3.0/5)*windowHeight
                                         prefWidth = windowWidth
-                                        border = new Border(new BorderStroke(White, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
-                                        alignment = Pos.CenterLeft
+                                    },
+                                    new HBox {
                                         children = Seq(
                                             new Text {
                                                 textAlignment = TextAlignment.Left
-                                                text = s"Row $i: "
-                                                style = "-fx-font-size: 30pt"
+                                                text = "Undo"
+                                                style = "-fx-font-size: 10pt"
                                                 fill = White
                                             },
                                             new Text {
                                                 textAlignment = TextAlignment.Center
-                                                text = "Cards"
-                                                style = "-fx-font-size: 30pt"
+                                                text = "Redo"
+                                                style = "-fx-font-size: 10pt"
                                                 fill = White
-                                            }
+                                            },
                                         )
-                                    }).toList
+                                    }
+                                )
                             },
                             new HBox {
-                                prefHeight = (1/4)*windowHeight
-                                prefWidth = windowWidth
                                 border = new Border(new BorderStroke(White, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
-                                alignment = Pos.CenterLeft
+                                padding = Insets(10)
                                 children = Seq(
                                     new Text {
                                         textAlignment = TextAlignment.Left
-                                        text = "Spielername:"
+                                        text = "Spielername:" + controler.gameState.players(0).name
                                         style = "-fx-font-size: 30pt"
                                         fill = White
                                     },
                                     new Text {
                                         textAlignment = TextAlignment.Center
-                                        text = "Handkarten"
+                                        text = "Handkarten: " + controler.gameState.players(0).cards.mkString(", ")
                                         style = "-fx-font-size: 30pt"
                                         fill = White
                                     },
                                     new Text {
                                         textAlignment = TextAlignment.Right
-                                        text = "Ochsen"
+                                        text = "Ochsen: " + controler.gameState.players(0).ochsen
                                         style = "-fx-font-size: 30pt"
                                         fill = White
                                     }
                                 )
+                                println("bottom height: " + (2.0/5)*windowHeight)
+                                prefHeight = (2.0/5)*windowHeight
+                                prefWidth = windowWidth
                             },
                         )
                     }
@@ -87,21 +122,32 @@ class GUI(controler: Controler, numRows: Int) extends UI{
     
     override def end: Unit = ???
 
-    override def run: Unit = ???
+    override def run: Unit = controler.run(playCards(controler.gameState.players, input), input, WhichRowTake, output)
+
+    def input(): String = {
+        " "
+    }
+
+    def output(s: String): Unit = {
+
+    }
 
     override def WhichRowTake(name: String, read: () => String): Int = ???
 
     override def playCards(players: Vector[Player], read: () => String): Vector[(Int, Player)] = ???
 
+    def undo(): Unit = {
+
+    }
+
     override def update(e: Event): Unit = {
         e match {
-            case Event.Undo =>
-            case Event.PlayRound => 
+            case Event.Undo => undo()
+            case Event.PlayRound => run
             case Event.RoundFinished =>
             case Event.CardsSelected =>
             case Event.End => end
-            case Event.NextRound =>
-            case Event.GameStart => Stage.main(Array())
+            case Event.GameStart => InitStage.main(Array())
         }
     }
 }
