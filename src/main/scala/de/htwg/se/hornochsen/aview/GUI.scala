@@ -10,8 +10,13 @@ import scalafx.scene.paint._
 import scalafx.scene.layout._
 import scalafx.geometry.Insets
 import scalafx.scene.text.Text
+import scalafx.geometry.Pos
+import scalafx.scene.text.TextAlignment
+import scalafx.Includes._
 
-class GUI(controler: Controler) extends UI{
+class GUI(controler: Controler, numRows: Int) extends UI{
+    val windowWidth = 1920
+    val windowHeight = 1200
     object Stage extends JFXApp3 {
         override def start(): Unit = {
             stage = new JFXApp3.PrimaryStage {
@@ -19,38 +24,62 @@ class GUI(controler: Controler) extends UI{
                 scene = new Scene {
                     fill = Black
                     content = new VBox {
+                        prefHeight = windowHeight
+                        prefWidth = windowWidth
                         children = Seq(
-                            new Text {
-                                text = "Hornochsen"
-                                style = "-fx-font-size: 20pt"
-                                fill = Red
+                            new VBox {
+                                children = (for (i <- 1 to numRows) yield
+                                    new HBox {
+                                        prefHeight = (3/4)*windowHeight/numRows
+                                        prefWidth = windowWidth
+                                        border = new Border(new BorderStroke(White, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
+                                        alignment = Pos.CenterLeft
+                                        children = Seq(
+                                            new Text {
+                                                textAlignment = TextAlignment.Left
+                                                text = s"Row $i: "
+                                                style = "-fx-font-size: 30pt"
+                                                fill = White
+                                            },
+                                            new Text {
+                                                textAlignment = TextAlignment.Center
+                                                text = "Cards"
+                                                style = "-fx-font-size: 30pt"
+                                                fill = White
+                                            }
+                                        )
+                                    }).toList
                             },
                             new HBox {
+                                prefHeight = (1/4)*windowHeight
+                                prefWidth = windowWidth
+                                border = new Border(new BorderStroke(White, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
+                                alignment = Pos.CenterLeft
                                 children = Seq(
                                     new Text {
-                                        text = "Row Number: "
+                                        textAlignment = TextAlignment.Left
+                                        text = "Spielername:"
+                                        style = "-fx-font-size: 30pt"
+                                        fill = White
                                     },
                                     new Text {
-                                        text = "Cards"
-                                    }
-                                )
-                            },
-                            new HBox {
-                                children = Seq(
-                                    new Text {
-                                        text = "Spielername"
-                                    },
-                                    new Text {
+                                        textAlignment = TextAlignment.Center
                                         text = "Handkarten"
+                                        style = "-fx-font-size: 30pt"
+                                        fill = White
                                     },
                                     new Text {
+                                        textAlignment = TextAlignment.Right
                                         text = "Ochsen"
+                                        style = "-fx-font-size: 30pt"
+                                        fill = White
                                     }
                                 )
                             },
                         )
                     }
                 }
+                fullScreen = true
             }
         }
     }
