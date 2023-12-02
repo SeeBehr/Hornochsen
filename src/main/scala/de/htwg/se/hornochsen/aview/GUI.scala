@@ -28,6 +28,7 @@ class GUI(controler: Controler, numRows: Int) extends UI{
                         prefWidth = windowWidth
                         children = Seq(
                             new VBox {
+                                prefHeight = (3/4)*windowHeight
                                 children = (for (i <- 1 to numRows) yield
                                     new HBox {
                                         prefHeight = (3/4)*windowHeight/numRows
