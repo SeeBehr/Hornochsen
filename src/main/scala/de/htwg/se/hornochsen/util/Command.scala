@@ -2,48 +2,47 @@ package de.htwg.se.hornochsen.util
 
 import de.htwg.se.hornochsen.controler.Controler
 import de.htwg.se.hornochsen.model.GameState
+import scala.util.{Try, Success, Failure}
 
 trait Command {
     def PlayRound: Unit
-    def UndoRound: Unit
-    def RedoRound: Unit
+    def UndoRound: Try[GameState]
+    def RedoRound: Try[GameState]
 }
 
 class SetCommand(controller: Controler) extends Command{
     override def PlayRound: Unit = {
         controller.undoHistory.save(ConcreteMemento(controller.gameState))
     }
-    override def RedoRound: Unit = {
+    
+    override def RedoRound: Try[GameState] = {
         printf("Redo\n")
-        val geht = !controller.redoHistory.mementos.isEmpty
-        val memento: Option[Memento] = if (geht)
-            then
-                val redoGamestate = controller.redoHistory.restore()
-                controller.undoHistory.save(ConcreteMemento(controller.gameState))
-                redoGamestate
-            else None
-        memento match {
-            case Some(value) =>
-                controller.gameState = value.originator
-            case None => 
-                println("Redo geht nicht")
-        }
+        val returnValue: Try[GameState] = 
+            val redoGamestate = controller.redoHistory.restore()
+
+            redoGamestate match
+                case Success(redoGamestate0) =>
+                    Try(
+                        redoGamestate0.originator
+                    )
+                    Success(redoGamestate0.originator)
+                case Failure(f0) =>
+                    Failure(f0)
+        returnValue
     }
-    override def UndoRound: Unit = {
+
+    override def UndoRound: Try[GameState]= {
         printf("Undo\n")
-        val geht = !controller.undoHistory.mementos.isEmpty
-        val memento: Option[Memento] = if (geht == true) {
-            val undoGamestate = controller.undoHistory.restore()
-            controller.redoHistory.save(ConcreteMemento(controller.gameState))	
-            undoGamestate
-        } else {
-            None
-        }
-        memento match {
-            case Some(value) => 
-                controller.gameState = value.originator
-            case None => 
-                println("Undo geht nicht")
-        }
+        val returnValue: Try[GameState] = 
+            val undoGamestate: Try[Memento] = controller.undoHistory.restore()
+
+            undoGamestate match
+                case Success(undoGamestate0) =>
+                    Try(
+                        undoGamestate0.originator
+                    )
+                case Failure(f0) =>
+                    Failure(f0)
+        returnValue
     }
 }

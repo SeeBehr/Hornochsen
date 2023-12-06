@@ -35,29 +35,34 @@ case class TUI(controller: Controler) extends UI{
 
     override def playCards(players: Vector[Player], read: () => String): Vector[(Int,Player)] = {
         players.map(p=>
-            dummyname(p, read)
+            getPlayedCardFromPlayer(p, read)
         )
     }
+
+    def getIntFromConsole(read: () => String): Try[Int] = Try {read().strip().toInt}
     
-    def dummyname(p: Player, read: () => String): (Int, Player) = {
+    def getPlayedCardFromPlayer(p: Player, read: () => String): (Int, Player) = {
         println(s"Welche Karte soll ${p.name} legen?: ")
-        val card = getCardFromConsole(read)
+        val card = getIntFromConsole(read)
         if (card.isSuccess && p.cards.contains(card.get))
         then
             (card.get, p)
         else
             println("Karte nicht vorhanden!")
-            dummyname(p, read)
+            getPlayedCardFromPlayer(p, read)
     }
-
-
-    def getCardFromConsole(read: () => String): Try[Int] = Try {read().strip().toInt}
 
     override def WhichRowTake(name: String, read: () => String): Int = {
         println(s"Welche Reihe nimmt ${name}? ")
-        val input = read()
-        input.toInt
+        val input: Try[Int] = getIntFromConsole(read)
+        if input.isSuccess
+        then
+            print("Gewaehle Reihe: " + input.get + "\n")
+            input.get
+        else
+            WhichRowTake(name = name, read = read)
     }
+
     override def end = {
         println("Spiel beendet")
         for (p <- controller.gameState.players.sortBy(_.ochsen)) {
@@ -65,10 +70,12 @@ case class TUI(controller: Controler) extends UI{
         }
     }
 }
+
 def TUIplayerNames(a: Int): String = {
     println(s"Spielername $a")
     readLine
 }
+
 def TUIwhatToDo(ausgabe:String) = {
     print(ausgabe)
 }

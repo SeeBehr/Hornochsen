@@ -101,9 +101,9 @@ class Controlerspec extends AnyWordSpec {
             controler.beginNextRound((String) => (), () => "Undo")
             controler.gameState.toString() should be (vergleich.toString())
             controler.beginNextRound((String) => (), () => "Redo")
-            controler.gameState.toString() should not be (vergleich.toString())
+            controler.gameState.toString() should be (vergleich.toString())
             controler.beginNextRound((String) => (), () => "Redo")
-            controler.gameState.toString() should not be (vergleich.toString())
+            controler.gameState.toString() should be (vergleich.toString())
         }
     }
 }
