@@ -6,7 +6,7 @@ import scala.util.{Try, Success, Failure}
 
 trait Command {
     def PlayRound: Unit
-    def UndoRound: Try[(GameState, ConcreteMemento)]
+    def UndoRound: Try[GameState]
     def RedoRound: Try[GameState]
 }
 
@@ -31,18 +31,18 @@ class SetCommand(controller: Controler) extends Command{
         returnValue
     }
 
-    override def UndoRound: Try[(GameState, ConcreteMemento)]= {
+    override def UndoRound: Try[GameState]= {
         printf("Undo\n")
-        val returnValue: Try[(GameState, ConcreteMemento)] = 
+        val returnValue: Try[GameState] = 
             val undoGamestate: Try[Memento] = controller.undoHistory.restore()
 
             undoGamestate match
                 case Success(undoGamestate0) =>
                     Try(
-                        (undoGamestate0.originator, ConcreteMemento(controller.gameState))
+                        undoGamestate0.originator
                     )
                 case Failure(f0) =>
-                    throw f0
+                    Failure(f0)
         returnValue
     }
 }

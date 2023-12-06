@@ -90,10 +90,11 @@ class Controler(var gameState: GameState) extends Observable{
         output("Nächste Runde beginnen, oder letzte/vorherige runde wiederherstellen?(Next/Undo/Redo)\n")
         val eingabe = input()
         if (eingabe == "Undo") {
-            val undoneRound: Try[(GameState, ConcreteMemento)] = command.UndoRound
+            val undoneRound: Try[GameState] = command.UndoRound
             undoneRound match {
-                case Success(undoneRound0) => this.gameState = undoneRound.get._1; redoHistory.save(undoneRound.get._2)
-                case Failure(f0) => printf("NOOP")
+                case Success(undoneRound0) => this.gameState = undoneRound.get; redoHistory.save(ConcreteMemento(undoneRound.get))
+                case Failure(f0) => 
+                    this.gameState = this.gameState
             }
 
             notifyObservers(Event.Undo)

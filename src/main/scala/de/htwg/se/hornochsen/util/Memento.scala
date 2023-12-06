@@ -36,7 +36,7 @@ class History {
         val memento: Try[Memento] = {
             if !geht
             then
-                Failure(new IllegalStateException("Nooop, no redo here"))
+                Failure(new IllegalStateException("Nooop, no state here"))
             else
                 val temp = mementos.head
                 mementos = mementos.tail
