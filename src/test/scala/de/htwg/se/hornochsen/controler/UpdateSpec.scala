@@ -16,7 +16,9 @@ class UpdateSpec extends AnyWordSpec {
     val controler2 = Controler(gameState2)
     "update" should {
         "sort played cards" in {
-            controler1.updatePlayedCards(cardsToPlay=Vector((2,p1),(0,p2)))._2.playedCards.toString() should be ("Vector((0,Patrick:\n\tcards: 0\n\tOchsen: 0\n)"
+            def ausgabe() = "2"
+            def eingabe(player: Player, ausgabe: () => String) = if player == p1 then (2,p1) else (0,p2)
+            controler1.updatePlayedCards(eingabe,ausgabe)._2.playedCards.toString() should be ("Vector((0,Patrick:\n\tcards: 0\n\tOchsen: 0\n)"
             +", (2,Patrick:\n\tcards: 2\n\tOchsen: 0\n))")
         }
         "return an updated gamestate" in {

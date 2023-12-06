@@ -31,12 +31,10 @@ case class TUI(controller: Controler) extends UI{
 
     }
 
-    override def run = controller.run(playCards(controller.gameState.players, readLine), readLine, WhichRowTake, println)
+    override def run = controller.run(playCards, readLine, WhichRowTake, println)
 
-    override def playCards(players: Vector[Player], read: () => String): Vector[(Int,Player)] = {
-        players.map(p=>
-            getPlayedCardFromPlayer(p, read)
-        )
+    override def playCards(player: Player, read: () => String): (Int,Player) = {
+        getPlayedCardFromPlayer(player, read)
     }
 
     def getIntFromConsole(read: () => String): Try[Int] = Try {read().strip().toInt}

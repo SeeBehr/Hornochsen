@@ -92,8 +92,10 @@ class Controlerspec extends AnyWordSpec {
         }
 
         "have a history" in {
+            def ausgabe() = "1"
+            def eingabe(player1: Player, ausgabe: () => String) = (1,player1)
             var vergleich = controler.gameState
-            controler.gameState = controler.updatePlayedCards(Vector((1,player1)))
+            controler.gameState = controler.updatePlayedCards(eingabe, ausgabe)
             controler.beginNextRound((String) => (), () => "Next")
             vergleich == controler.gameState should be (false)
             controler.beginNextRound((String) => (), () => "Undo")
