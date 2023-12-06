@@ -15,8 +15,8 @@ class Controler(var gameState: GameState) extends Observable{
     var redoHistory = new History()
     var command = SetCommand(this)
 
-    def run(playCards: Vector[(Int, Player)], input: () => String, WhichRowTake: (String, () => String) => Int, output: String => Unit): Unit = {
-        this.gameState = this.updatePlayedCards(playCards)
+    def run(playCards: (Player, () => String) => (Int, Player), input: () => String, WhichRowTake: (String, () => String) => Int, output: String => Unit): Unit = {
+        this.gameState = this.updatePlayedCards(playCards, input)
         this.notifyObservers(Event.CardsSelected)
         this.gameState = this.updateGamestate(input, WhichRowTake)
         this.notifyObservers(Event.RoundFinished)
@@ -43,8 +43,9 @@ class Controler(var gameState: GameState) extends Observable{
         return b.rows(index).filled < b.rows(index).cards.length
     }
 
-    def updatePlayedCards(cardsToPlay: Vector[(Int, Player)]): GameState = {
+    def updatePlayedCards(getPlayedCardFromPlayer: (Player, () => String) => (Int, Player), input: () => String): GameState = {
         command.PlayRound
+        val cardsToPlay: Vector[(Int, Player)] = gameState.players.map(p => getPlayedCardFromPlayer(p, input))
         println("Ausgewählte karten: " + cardsToPlay.toString())
         val sorted = cardsToPlay.sortBy((card: Int, player: Player) => card: Int)
         GameState(players=gameState.players, board=gameState.board.copy(playedCards=sorted), remDeck=gameState.remDeck)

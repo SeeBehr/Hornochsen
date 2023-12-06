@@ -15,6 +15,7 @@ import scalafx.scene.text.TextAlignment
 import scalafx.Includes._
 import scalafx.stage.Screen
 import scalafx.scene.control.Button
+import scalafx.event.{EventHandler, ActionEvent}
 
 class GUI(controler: Controler) extends UI{
     object InitStage extends JFXApp3 {
@@ -147,7 +148,11 @@ class GUI(controler: Controler) extends UI{
 
     override def WhichRowTake(name: String, read: () => String): Int = ???
 
-    override def playCards(players: Vector[Player], read: () => String): Vector[(Int, Player)] = ???
+    override def playCards(players: Vector[Player], read: () => String): Vector[(Int, Player)] = {
+        Event match {
+
+        }
+    }
 
     def undo(): Unit = {
 
