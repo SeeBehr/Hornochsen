@@ -100,10 +100,11 @@ class Controler(var gameState: GameState) extends Observable{
         } else if (eingabe == "Redo"){
             notifyObservers(Event.Undo)
 
-            val redoneRound: Try[(GameState, ConcreteMemento)] = command.RedoRound
+            val redoneRound: Try[GameState] = command.RedoRound
             redoneRound match {
-                case Success(redoneRound0) => this.gameState = redoneRound.get._1; undoHistory.save(redoneRound.get._2)
-                case Failure(f0) => printf("NOOP")
+                case Success(redoneRound0) => this.gameState = redoneRound.get; undoHistory.save(ConcreteMemento(redoneRound.get))
+                case Failure(f0) =>
+                    this.gameState = this.gameState
             }
         } else if (eingabe == "Next"){
             redoHistory.clear()

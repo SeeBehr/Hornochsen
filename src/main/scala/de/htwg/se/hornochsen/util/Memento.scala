@@ -2,6 +2,8 @@ package de.htwg.se.hornochsen.util
 
 import de.htwg.se.hornochsen.model.GameState
 import scala.util.Try
+import scala.util.Failure
+import scala.util.Success
 
 trait Memento {
     val originator: GameState
@@ -31,14 +33,14 @@ class History {
     def restore(): Try[Memento] = {
         val geht = mementos.nonEmpty
         
-        val memento: Try[Memento] = Try {
+        val memento: Try[Memento] = {
             if !geht
             then
-                throw new IllegalStateException("Nooop, no redo here")
+                Failure(new IllegalStateException("Nooop, no redo here"))
             else
                 val temp = mementos.head
                 mementos = mementos.tail
-                temp
+                Success(temp)
         }
         
         memento
