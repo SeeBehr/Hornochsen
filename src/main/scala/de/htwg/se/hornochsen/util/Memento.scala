@@ -7,11 +7,13 @@ import scala.util.Success
 
 trait Memento {
     val originator: GameState
+    val stateName: String
     def restore(): GameState 
 }
 
-class ConcreteMemento(origin: GameState) extends Memento {
+class ConcreteMemento(origin: GameState, state: String) extends Memento {
     val originator: GameState = origin
+    val stateName: String = state
     override def restore(): GameState = {
         originator
     }
@@ -21,7 +23,7 @@ class ConcreteMemento(origin: GameState) extends Memento {
 }
 
 class History {
-    val maxUndo = 5
+    val maxUndo = 10
     var mementos: List[Memento] = List()
     def save(newMemento: Memento): Unit = {
         if (mementos.length >= maxUndo)
@@ -31,10 +33,10 @@ class History {
     }
 
     def restore(): Try[Memento] = {
-        val geht = mementos.nonEmpty
+        val empty = mementos.isEmpty
         
         val memento: Try[Memento] = {
-            if !geht
+            if empty
             then
                 Failure(new IllegalStateException("Nooop, no state here"))
             else

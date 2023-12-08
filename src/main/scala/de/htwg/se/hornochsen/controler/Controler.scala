@@ -8,18 +8,33 @@ import scala.util.Try
 import scala.util.Failure
 import scala.util.Success
 
+
+
+def initializeGame(shuffle: Boolean = true, sizeDeck: Int = 120, numRows: Int = 4, numRowCards: Int = 6, numPlayer: Int = 4, numHandCards: Int = 12, input: Int => String): GameState = {
+    val deck = if (shuffle) {
+        initDeck(sizeDeck).shuffle()
+    } else {
+        initDeck(sizeDeck)
+    }
+    val (board, playerdeck) = initBoard(numRows, numRowCards, deck)
+    val (allP, refilldeck) = PlayerFactory.getInstance(playerCount = numPlayer, numHandCards = numHandCards, input = input, deck = playerdeck)
+    initGameState(allP, board, refilldeck)
+}
+
+
+
 class Controler(var gameState: GameState) extends Observable {
     var undoHistory = new History()
     var redoHistory = new History()
     var running = true
 
-    def doOp(input: String): Try[Boolean] = {
+    def doOp(input: String, stateName: String): Try[Boolean] = {
         input match
             case "undo" =>
-                undo
+                undo(stateName)
                 Success(true)
             case "redo" =>
-                redo
+                redo(stateName)
                 Success(true)
             case "end" =>
                 end
@@ -28,30 +43,18 @@ class Controler(var gameState: GameState) extends Observable {
                 Failure(new java.lang.IllegalArgumentException(s"Unknown Command: ${input}"))
     }
 
-    def move(input: String): Unit = {
-        val action:Try[Int] = Try(
-            input.toInt
-        )
-        action match
-        case Success(a) =>
-            
-        case Failure(exception) => 
-
-
-        
-    }
-
-    def playCard(player: Player, card: Int): Boolean = {
+    def playCard(player: Player, card: Int, stateName: String): Boolean = {
+        undoHistory.save(ConcreteMemento(gameState, stateName))
         val canplay = player.canPlay(card)
         canplay match
         case true =>
-            player.playCard(card)
+            val newp = player.playCard(card)
             val newGameState = Try(
                     gameState.copy(
-                    playersDone = gameState.playersDone.appended(player),
+                    board = gameState.board.copy(playedCards=gameState.board.playedCards.appended((card, newp))),
+                    playersDone = gameState.playersDone.appended(newp),
                     playerActive = gameState.playersWaiting.head,
-                    playersWaiting = gameState.playersWaiting.tail,
-                    board = gameState.board.copy(playedCards=gameState.board.playedCards.appended((card, gameState.playerActive)))
+                    playersWaiting = gameState.playersWaiting.tail
                     )
                 )
             newGameState match
@@ -60,13 +63,17 @@ class Controler(var gameState: GameState) extends Observable {
             case Failure(b) =>
                 gameState = 
                     gameState.copy(
-                    playersWaiting = gameState.playersDone.appended(gameState.playerActive).tail,
-                    playerActive = gameState.playersDone.head,
+                    board = gameState.board.copy(playedCards=gameState.board.playedCards.appended((card, newp))),
+                    playersWaiting = gameState.playersDone.appended(newp),
+                    playerActive = Player(),
                     playersDone = Vector.empty,
                 )
-                println("Active:" + gameState.playerActive + gameState.board.playedCards(0)._2) 
-            if gameState.playerActive == gameState.board.playedCards(0)._2 then
+                println("Played Cards: " + gameState.board.playedCards.toString()) 
+            if gameState.playerActive == Player() then
+                if gameState.playersDone(0).cards.length == 0 then
+                    notifyObservers(Event.End)
                 placeCards()
+                gameState.board.playedCards = Vector.empty
             else 
                 notifyObservers(Event.nextPlayer)
             true
@@ -75,24 +82,32 @@ class Controler(var gameState: GameState) extends Observable {
     }
 
     def placeCards(): Unit = {
+        println("Place Cards")
         gameState.board.playedCards = gameState.board.playedCards.sortBy((card: Int, player: Player) => card: Int)
-        for (card, player) <- gameState.board.playedCards do
-            val index: Int = where(gameState.board, card)
-            index match 
-            case -1 =>
-                notifyObservers(Event.TakeRow)
-            case _ =>
-                if (canAdd(index)) then
-                    addCard(card, index)
-                    player.playCard(card)
-                else
-                    takeRow(player, index)
+        gameState.playersDone = Vector.empty
+        gameState.board.playedCards.foreach{p => val player = p._2; val card = p._1
             gameState = gameState.copy(
-                playersDone = gameState.playersDone.appended(player),
-                playerActive = player,
-                playersWaiting = gameState.playersWaiting.filterNot(_ == player)
+                playerActive = Try(gameState.board.playedCards.head._2) match {
+                    case Success(a) => gameState.board.playedCards.head._2
+                    case Failure(b) => Player()
+                },
             )
-            
+            if gameState.playerActive != Player() then
+                val index: Int = where(gameState.board, card)
+                index match 
+                case -1 =>
+                    notifyObservers(Event.TakeRow)
+                case _ =>
+                    if (canAdd(index)) then
+                        addCard(card, index)
+                        player.playCard(card)
+                    else
+                        takeRow(player, index)
+                gameState.board.playedCards = Try(gameState.board.playedCards.tail) match {
+                    case Success(a) => a
+                    case Failure(b) => Vector.empty
+            }
+        }
     }
 
     def where(b: Board, card: Int): Int = {
@@ -115,24 +130,43 @@ class Controler(var gameState: GameState) extends Observable {
         )
     }
 
-    def takeRow(player: Player, row: Int): Try[Boolean] = {
+    def takeRow(player: Player, row: Int, statename: String = "0"): Try[Boolean] = {
+        if statename != "0" then undoHistory.save(ConcreteMemento(gameState, statename))
         if (row < 0 | row > gameState.board.rows.length) then Failure(new java.lang.IllegalArgumentException(s"Player ${gameState.playerActive.name} can't take Row ${row}"))
-        val (board, ochsen) = gameState.board.takeRow(
+        val (newBoard, moreOchsen) = gameState.board.takeRow(
             gameState.board.playedCards.filter((c, p) => p == player).head._1, row
             )
-            gameState.playerActive = player.addOchsen(ochsen)
+        println("Ochsen: " + moreOchsen.toString)
         gameState = gameState.copy(
-            playersDone = gameState.playersWaiting.appended(gameState.playerActive),
+            playersDone = gameState.playersWaiting.appended(player.addOchsen(moreOchsen)),
             playerActive = gameState.playersWaiting.head,
-            playersWaiting = gameState.playersWaiting.tail,
-            board = board
+            playersWaiting = Try(gameState.playersWaiting.tail) match {case Success(a) => a case Failure(b) => Vector.empty},
+            board = newBoard
             )
         Success(true)
     }
 
-    def undo = ???
+    def undo(state: String)= {
+        val memento = undoHistory.restore()
+        memento match
+        case Success(a) =>
+            redoHistory.save(ConcreteMemento(gameState, state))
+            gameState = a.restore()
+            notifyObservers(Event.Undo, a.stateName)
+        case Failure(b) =>
+            println(b)
+    }
 
-    def redo = ???
+    def redo(state: String) = {
+        val memento = redoHistory.restore()
+        memento match
+        case Success(a) =>
+            undoHistory.save(ConcreteMemento(gameState, state))
+            gameState = a.restore()
+            notifyObservers(Event.Redo, a.stateName)
+        case Failure(b) =>
+            println(b)
+    }
 
     def end = ???
 }
@@ -175,22 +209,11 @@ object PlayerFactory {
 
 def initGameState(allP: Vector[Player], board: Board, deck: Deck): GameState = {
     GameState(
-        playersWaiting = allP.tail,
-        playerActive = allP.head,
+        playersWaiting = allP,
+        playerActive = Player(),
         playersDone = Vector.empty,
         board = board,
         remDeck = deck
     )
 
-}
-
-def initializeGame(shuffle: Boolean = true, sizeDeck: Int = 120, numRows: Int = 4, numRowCards: Int = 6, numPlayer: Int = 4, numHandCards: Int = 6, input: Int => String): GameState = {
-    val deck = if (shuffle) {
-        initDeck(sizeDeck).shuffle()
-    } else {
-        initDeck(sizeDeck)
-    }
-    val (board, playerdeck) = initBoard(numRows, numRowCards, deck)
-    val (allP, refilldeck) = PlayerFactory.getInstance(playerCount = numPlayer, numHandCards = numHandCards, input = input, deck = playerdeck)
-    initGameState(allP, board, refilldeck)
 }
