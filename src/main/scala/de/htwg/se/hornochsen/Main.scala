@@ -10,8 +10,8 @@ def start() = {
     val controler = Controler(initializeGame())
     var tui = new TUI(controler)
     var gui = new GUI(controler)
-    controler.add(tui)
     controler.add(gui)
+    controler.add(tui)
     
     controler.notifyObservers(Event.GameStart)
     for (i <- Seq(0,3);

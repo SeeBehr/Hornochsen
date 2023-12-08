@@ -16,8 +16,11 @@ import scalafx.Includes._
 import scalafx.stage.Screen
 import scalafx.scene.control.Button
 import scalafx.event.{EventHandler, ActionEvent}
+import scalafx.scene.control.Alert.AlertType
+import javafx.scene.control.Alert
 
 class GUI(controler: Controler) extends UI {
+    var GUIState: Event = Event.GameStart;
     object Play extends JFXApp3 {
         override def start(): Unit = {
             stage = mystage()
@@ -33,10 +36,22 @@ class GUI(controler: Controler) extends UI {
                             new HBox {
                                 children = Seq(
                                     reihen(darkmode, windowHeight, windowWidth),
-                                    undoRedo(darkmode, windowHeight, windowWidth)
+                                    GUIState match
+                                    case Event.GameStart =>	
+                                        undoRedo(darkmode, windowHeight, windowWidth);
+                                    case Event.PlayRound =>
+                                        undoRedo(darkmode, windowHeight, windowWidth);
+                                    case Event.CardsSelected =>
+                                        selectedCards(darkmode, windowHeight, windowWidth);
+                                    case Event.RoundFinished =>
+                                        undoRedo(darkmode, windowHeight, windowWidth);
+                                    case Event.End =>
+                                        undoRedo(darkmode, windowHeight, windowWidth);
+                                    case Event.Undo =>
+                                        undoRedo(darkmode, windowHeight, windowWidth);
                                 )
                             },
-                            player(darkmode, windowHeight, windowWidth)
+                            player(darkmode, windowHeight, windowWidth, controler.gameState.players(0)),
                         )
                     }
                 }
@@ -123,8 +138,29 @@ class GUI(controler: Controler) extends UI {
                 )
             }
         }
+
+        def selectedCards(darkmode: Boolean, windowHeight: Double, windowWidth: Double): VBox = {
+            new VBox {
+                prefHeight = (3.0/5)*windowHeight
+                prefWidth = (1.0/3)*windowWidth
+                border = new Border(new BorderStroke(if darkmode then White else Black, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
+                alignment = Pos.Center
+                children = (for (i <- controler.gameState.board.playedCards) yield
+                        new Text {
+                            alignment = Pos.Center
+                            textAlignment = TextAlignment.Center
+                            text = i.toString
+                            style = "-fx-font-size: 30pt"
+                            if darkmode then fill = White
+                            else fill = Black
+                            prefWidth = (1.0/3)*windowWidth
+                            prefHeight = ((1.0/3)*windowHeight)/controler.gameState.players.size
+                        }
+                ).toList
+            }
+        }
         
-        def player(darkmode: Boolean, windowHeight: Double, windowWidth: Double): HBox = {
+        def player(darkmode: Boolean, windowHeight: Double, windowWidth: Double, player: Player): HBox = {
             new HBox {
                 border = new Border(new BorderStroke(if darkmode then White else Black, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
                 alignment = Pos.Center
@@ -132,7 +168,7 @@ class GUI(controler: Controler) extends UI {
                     new Text {
                         alignment = Pos.Center
                         textAlignment = TextAlignment.Left
-                        text = controler.gameState.players(0).name
+                        text = player.name
                         style = "-fx-font-size: 30pt"
                         if darkmode then fill = White
                         else fill = Black
@@ -140,13 +176,13 @@ class GUI(controler: Controler) extends UI {
                     },
                     new HBox {
                         alignment = Pos.Center
-                        children = (for (i <- 0 to controler.gameState.players(0).cards.length - 1) yield
+                        children = (for (i <- 0 to player.cards.length - 1) yield
                             new Button {
                                 alignment = Pos.Center
-                                text = controler.gameState.players(0).cards(i).toString
+                                text = player.cards(i).toString
                                 style = "-fx-font-size: 30pt"
                                 onAction = (event) => {
-                                    print(s"Play Card ${controler.gameState.players(0).cards(i)}\n")
+                                    print(s"Play Card ${player.cards(i)}\n")
                                 }
                             }
                         ).toList
@@ -171,32 +207,43 @@ class GUI(controler: Controler) extends UI {
 
     override def end: Unit = ???
 
-    override def run: Unit = ???
+    override def run: Unit = controler.run(playCards, input, WhichRowTake, output)
 
     def input(): String = {
         " "
     }
 
     def output(s: String): Unit = {
-
+        new Alert(AlertType.Information) {
+            initOwner(Play.stage)
+        }.showAndWait()
     }
 
     override def WhichRowTake(name: String, read: () => String): Int = ???
 
     override def playCards(players: Player, read: () => String): (Int, Player) = ???
 
-    def undo(): Unit = {
-
-    }
 
     override def update(e: Event): Unit = {
         e match {
-            case Event.Undo => undo()
-            case Event.PlayRound => run
+            case Event.Undo =>
+                GUIState = Event.Undo
+                Play.main(Array())
+            case Event.PlayRound =>
+                GUIState = Event.PlayRound
+                run
             case Event.RoundFinished =>
+                GUIState = Event.RoundFinished
+                Play.main(Array())
             case Event.CardsSelected =>
-            case Event.End => end
-            case Event.GameStart => Play.main(Array())
+                GUIState = Event.CardsSelected
+                Play.main(Array())
+            case Event.End =>
+                GUIState = Event.End
+                end
+            case Event.GameStart =>
+                GUIState = Event.GameStart
+                Play.main(Array())
         }
     }
 }
