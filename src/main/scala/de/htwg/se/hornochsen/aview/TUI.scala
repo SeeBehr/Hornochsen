@@ -22,9 +22,14 @@ private case object TuiStatePlayCard extends TuiState {
             case false =>
                 println(s"Player ${controler.gameState.playerActive.name} can't play card ${input.toInt}")
                 interpretLine(controler, readLine)
-        case Failure(exception) => 
-            println(exception)
-            interpretLine(controler, readLine)
+        case Failure(exception) =>
+            val op = controler.doOp(input)
+            op match
+            case Success(a) =>
+
+            case Failure(b) =>
+                println(b)
+                interpretLine(controler, readLine)
     }
 }
 
@@ -54,6 +59,10 @@ case class TUI(controler: Controler) extends UI {
             println("Game started")
             println(controler.gameState.board.toString())
             println(controler.gameState.players().mkString("\n"))
+            
+            println("Next Player")
+            println(controler.gameState.board.toString())
+            println(controler.gameState.playerActive.toString())
             state = TuiStatePlayCard
             run
         case Event.nextPlayer =>
@@ -85,7 +94,7 @@ case class TUI(controler: Controler) extends UI {
         while(controler.running)
             state match
             case TuiStatePlayCard =>
-                println(s"Player ${controler.gameState.playerActive.name}select Row to take:")
+                println(s"Player ${controler.gameState.playerActive.name}select Card to play:")
             case TuiStateTakeRow =>
                 println(s"Player ${controler.gameState.playerActive.name}select Row to take:")
             state.interpretLine(controler, readLine)

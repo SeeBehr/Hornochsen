@@ -13,12 +13,19 @@ class Controler(var gameState: GameState) extends Observable {
     var redoHistory = new History()
     var running = true
 
-    def doAction(input: String): Unit = {
+    def doOp(input: String): Try[Boolean] = {
         input match
-            case "undo" => undo
-            case "redo" => redo
-            case "end" => end
-            case _ => move(input)
+            case "undo" =>
+                undo
+                Success(true)
+            case "redo" =>
+                redo
+                Success(true)
+            case "end" =>
+                end
+                Success(true)
+            case _ =>
+                Failure(new java.lang.IllegalArgumentException(s"Unknown Command: ${input}"))
     }
 
     def move(input: String): Unit = {
@@ -27,6 +34,9 @@ class Controler(var gameState: GameState) extends Observable {
         )
         action match
         case Success(a) =>
+            
+        case Failure(exception) => 
+
 
         
     }
@@ -36,27 +46,35 @@ class Controler(var gameState: GameState) extends Observable {
         canplay match
         case true =>
             player.playCard(card)
-            gameState = gameState.copy(
-                playersDone = gameState.playersDone.appended(player),
-                playerActive = gameState.playersWaiting.head,
-                playersWaiting = gameState.playersWaiting.tail,
-                board = gameState.board.copy(playedCards=gameState.board.playedCards.appended((card, gameState.playerActive)))
+            val newGameState = Try(
+                    gameState.copy(
+                    playersDone = gameState.playersDone.appended(player),
+                    playerActive = gameState.playersWaiting.head,
+                    playersWaiting = gameState.playersWaiting.tail,
+                    board = gameState.board.copy(playedCards=gameState.board.playedCards.appended((card, gameState.playerActive)))
+                    )
                 )
-                if gameState.playersWaiting.isEmpty then
-                    placeCards()
-                else 
-                    notifyObservers(Event.nextPlayer)
+            newGameState match
+            case Success(a) =>
+                gameState = a
+            case Failure(b) =>
+                gameState = 
+                    gameState.copy(
+                    playersWaiting = gameState.playersDone.appended(gameState.playerActive).tail,
+                    playerActive = gameState.playersDone.head,
+                    playersDone = Vector.empty,
+                )
+                println("Active:" + gameState.playerActive + gameState.board.playedCards(0)._2) 
+            if gameState.playerActive == gameState.board.playedCards(0)._2 then
+                placeCards()
+            else 
+                notifyObservers(Event.nextPlayer)
             true
         case false =>
             false
     }
 
     def placeCards(): Unit = {
-        gameState = gameState.copy(
-            playersWaiting = gameState.playersDone,
-            playersDone = Vector.empty,
-            board = gameState.board.copy(playedCards=Vector.empty)
-        )
         gameState.board.playedCards = gameState.board.playedCards.sortBy((card: Int, player: Player) => card: Int)
         for (card, player) <- gameState.board.playedCards do
             val index: Int = where(gameState.board, card)
@@ -66,6 +84,7 @@ class Controler(var gameState: GameState) extends Observable {
             case _ =>
                 if (canAdd(index)) then
                     addCard(card, index)
+                    player.playCard(card)
                 else
                     takeRow(player, index)
             gameState = gameState.copy(

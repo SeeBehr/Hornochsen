@@ -1,6 +1,6 @@
 package de.htwg.se.hornochsen.model
 
-case class Player(val name: String, val cards: Vector[Int], val ochsen: Int = 0) {
+case class Player(val name: String = "", val cards: Vector[Int] = Vector.empty[Int], val ochsen: Int = 0) {
     override def toString(): String = {
         name + ":\n\tcards: " + cards.mkString(", ") + "\n\tOchsen: " + ochsen.toString() + "\n"
     }
