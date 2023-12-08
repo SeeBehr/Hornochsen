@@ -11,37 +11,75 @@ private trait TuiState {
 
 private case object TuiStatePlayCard extends TuiState {
     def interpretLine(input: String): Unit = {
-        var canplay = controler.playCard(player, input.toInt)
-        canplay match
-        case Success(p) =>
-            println(s"Player ${p.name} played card ${input.toInt}")
-        case Failure(e) =>
-            println(s"Player ${player.name} can't play card ${input.toInt}")
-            TuiStatePlayCard()
+        val intPut: Try[Int] = Try(input.toInt)
+        intPut match
+        case Success(i) =>
+            var canplay = controler.playCard(controler.gameState.playerActive, input.toInt)
+            canplay match
+            case true =>
+            case false =>
+                println(s"Player ${player.name} can't play card ${input.toInt}")
+                TuiStatePlayCard()
+    }
+}
+
+private case object TuiStateTakeRow extends TuiState {
+    def interpretLine(input: String): Unit = {
+        println(s"Player ${p.name}select Row to take:")
+        val intPut: Try[Int] = Try(input.toInt)
+        intPut match
+        case Success(i) =>
+            var canplay = controler.takeRow(controler.gameState.playerActive, input.toInt)
+            canplay match
+            case true =>
+            case false =>
+                println(s"Player ${player.name} can't take Row ${input.toInt}")
+                TuiStatePlayCard()
     }
 }
 
 // Start of the Programm.
 case class TUI(controler: Controler) extends UI {
-    var state: TuiState = TuiStateCplayCard
+    var state: TuiState = TuiStatePlayCard
     override def update(e:Event) = {
         e match
-        case Event.Undo =>
-        case Event.GameStart =>
-            controller.gameState.board.toString()
-            controller.gameState.players.mkString("\n")
+        case Evet.Start =>
+            println("Game started")
+            println(controler.gameState.board.toString())
+            println(controler.gameState.players.mkString("\n"))
+            state = TuiStatePlayCard
             run
-        case Event.PlayRound =>
-        case Event.RoundFinished =>
-        case Event.CardsSelected =>
+        case Event.nextPlayer =>
+            println("Next Player")
+            println(controler.gameState.board.toString())
+            println(controler.gameState.playerActive.toString())
+            state = TuiStatePlayCard
+            run
+        case Event.TakeRow =>
+            println(controler.gameState.playerActive.name + "Take Row")
+            println(controler.gameState.board.toString())
+            state = TuiStateTakeRow
+            run
+        case Event.Undo =>
+            println("Undo/Redo:\n new Gamestate:")
+            println(controler.gameState.board.toString())
+            println(controler.gameState.players.mkString("\n"))
+            run
+        case Event.Redo =>
+            println("Undo/Redo:\n new Gamestate:")
+            println(controler.gameState.board.toString())
+            println(controler.gameState.players.mkString("\n"))
+            run
         case Event.End =>
+            end
     }
 
     def run = {
         while(controler.gamestate.running)
-            interpretLine(readLine)
+            state.interpretLine(readLine)
     }
 
-    def interpretLine(input: String): Unit = {
+    def end() = {
+
     }
 }

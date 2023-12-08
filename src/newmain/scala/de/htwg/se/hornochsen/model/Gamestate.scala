@@ -1,7 +1,9 @@
 package de.htwg.se.hornochsen.model
 
 case class GameState(
-    var players: Vector[Player],
+    var playersWaiting: Vector[Player],
+    var playerActive: Player,
+    var playersDone: Vector[Player],
     var board: Board,
     var remDeck: Deck
 ) {

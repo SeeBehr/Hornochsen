@@ -13,5 +13,5 @@ def start() = {
     controler.add(tui)
     controler.add(gui)
     
-    controler.notifyObservers(Event.GameStart)
+    controler.notifyObservers(Event.Start)
 }

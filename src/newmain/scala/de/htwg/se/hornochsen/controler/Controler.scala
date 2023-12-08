@@ -31,6 +31,20 @@ class Controler(var gamestate: GameState) extends Observable {
         
     }
 
-    def playCard(card: Int): Try[Player] = {
+    def playCard(player: PLayer, card: Int): Boolean = {
+        val canplay = player.canPlay(card)
+        canplay match
+        case true =>
+            p.playCard(card)
+            gamestate = gamestate.copy(
+                playersDone = gamestate.playersDone.appended(p),
+                playerActive = gamestate.playersWaiting.head,
+                playersWaiting = gamestate.playersWaiting.tail,
+                board = gamestate.board.copy(playedCards=gamestate.board.playedCards.append((card, p)))
+                )
+                controler.notifyObservers(Event.nextPlayer)
+            true
+        case false =>
+            false
     }
 }
