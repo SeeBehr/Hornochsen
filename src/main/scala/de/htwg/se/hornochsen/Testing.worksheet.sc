@@ -1,1 +1,0 @@
-System.getProperty("os.name")

@@ -7,73 +7,96 @@ import scala.io.StdIn.readLine
 import scala.util.{Try, Success, Failure}
 import org.scalactic.Fail
 
+private trait TuiState {
+    def interpretLine(controler: Controler, input: String): Unit
+}
+
+private case object TuiStatePlayCard extends TuiState {
+    def interpretLine(controler: Controler, input: String): Unit = {
+        val intPut: Try[Int] = Try(input.toInt)
+        intPut match
+        case Success(i) =>
+            var canplay = controler.playCard(controler.gameState.playerActive, input.toInt)
+            canplay match
+            case true =>
+            case false =>
+                println(s"Player ${controler.gameState.playerActive.name} can't play card ${input.toInt}")
+                interpretLine(controler, readLine)
+        case Failure(exception) => 
+            println(exception)
+            interpretLine(controler, readLine)
+    }
+}
+
+private case object TuiStateTakeRow extends TuiState {
+    def interpretLine(controler: Controler, input: String): Unit = {
+        val intPut: Try[Int] = Try(input.toInt)
+        intPut match
+        case Success(i) =>
+            var canplay = controler.takeRow(controler.gameState.playerActive, input.toInt)
+            canplay match
+            case Success(a) =>
+            case Failure(b) =>
+                println(b)
+                interpretLine(controler, readLine)
+        case Failure(exception) => 
+            println(exception)
+            interpretLine(controler, readLine)
+    }
+}
+
 // Start of the Programm.
-case class TUI(controller: Controler) extends UI{
-    override def update(e: Event) = {
+case class TUI(controler: Controler) extends UI {
+    var state: TuiState = TuiStatePlayCard
+    override def update(e:Event) = {
         e match
+        case Event.Start =>
+            println("Game started")
+            println(controler.gameState.board.toString())
+            println(controler.gameState.players().mkString("\n"))
+            state = TuiStatePlayCard
+            run
+        case Event.nextPlayer =>
+            println("Next Player")
+            println(controler.gameState.board.toString())
+            println(controler.gameState.playerActive.toString())
+            state = TuiStatePlayCard
+            run
+        case Event.TakeRow =>
+            println(controler.gameState.playerActive.name + "Take Row")
+            println(controler.gameState.board.toString())
+            state = TuiStateTakeRow
+            run
         case Event.Undo =>
             println("Undo/Redo:\n new Gamestate:")
-            println(controller.gameState.board.toString())
-            println(controller.gameState.players.mkString("\n"))
-        case Event.GameStart => 
-            println(controller.gameState.board.toString())
-            println(controller.gameState.players.mkString("\n"))
-        case Event.PlayRound => 
-            println(controller.gameState.board.toString())
-            println(controller.gameState.players.mkString("\n"))
+            println(controler.gameState.board.toString())
+            println(controler.gameState.playerActive.toString())
             run
-        case Event.RoundFinished => 
-            println(controller.gameState.board.toString())
-            println(controller.gameState.players.mkString("\n"))
-        case Event.CardsSelected =>
-            println(controller.gameState.board.toString())
-        case Event.End => end
-
+        case Event.Redo =>
+            println("Undo/Redo:\n new Gamestate:")
+            println(controler.gameState.board.toString())
+            println(controler.gameState.playerActive.toString())
+            run
+        case Event.End =>
+            end
     }
 
-    override def run = controller.run(playCards, readLine, WhichRowTake, println)
-
-    override def playCards(player: Player, read: () => String): (Int,Player) = {
-        getPlayedCardFromPlayer(player, read)
+    def run = {
+        while(controler.running)
+            state match
+            case TuiStatePlayCard =>
+                println(s"Player ${controler.gameState.playerActive.name}select Row to take:")
+            case TuiStateTakeRow =>
+                println(s"Player ${controler.gameState.playerActive.name}select Row to take:")
+            state.interpretLine(controler, readLine)
     }
 
-    def getIntFromConsole(read: () => String): Try[Int] = Try {read().strip().toInt}
-    
-    def getPlayedCardFromPlayer(p: Player, read: () => String): (Int, Player) = {
-        println(s"Welche Karte soll ${p.name} legen?: ")
-        val card = getIntFromConsole(read)
-        if (card.isSuccess && p.cards.contains(card.get))
-        then
-            (card.get, p)
-        else
-            println("Karte nicht vorhanden!")
-            getPlayedCardFromPlayer(p, read)
-    }
+    def end = {
 
-    override def WhichRowTake(name: String, read: () => String): Int = {
-        println(s"Welche Reihe nimmt ${name}? ")
-        val input: Try[Int] = getIntFromConsole(read)
-        if input.isSuccess
-        then
-            print("Gewaehle Reihe: " + input.get + "\n")
-            input.get
-        else
-            WhichRowTake(name = name, read = read)
-    }
-
-    override def end = {
-        println("Spiel beendet")
-        for (p <- controller.gameState.players.sortBy(_.ochsen)) {
-            println(s"${p.name} hat ${p.ochsen} Ochsen")
-        }
     }
 }
 
 def TUIplayerNames(a: Int): String = {
     println(s"Spielername $a")
     readLine
-}
-
-def TUIwhatToDo(ausgabe:String) = {
-    print(ausgabe)
 }

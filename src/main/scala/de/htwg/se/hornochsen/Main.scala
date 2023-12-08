@@ -7,18 +7,11 @@ import scala.io.StdIn.readLine
 
 @main
 def start() = {
-    val controler = Controler(initializeGame())
+    val controler = Controler(initializeGame(input=TUIplayerNames))
     var tui = new TUI(controler)
-    var gui = new GUI(controler)
+    //var gui = new GUI(controler)
     controler.add(tui)
-    controler.add(gui)
+    //controler.add(gui)
     
-    controler.notifyObservers(Event.GameStart)
-    for (i <- Seq(0,3);
-         j <- Seq(0,6)) {
-        
-        controler.notifyObservers(Event.PlayRound)
-        controler.gameState = controler.giveCards(6)
-    }
-    controler.notifyObservers(Event.End)
+    controler.notifyObservers(Event.Start)
 }

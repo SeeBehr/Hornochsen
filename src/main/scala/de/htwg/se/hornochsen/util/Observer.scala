@@ -10,9 +10,9 @@ trait Observable:
     def notifyObservers(e: Event) = subscribers.foreach(o => o.update(e))
 
 enum Event:
-    case End
-    case RoundFinished
-    case CardsSelected
-    case PlayRound
+    case Start
+    case nextPlayer
+    case TakeRow
     case Undo
-    case GameStart
+    case Redo
+    case End

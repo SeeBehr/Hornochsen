@@ -2,31 +2,78 @@ package de.htwg.se.hornochsen.controler
 
 import de.htwg.se.hornochsen.util._
 import de.htwg.se.hornochsen.model._
-import de.htwg.se.hornochsen.controler._
 import de.htwg.se.hornochsen.aview._
-import scala.io.StdIn.readLine
 
 import scala.util.Try
 import scala.util.Failure
 import scala.util.Success
 
-class Controler(var gameState: GameState) extends Observable{
+class Controler(var gameState: GameState) extends Observable {
     var undoHistory = new History()
     var redoHistory = new History()
-    var command = SetCommand(this)
+    var running = true
 
-    def run(playCards: (Player, () => String) => (Int, Player), input: () => String, WhichRowTake: (String, () => String) => Int, output: String => Unit): Unit = {
-        this.gameState = this.updatePlayedCards(playCards, input)
-        this.notifyObservers(Event.CardsSelected)
-        this.gameState = this.updateGamestate(input, WhichRowTake)
-        this.notifyObservers(Event.RoundFinished)
-        this.beginNextRound(output, input)
+    def doAction(input: String): Unit = {
+        input match
+            case "undo" => undo
+            case "redo" => redo
+            case "end" => end
+            case _ => move(input)
     }
 
-    def which(cards: Vector[(Int, Player)]):
-        ((Int, Player), Vector[(Int, Player)]) = {
-        var min = cards.min((x, y) => x._1 - y._1)
-        return (min, cards.filter(x => x._1 != min._1))
+    def move(input: String): Unit = {
+        val action:Try[Int] = Try(
+            input.toInt
+        )
+        action match
+        case Success(a) =>
+
+        
+    }
+
+    def playCard(player: Player, card: Int): Boolean = {
+        val canplay = player.canPlay(card)
+        canplay match
+        case true =>
+            player.playCard(card)
+            gameState = gameState.copy(
+                playersDone = gameState.playersDone.appended(player),
+                playerActive = gameState.playersWaiting.head,
+                playersWaiting = gameState.playersWaiting.tail,
+                board = gameState.board.copy(playedCards=gameState.board.playedCards.appended((card, gameState.playerActive)))
+                )
+                if gameState.playersWaiting.isEmpty then
+                    placeCards()
+                else 
+                    notifyObservers(Event.nextPlayer)
+            true
+        case false =>
+            false
+    }
+
+    def placeCards(): Unit = {
+        gameState = gameState.copy(
+            playersWaiting = gameState.playersDone,
+            playersDone = Vector.empty,
+            board = gameState.board.copy(playedCards=Vector.empty)
+        )
+        gameState.board.playedCards = gameState.board.playedCards.sortBy((card: Int, player: Player) => card: Int)
+        for (card, player) <- gameState.board.playedCards do
+            val index: Int = where(gameState.board, card)
+            index match 
+            case -1 =>
+                notifyObservers(Event.TakeRow)
+            case _ =>
+                if (canAdd(index)) then
+                    addCard(card, index)
+                else
+                    takeRow(player, index)
+            gameState = gameState.copy(
+                playersDone = gameState.playersDone.appended(player),
+                playerActive = player,
+                playersWaiting = gameState.playersWaiting.filterNot(_ == player)
+            )
+            
     }
 
     def where(b: Board, card: Int): Int = {
@@ -38,85 +85,38 @@ class Controler(var gameState: GameState) extends Observable{
         return (lastElements.indexOf(possibleRows.sortBy(x=>(card-x)).head))
     }
 
-    def canAdd(b: Board, index: Int): Boolean = {
-        if index < 0 | index >= b.rows(0).cards.length then return false
-        return b.rows(index).filled < b.rows(index).cards.length
+    def canAdd(index: Int): Boolean = {
+        if index < 0 | index >= gameState.board.rows(0).cards.length then return false
+        return gameState.board.rows(index).filled < gameState.board.rows(index).cards.length
     }
 
-    def updatePlayedCards(getPlayedCardFromPlayer: (Player, () => String) => (Int, Player), input: () => String): GameState = {
-        command.PlayRound
-        val cardsToPlay: Vector[(Int, Player)] = gameState.players.map(p => getPlayedCardFromPlayer(p, input))
-        println("Ausgewählte karten: " + cardsToPlay.toString())
-        val sorted = cardsToPlay.sortBy((card: Int, player: Player) => card: Int)
-        GameState(players=gameState.players, board=gameState.board.copy(playedCards=sorted), remDeck=gameState.remDeck)
-    }
-
-    def updateGamestate(read: () => String, WhichRowTake: (String, () => String) => Int): GameState = {
-        var tempboard = gameState.board
-        val update: Vector[Player] =
-            gameState.board.playedCards
-        .map[Player]((card, player) =>
-            val state = ActionState
-            val index: Int = where(tempboard, card)
-            val execute = (
-                if index == -1
-                then
-                    state.handle(ActionEvent.selectRow)
-                else 
-                    if !canAdd(tempboard, index)
-                    then
-                        state.handle(ActionEvent.takeRow)
-                    else
-                        state.handle(ActionEvent.addCard))
-            val update = execute(tempboard, card, index, player, WhichRowTake, read)                
-
-            tempboard = update._1
-            update._2
+    def addCard(card: Int, index: Int): Unit = {
+        gameState = gameState.copy(
+            board = gameState.board.addCard(card, index+1)
         )
-        GameState(players=update, board=tempboard, remDeck=gameState.remDeck)
     }
 
-    def giveCards(cardCount: Int = 6): GameState = {
-        val toBeDropped = this.gameState.players.length * cardCount
-
-        val drawnCards = this.gameState.remDeck.cards.take(toBeDropped)
-        val remDeck = this.gameState.remDeck.remcount(toBeDropped)
-
-        val newPlayers = this.gameState.players.zipWithIndex.map((indexAndPlayer) => {
-            indexAndPlayer._1.drawCards(drawnCards.slice(indexAndPlayer._2 * cardCount, (indexAndPlayer._2 + 1) * cardCount))
-        })
-        GameState(players = newPlayers, board = this.gameState.board, remDeck = remDeck)
+    def takeRow(player: Player, row: Int): Try[Boolean] = {
+        if (row < 0 | row > gameState.board.rows.length) then Failure(new java.lang.IllegalArgumentException(s"Player ${gameState.playerActive.name} can't take Row ${row}"))
+        val (board, ochsen) = gameState.board.takeRow(
+            gameState.board.playedCards.filter((c, p) => p == player).head._1, row
+            )
+            gameState.playerActive = player.addOchsen(ochsen)
+        gameState = gameState.copy(
+            playersDone = gameState.playersWaiting.appended(gameState.playerActive),
+            playerActive = gameState.playersWaiting.head,
+            playersWaiting = gameState.playersWaiting.tail,
+            board = board
+            )
+        Success(true)
     }
-    def beginNextRound(output:(String) => Unit,input:() => String): Unit = {
-        output("Nächste Runde beginnen, oder letzte/vorherige runde wiederherstellen?(Next/Undo/Redo)\n")
-        val eingabe = input()
-        if (eingabe == "Undo") {
-            val undoneRound: Try[GameState] = command.UndoRound
-            undoneRound match {
-                case Success(undoneRound0) => this.gameState = undoneRound.get; redoHistory.save(ConcreteMemento(undoneRound.get))
-                case Failure(f0) => 
-                    this.gameState = this.gameState
-            }
 
-            notifyObservers(Event.Undo)
-        } else if (eingabe == "Redo"){
-            notifyObservers(Event.Undo)
+    def undo = ???
 
-            val redoneRound: Try[GameState] = command.RedoRound
-            redoneRound match {
-                case Success(redoneRound0) => this.gameState = redoneRound.get; undoHistory.save(ConcreteMemento(redoneRound.get))
-                case Failure(f0) =>
-                    this.gameState = this.gameState
-            }
-        } else if (eingabe == "Next"){
-            redoHistory.clear()
-        } else {
-            output("Falsche Eingabe\n")
-            beginNextRound(output, input)
-        }
-    }
+    def redo = ???
+
+    def end = ???
 }
-
 def initDeck(number: Int): Deck = Deck(Vector.tabulate(number)(x => x+1))
 
 def initBoard(numRows: Int, numRowCards: Int, deck: Deck): (Board, Deck) = {
@@ -153,7 +153,19 @@ object PlayerFactory {
         )
     }
 }
-def initializeGame(shuffle: Boolean = true, sizeDeck: Int = 120, numRows: Int = 4, numRowCards: Int = 6, numPlayer: Int = 4, numHandCards: Int = 6, input: Int => String = TUIplayerNames): GameState = {
+
+def initGameState(allP: Vector[Player], board: Board, deck: Deck): GameState = {
+    GameState(
+        playersWaiting = allP.tail,
+        playerActive = allP.head,
+        playersDone = Vector.empty,
+        board = board,
+        remDeck = deck
+    )
+
+}
+
+def initializeGame(shuffle: Boolean = true, sizeDeck: Int = 120, numRows: Int = 4, numRowCards: Int = 6, numPlayer: Int = 4, numHandCards: Int = 6, input: Int => String): GameState = {
     val deck = if (shuffle) {
         initDeck(sizeDeck).shuffle()
     } else {
@@ -161,5 +173,5 @@ def initializeGame(shuffle: Boolean = true, sizeDeck: Int = 120, numRows: Int = 
     }
     val (board, playerdeck) = initBoard(numRows, numRowCards, deck)
     val (allP, refilldeck) = PlayerFactory.getInstance(playerCount = numPlayer, numHandCards = numHandCards, input = input, deck = playerdeck)
-    GameState(allP, board, refilldeck)
+    initGameState(allP, board, refilldeck)
 }
