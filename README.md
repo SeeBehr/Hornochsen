@@ -1,3 +1,3 @@
 Branch for production
 
-[![Coverage Status](https://coveralls.io/repos/github/SeeBehr/Hornochsen/badge.svg?branch=refactoring)](https://coveralls.io/github/SeeBehr/Hornochsen?branch=refactoring)
+[![Coverage Status](https://coveralls.io/repos/github/SeeBehr/Hornochsen/badge.svg?branch=completelyNew)](https://coveralls.io/github/SeeBehr/Hornochsen?branch=completelyNew)
