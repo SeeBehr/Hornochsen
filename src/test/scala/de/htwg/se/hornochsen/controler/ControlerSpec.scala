@@ -62,16 +62,32 @@ class Controlerspec extends AnyWordSpec {
         }
 
         "have a history" in {
-            def ausgabe = "1"
-            def eingabe(player1: Player, ausgabe: () => String) = (1,player1)
             val vergleich = controler.gameState
-            controler.playCard(player1, 1, "StatePlayCards")
+            controler.playCard(player1, 2, "StatePlayCards")
             controler.playCard(player2, 3, "StatePlayCards")
             vergleich == controler.gameState should be (false)
-            controler.undo("StatePlayCards")
-            vergleich == controler.gameState should be (true)
-            controler.redo("StatePlayCards")
+            controler.doOp("undo", "StatePlayCards")
             vergleich == controler.gameState should be (false)
+            controler.doOp("undo", "StatePlayCards")
+            vergleich == controler.gameState should be (true)
+            controler.doOp("redo", "StatePlayCards")
+            vergleich == controler.gameState should be (false)
+            controler.doOp("redo", "StatePlayCards")
+            vergleich == controler.gameState should be (false)
+            controler.doOp("asdf", "StatePlayCards")
+            vergleich == controler.gameState should be (false)
+            controler.doOp("end", "StatePlayCards")
+            controler.undoHistory.clear()
+            controler.redoHistory.mementos should be (Vector.empty)
+        }
+
+        "initialize a game" in {
+            val newgame = initializeGame(shuffle=false, sizeDeck=2, numRows=1, numRowCards=1, numPlayer=1, numHandCards=1, input = Int => "A")
+            newgame._1.toString() should be ("Vector(A:\n\tcards: 2\n\tOchsen: 0\n)")
+            newgame._2.toString() should be (Player().toString())
+            newgame._3.toString() should be (Vector.empty.toString())
+            newgame._4.toString() should be ("Board:\n\tRow 1: 1 filled: 1\n\n")
+            newgame._5.toString() should be ("Deck: \n")
         }
     }
 }

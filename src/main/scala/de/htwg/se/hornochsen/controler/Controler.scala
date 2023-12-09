@@ -168,7 +168,7 @@ class Controler(var gameState: GameState) extends Observable {
             println(b)
     }
 
-    def end = ???
+    def end = notifyObservers(Event.End)
 }
 def initDeck(number: Int): Deck = Deck(Vector.tabulate(number)(x => x+1))
 
