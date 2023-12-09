@@ -10,15 +10,29 @@ import scala.util.Success
 
 
 
-def initializeGame(shuffle: Boolean = true, sizeDeck: Int = 120, numRows: Int = 4, numRowCards: Int = 6, numPlayer: Int = 4, numHandCards: Int = 12, input: Int => String): GameState = {
-    val deck = if (shuffle) {
-        initDeck(sizeDeck).shuffle()
-    } else {
-        initDeck(sizeDeck)
-    }
-    val (board, playerdeck) = initBoard(numRows, numRowCards, deck)
-    val (allP, refilldeck) = PlayerFactory.getInstance(playerCount = numPlayer, numHandCards = numHandCards, input = input, deck = playerdeck)
-    initGameState(allP, board, refilldeck)
+def initializeGame(
+    shuffle: Boolean = true,
+    sizeDeck: Int = 120,
+    numRows: Int = 4,
+    numRowCards: Int = 6,
+    numPlayer: Int = 4,
+    numHandCards: Int = 12,
+    input: Int => String):
+        GameState = {
+            val deck = if (shuffle) {
+                initDeck(sizeDeck).shuffle()
+            } else {
+                initDeck(sizeDeck)
+            }
+            val (board, playerdeck) = initBoard(numRows, numRowCards, deck)
+            val (allP, refilldeck) =
+                PlayerFactory.getInstance(
+                    playerCount = numPlayer,
+                    numHandCards = numHandCards,
+                    input = input,
+                    deck = playerdeck
+                )
+            initGameState(allP, board, refilldeck)
 }
 
 
@@ -64,14 +78,19 @@ class Controler(var gameState: GameState) extends Observable {
                 gameState = 
                     gameState.copy(
                     board = gameState.board.copy(playedCards=gameState.board.playedCards.appended((card, newp))),
-                    playersWaiting = gameState.playersDone.appended(newp),
+                    playersDone = gameState.playersDone.appended(newp),
                     playerActive = Player(),
-                    playersDone = Vector.empty,
+                    playersWaiting = Vector.empty
                 )
                 println("Played Cards: " + gameState.board.playedCards.toString()) 
             if gameState.playerActive == Player() then
                 if gameState.playersDone(0).cards.length == 0 then
                     notifyObservers(Event.End)
+                gameState = gameState.copy(
+                    playerActive = gameState.playersDone.head,
+                    playersWaiting = gameState.playersDone.tail,
+                    playersDone = Vector.empty
+                    )
                 placeCards()
                 gameState.board.playedCards = Vector.empty
             else 
@@ -84,8 +103,7 @@ class Controler(var gameState: GameState) extends Observable {
     def placeCards(): Unit = {
         println("Place Cards")
         gameState.board.playedCards = gameState.board.playedCards.sortBy((card: Int, player: Player) => card: Int)
-        gameState.playersDone = Vector.empty
-        gameState.board.playedCards.foreach{p => val player = p._2; val card = p._1
+        gameState.board.playedCards.foreach{ p => val player = p._2; val card = p._1
             gameState = gameState.copy(
                 playerActive = Try(gameState.board.playedCards.head._2) match {
                     case Success(a) => gameState.board.playedCards.head._2
@@ -103,11 +121,13 @@ class Controler(var gameState: GameState) extends Observable {
                         player.playCard(card)
                     else
                         takeRow(player, index)
-                gameState.board.playedCards = Try(gameState.board.playedCards.tail) match {
-                    case Success(a) => a
-                    case Failure(b) => Vector.empty
-            }
+                gameState.playersDone = gameState.playersDone.appended(gameState.playerActive)
         }
+        gameState = gameState.copy(
+            playerActive = gameState.playersDone.head,
+            playersWaiting = gameState.playersDone.tail,
+            playersDone = Vector.empty
+        )
     }
 
     def where(b: Board, card: Int): Int = {
@@ -138,9 +158,7 @@ class Controler(var gameState: GameState) extends Observable {
             )
         println("Ochsen: " + moreOchsen.toString)
         gameState = gameState.copy(
-            playersDone = gameState.playersWaiting.appended(player.addOchsen(moreOchsen)),
-            playerActive = gameState.playersWaiting.head,
-            playersWaiting = Try(gameState.playersWaiting.tail) match {case Success(a) => a case Failure(b) => Vector.empty},
+            playerActive = player.addOchsen(moreOchsen),
             board = newBoard
             )
         Success(true)
@@ -209,8 +227,8 @@ object PlayerFactory {
 
 def initGameState(allP: Vector[Player], board: Board, deck: Deck): GameState = {
     GameState(
-        playersWaiting = allP,
-        playerActive = Player(),
+        playersWaiting = allP.tail,
+        playerActive = allP.head,
         playersDone = Vector.empty,
         board = board,
         remDeck = deck

@@ -54,8 +54,8 @@ class Controlerspec extends AnyWordSpec {
 
         "return a Gamestate" in {
             val newgame = initializeGame(shuffle=false, sizeDeck=2, numRows=1, numRowCards=1, numPlayer=1, numHandCards=1, input = Int => "A")
-            newgame._1.toString() should be ("Vector(A:\n\tcards: 2\n\tOchsen: 0\n)")
-            newgame._2.toString() should be (Player().toString())
+            newgame._1.toString() should be (Vector.empty.toString())
+            newgame._2.toString() should be ("A:\n\tcards: 2\n\tOchsen: 0\n")
             newgame._3.toString() should be (Vector.empty.toString())
             newgame._4.toString() should be ("Board:\n\tRow 1: 1 filled: 1\n\n")
             newgame._5.toString() should be ("Deck: \n")
@@ -79,15 +79,6 @@ class Controlerspec extends AnyWordSpec {
             controler.doOp("end", "StatePlayCards")
             controler.undoHistory.clear()
             controler.redoHistory.mementos should be (Vector.empty)
-        }
-
-        "initialize a game" in {
-            val newgame = initializeGame(shuffle=false, sizeDeck=2, numRows=1, numRowCards=1, numPlayer=1, numHandCards=1, input = Int => "A")
-            newgame._1.toString() should be ("Vector(A:\n\tcards: 2\n\tOchsen: 0\n)")
-            newgame._2.toString() should be (Player().toString())
-            newgame._3.toString() should be (Vector.empty.toString())
-            newgame._4.toString() should be ("Board:\n\tRow 1: 1 filled: 1\n\n")
-            newgame._5.toString() should be ("Deck: \n")
         }
     }
 }
