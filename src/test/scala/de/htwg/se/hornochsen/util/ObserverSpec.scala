@@ -11,7 +11,7 @@ class ObserverSpec extends AnyWordSpec {
     "The Observer" should {
         val p1 = Player(name="Patrick",cards=Vector[Int](2))
         val p2 = Player(name="Patrick",cards=Vector[Int](0))
-        val controler = Controler(GameState(players=Vector(p1, p2), board=Board(rows=Vector[Row](Row(nummer=1,cards=Vector(1,0)))),remDeck=initDeck(0)))
+        val controler = Controler(GameState(playersDone= Vector.empty[Player], playerActive = Player(), playersWaiting=Vector(p1, p2), board=Board(rows=Vector[Row](Row(nummer=1,cards=Vector(1,0)))),remDeck=initDeck(0)))
         val tui = TUI(controler)
         "have a add method" in {
             controler.add(tui) should be (())

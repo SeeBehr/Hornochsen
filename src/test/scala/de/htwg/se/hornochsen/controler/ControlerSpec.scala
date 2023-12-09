@@ -15,33 +15,12 @@ class Controlerspec extends AnyWordSpec {
         val p1 = player1.playCard(2)
         val p2 = player2.playCard(3)
         val boardselect = Board(rows=board1.rows,playedCards=Vector((2,p1),(3,p2)))
-        val gameState = GameState(players=Vector(player1, player2), board=boardselect, remDeck=initDeck(1))
+        val gameState = GameState(playersDone=Vector.empty, playerActive=Player(), playersWaiting=Vector(player1, player2), board=boardselect, remDeck=initDeck(1))
         var controler = Controler(gameState)
-        val (card, cardsrem) = controler.which(boardselect.playedCards)
-        var command = SetCommand(controler)
-        
-        "select the lowest drawn card number" should {
-            "Played card + player" in {
-                card should be (2, p1)
-            }
-
-            "Jet to be Played cards + Players" in {
-                (cardsrem.toString()) should be(Vector((3, p2)).toString())
-            }
-        }
-
-        "select which card to put" in {
-            controler.which(boardselect.playedCards)._1.toString() should be ("(2,Sebastian:\n\tcards: 5\n\tOchsen: 0\n)")
-            controler.which(boardselect.playedCards)._2.toString() should be ("Vector((3,Nicht Sebastian:\n\tcards: 1\n\tOchsen: 0\n))")
-        }
-
-        "show where to put the selected card" in {
-            controler.where(boardselect,card._1) should be(0)
-        }
 
         "be able to put card" in {
-            controler.canAdd(boardselect,-1) should be (false)
-            controler.canAdd(boardselect, 0) should be (true)
+            controler.canAdd(-1) should be (false)
+            controler.canAdd(0) should be (true)
         }
 
         "have all Player's" in {
@@ -73,39 +52,26 @@ class Controlerspec extends AnyWordSpec {
             remainingDeck_2.toString() should be("Deck: 5\n")
         }
 
-        "give the players cards from the deck" in {
-            val deckSP = initDeck(50)
-            val (boardSP, playerdeckSP) = initBoard(numRows = 1, numRowCards = 1, deck = deckSP)
-            val (playerSP, refilldeckSP) = PlayerFactory.getInstance(playerCount = 1, numHandCards = 1, input = (a)=>"Seebastian", deck = playerdeckSP)
-            val gameStateSP = GameState(playerSP, boardSP, refilldeckSP)
-            val controlerSP = Controler(gameStateSP)
-            
-            val gameStateWithExtraCards = controlerSP.giveCards(1)
-            val newPlayer = gameStateWithExtraCards._1(0)
-            newPlayer.toString() should be("Seebastian:\n\tcards: 2, 3\n	Ochsen: 0\n")
-        }
-
         "return a Gamestate" in {
-            initializeGame(shuffle=false, sizeDeck=2, numRows=1, numRowCards=1, numPlayer=1, numHandCards=1, input = Int => "A")._1.toString() should be ("Vector(A:\n\tcards: 2\n\tOchsen: 0\n)")
-            initializeGame(shuffle=false, sizeDeck=2, numRows=1, numRowCards=1, numPlayer=1, numHandCards=1, input = Int => "A")._2.toString() should be ("Board:\n\tRow 1: 1 filled: 1\n\nPlayed cards: \n")
-            initializeGame(shuffle=false, sizeDeck=2, numRows=1, numRowCards=1, numPlayer=1, numHandCards=1, input = Int => "A")._3.toString() should be ("Deck: \n")
+            val newgame = initializeGame(shuffle=false, sizeDeck=2, numRows=1, numRowCards=1, numPlayer=1, numHandCards=1, input = Int => "A")
+            newgame._1.toString() should be ("Vector(A:\n\tcards: 2\n\tOchsen: 0\n)")
+            newgame._2.toString() should be (Player().toString())
+            newgame._3.toString() should be (Vector.empty.toString())
+            newgame._4.toString() should be ("Board:\n\tRow 1: 1 filled: 1\n\n")
+            newgame._5.toString() should be ("Deck: \n")
         }
 
         "have a history" in {
-            def ausgabe() = "1"
+            def ausgabe = "1"
             def eingabe(player1: Player, ausgabe: () => String) = (1,player1)
-            var vergleich = controler.gameState
-            controler.gameState = controler.updatePlayedCards(eingabe, ausgabe)
-            controler.beginNextRound((String) => (), () => "Next")
+            val vergleich = controler.gameState
+            controler.playCard(player1, 1, "StatePlayCards")
+            controler.playCard(player2, 3, "StatePlayCards")
             vergleich == controler.gameState should be (false)
-            controler.beginNextRound((String) => (), () => "Undo")
-            controler.gameState.toString() should be (vergleich.toString())
-            controler.beginNextRound((String) => (), () => "Undo")
-            controler.gameState.toString() should be (vergleich.toString())
-            controler.beginNextRound((String) => (), () => "Redo")
-            controler.gameState.toString() should be (vergleich.toString())
-            controler.beginNextRound((String) => (), () => "Redo")
-            controler.gameState.toString() should be (vergleich.toString())
+            controler.undo("StatePlayCards")
+            vergleich == controler.gameState should be (true)
+            controler.redo("StatePlayCards")
+            vergleich == controler.gameState should be (false)
         }
     }
 }

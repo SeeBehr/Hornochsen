@@ -9,17 +9,17 @@ import de.htwg.se.hornochsen.util._
 
 class MementoSpec extends AnyWordSpec {
     val (board, remDeck) = initBoard(1,1,initDeck(1))
-    val gamestate = GameState(players=Vector.empty, board=board, remDeck=remDeck)
+    val gamestate = GameState(playersDone = Vector.empty, playerActive= Player(), playersWaiting=Vector.empty, board=board, remDeck=remDeck)
     var controler = Controler(gamestate)
-    var command = SetCommand(controler)
-    val memento = ConcreteMemento(gamestate)
+    val memento = ConcreteMemento(gamestate, "StatePlayCards")
     "The Memento" should {
         "have a originator" in {
             memento.originator should be (gamestate)
         }
 
         "be as a string" in {
-            memento.toString() should be (gamestate.toString())
+            memento.originator.toString() should be (gamestate.toString())
+            memento.stateName should be ("StatePlayCards")
         }
         
         "restore the originator" in {
@@ -40,7 +40,12 @@ class MementoSpec extends AnyWordSpec {
             history.save(memento)
             history.save(memento)
             history.save(memento)
-            history.mementos.length should be (5)
+            history.save(memento)
+            history.save(memento)
+            history.save(memento)
+            history.save(memento)
+            history.save(memento)
+            history.mementos.length should be (10)
         }
     }
 }
