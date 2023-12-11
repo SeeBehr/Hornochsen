@@ -154,7 +154,7 @@ class Controler(var gameState: GameState) extends Observable {
         if statename != "0" then undoHistory.save(ConcreteMemento(gameState, statename))
         if (row < 0 | row > gameState.board.rows.length) then Failure(new java.lang.IllegalArgumentException(s"Player ${gameState.playerActive.name} can't take Row ${row}"))
         val (newBoard, moreOchsen) = gameState.board.takeRow(
-            gameState.board.playedCards.filter((c, p) => p == player).head._1, row
+            gameState.board.playedCards.filter((c, p) => p == player).head._1, row+1
             )
         println("Ochsen: " + moreOchsen.toString)
         gameState = gameState.copy(

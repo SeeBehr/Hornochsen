@@ -11,6 +11,9 @@ case class GameState(
         "Gamestate: \n\n" + "Players: \n" + players().mkString("\n") + "\n" + board.toString() + remDeck.toString() + "\n"
     }
     def players(): Vector[Player] = {
-        playersDone.appended(playerActive).appendedAll(playersWaiting)
+        if playerActive != Player() then
+            playersDone.appended(playerActive).appendedAll(playersWaiting)
+        else 
+            playersDone.appendedAll(playersWaiting)
     }
 }

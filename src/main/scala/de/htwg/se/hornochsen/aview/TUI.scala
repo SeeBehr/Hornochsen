@@ -6,9 +6,17 @@ import de.htwg.se.hornochsen.util._
 import scala.io.StdIn.readLine
 import scala.util.{Try, Success, Failure}
 import org.scalactic.Fail
+import scalafx.scene.input.KeyCode.T
+import java.awt.Taskbar.State
 
-private case object StatePlayCard extends UIState {
-  override val name: String = "StatePlayCard"
+trait TUIState {
+    var state: TUIState
+    def interpretLine(controler: Controler, input: String): Unit
+}
+
+private case object StatePlayCard extends UIState with TUIState {
+    var state: TUIState = StatePlayCard
+    val name: String = "StatePlayCard"
     def interpretLine(controler: Controler, input: String): Unit = {
         val intPut: Try[Int] = Try(input.toInt)
         intPut match
@@ -30,8 +38,9 @@ private case object StatePlayCard extends UIState {
     }
 }
 
-private case object StateTakeRow extends UIState {
-  override val name: String = "StatePlayCard"
+private case object StateTakeRow extends UIState with TUIState {
+    var state: TUIState = StateTakeRow
+    val name: String = "StateTakeRow"
     def interpretLine(controler: Controler, input: String): Unit = {
         val intPut: Try[Int] = Try(input.toInt)
         intPut match
@@ -54,8 +63,9 @@ private case object StateTakeRow extends UIState {
 }
 
 // Start of the Programm.
-case class TUI(controler: Controler) extends UI {
-    var state: UIState = StatePlayCard
+case class TUI(controler: Controler) extends UI with TUIState{
+    var state: TUIState = StatePlayCard
+    val name: String = "TUI"
     override def update(e:Event, name:String="0") = {
         e match
         case Event.Start =>
@@ -99,7 +109,7 @@ case class TUI(controler: Controler) extends UI {
             end
     }
 
-    def run = {
+    override def run = {
         while(controler.running)
             println("New Round")
             state match
@@ -113,14 +123,18 @@ case class TUI(controler: Controler) extends UI {
                 println(controler.gameState.board.toString)
                 println(controler.gameState.board.playedCardsToString)
                 println(s"Player ${controler.gameState.playerActive.name} select Row to take:")
-            state.interpretLine(controler, readLine)
+            interpretLine(controler, readLine)
     }
 
-    def end = {
+    override def end = {
         println("Game ended")
         println("Winner: " + controler.gameState.players().maxBy(p => p.ochsen).name)
         println("Score: ")
         println(controler.gameState.players().sortBy(p=>p.ochsen).mkString("\n"))
+    }
+
+    override def interpretLine(controler: Controler, input: String): Unit = {
+        state.interpretLine(controler, input)
     }
 }
 
