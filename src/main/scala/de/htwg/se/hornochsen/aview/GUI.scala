@@ -1,28 +1,23 @@
 package de.htwg.se.hornochsen.aview
-import de.htwg.se.hornochsen.util.Event
-import de.htwg.se.hornochsen.model.Player
-import de.htwg.se.hornochsen.controler.Controler
+
+import de.htwg.se.hornochsen.{util, model, controler}
+import util.Event
+import model.Player
+import controler.Controler
 
 import scalafx.application.JFXApp3
-import scalafx.scene._
-import scalafx.scene.paint.Color._
-import scalafx.scene.paint._
-import scalafx.scene.layout._
-import scalafx.geometry.Insets
-import scalafx.scene.text.Text
-import scalafx.geometry.Pos
-import scalafx.scene.text.TextAlignment
-import scalafx.Includes._
 import scalafx.stage.Screen
-import scalafx.scene.control.Button
-import javafx.fxml.FXML
-import javafx.scene.image.ImageView
+import scalafx.scene.{paint, Scene, layout, text, control, shape}
+import paint._
+import Color._
+import layout._
+import text.{Text, TextAlignment}
+import control.{Button, TextField, Alert}
+import Alert.AlertType
+import shape.Box
+import scalafx.geometry.{Insets, Pos}
+import scalafx.Includes._
 import scalafx.event.{EventHandler, ActionEvent}
-import scalafx.scene.control.Alert.AlertType
-import javafx.scene.control.Alert
-import scalafx.scene.input.KeyCode.S
-import java.awt.Taskbar.State
-import scalafx.scene.shape.Box
 
 
 class GUI(controler: Controler) extends UI {
