@@ -1,11 +1,14 @@
 package de.htwg.se.hornochsen.util
 
 import de.htwg.se.hornochsen.model._
-import de.htwg.se.hornochsen.controler._
 import de.htwg.se.hornochsen.aview._
 import de.htwg.se.hornochsen.util._
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
+import de.htwg.se.hornochsen.controler.BaseControler.{initDeck, Controler}
+import de.htwg.se.hornochsen.model.BaseModel.{Row, Board}
+import de.htwg.se.hornochsen.model.BaseModel.GameState
+import de.htwg.se.hornochsen.model.BaseModel.Player
 
 class ObserverSpec extends AnyWordSpec {
     "The Observer" should {

@@ -1,20 +1,20 @@
 package de.htwg.se.hornochsen.util
 
-import de.htwg.se.hornochsen.model.GameState
+import de.htwg.se.hornochsen.model.InterfaceGameState
 import scala.util.Try
 import scala.util.Failure
 import scala.util.Success
 
 trait Memento {
-    val originator: GameState
+    val originator: InterfaceGameState
     val stateName: String
-    def restore(): GameState 
+    def restore(): InterfaceGameState 
 }
 
-class ConcreteMemento(origin: GameState, state: String) extends Memento {
-    val originator: GameState = origin
+class ConcreteMemento(origin: InterfaceGameState, state: String) extends Memento {
+    val originator: InterfaceGameState = origin
     val stateName: String = state
-    override def restore(): GameState = {
+    override def restore(): InterfaceGameState = {
         originator
     }
     override def toString(): String = {

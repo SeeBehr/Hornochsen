@@ -1,7 +1,7 @@
 package de.htwg.se.hornochsen.util
 
-import de.htwg.se.hornochsen.controler.Controler
-import de.htwg.se.hornochsen.model.GameState
+import de.htwg.se.hornochsen.controler.BaseControler.Controler
+import de.htwg.se.hornochsen.model.BaseModel.GameState
 import scala.util.{Try, Success, Failure}
 
 trait Command {

@@ -6,6 +6,10 @@ import controler._
 import util._
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
+import BaseControler.{initializeGame, Controler, initDeck}
+import de.htwg.se.hornochsen.model.BaseModel.{Row, Board}
+import de.htwg.se.hornochsen.model.BaseModel.GameState
+import de.htwg.se.hornochsen.model.BaseModel.Player
 
 class Controlerspec extends AnyWordSpec {
     "The logic" should {
@@ -25,7 +29,7 @@ class Controlerspec extends AnyWordSpec {
 
         "have all Player's" in {
             // Test with one player
-            val (players, remainingDeck) = PlayerFactory.getInstance(
+            val (players, remainingDeck) = BaseControler.PlayerFactory.getInstance(
                 playerCount = 1, 
                 numHandCards = 1, 
                 input = (a)=>"Seebastian", 
@@ -37,7 +41,7 @@ class Controlerspec extends AnyWordSpec {
             remainingDeck.toString() should be("Deck: 2\n")
 
             // Test with two players
-            val (players_2, remainingDeck_2) = PlayerFactory.getInstance(
+            val (players_2, remainingDeck_2) = BaseControler.PlayerFactory.getInstance(
                 playerCount = 2, 
                 numHandCards = 2, 
                 input = (a)=>"Seebastiaan", 

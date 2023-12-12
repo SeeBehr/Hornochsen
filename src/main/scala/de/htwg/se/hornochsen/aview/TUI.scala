@@ -1,6 +1,5 @@
 package de.htwg.se.hornochsen.aview
 
-import de.htwg.se.hornochsen.controler._
 import de.htwg.se.hornochsen.model._
 import de.htwg.se.hornochsen.util._
 import scala.io.StdIn.readLine
@@ -8,16 +7,17 @@ import scala.util.{Try, Success, Failure}
 import org.scalactic.Fail
 import scalafx.scene.input.KeyCode.T
 import java.awt.Taskbar.State
+import de.htwg.se.hornochsen.controler.InterfaceControler
 
 trait TUIState {
     var state: TUIState
-    def interpretLine(controler: Controler, input: String): Unit
+    def interpretLine(controler:InterfaceControler, input: String): Unit
 }
 
 private case object StatePlayCard extends UIState with TUIState {
     var state: TUIState = StatePlayCard
     val name: String = "StatePlayCard"
-    def interpretLine(controler: Controler, input: String): Unit = {
+    def interpretLine(controler:InterfaceControler, input: String): Unit = {
         val intPut: Try[Int] = Try(input.toInt)
         intPut match
         case Success(i) =>
@@ -41,7 +41,7 @@ private case object StatePlayCard extends UIState with TUIState {
 private case object StateTakeRow extends UIState with TUIState {
     var state: TUIState = StateTakeRow
     val name: String = "StateTakeRow"
-    def interpretLine(controler: Controler, input: String): Unit = {
+    def interpretLine(controler:InterfaceControler, input: String): Unit = {
         val intPut: Try[Int] = Try(input.toInt)
         intPut match
         case Success(i) =>
@@ -63,53 +63,54 @@ private case object StateTakeRow extends UIState with TUIState {
 }
 
 // Start of the Programm.
-case class TUI(controler: Controler) extends UI with TUIState{
+case class TUI(controler:InterfaceControler) extends UI with TUIState{
     var state: TUIState = StatePlayCard
     val name: String = "TUI"
     override def update(e:Event, name:String="0") = {
         e match
-        case Event.Start =>
-            println("Game started")
-            println(controler.gameState.board.toString())
-            println(controler.gameState.players().mkString("\n"))
-            state = StatePlayCard
-        case Event.nextPlayer =>
-            println("Next Player")
-            println(controler.gameState.board.toString())
-            println(controler.gameState.playerActive.toString())
-            state = StatePlayCard
-            run
-        case Event.TakeRow =>
-            println(controler.gameState.board.toString())
-            println(controler.gameState.board.playedCardsToString)
-            println(controler.gameState.playerActive.name + " Take Row")
-            StateTakeRow.interpretLine(controler, readLine)
-        case Event.Undo =>
-            println("Undo:\n new Gamestate:")
-            println(controler.gameState.board.toString())
-            println(controler.gameState.playerActive.toString())
-            name match
-            case "StatePlayCard" =>
+            case Event.First =>
+            case Event.Start =>
+                println("Game started")
+                println(controler.gameState.board.toString())
+                println(controler.gameState.players.mkString("\n"))
                 state = StatePlayCard
-            case "StateTakeRow" =>
-                state = StateTakeRow
-            run
-        case Event.Redo =>
-            println("Redo:\n new Gamestate:")
-            println(controler.gameState.board.toString())
-            println(controler.gameState.playerActive.toString())
-            name match
-            case "StatePlayCard" =>
+            case Event.nextPlayer =>
+                println("Next Player")
+                println(controler.gameState.board.toString())
+                println(controler.gameState.playerActive.toString())
                 state = StatePlayCard
-            case "StateTakeRow" =>
-                state = StateTakeRow
-            run
-        case Event.End =>
-            end
+                run
+            case Event.TakeRow =>
+                println(controler.gameState.board.toString())
+                println(controler.gameState.board.playedCardsToString)
+                println(controler.gameState.playerActive.name + " Take Row")
+                StateTakeRow.interpretLine(controler, readLine)
+            case Event.Undo =>
+                println("Undo:\n new Gamestate:")
+                println(controler.gameState.board.toString())
+                println(controler.gameState.playerActive.toString())
+                name match
+                case "StatePlayCard" =>
+                    state = StatePlayCard
+                case "StateTakeRow" =>
+                    state = StateTakeRow
+                run
+            case Event.Redo =>
+                println("Redo:\n new Gamestate:")
+                println(controler.gameState.board.toString())
+                println(controler.gameState.playerActive.toString())
+                name match
+                case "StatePlayCard" =>
+                    state = StatePlayCard
+                case "StateTakeRow" =>
+                    state = StateTakeRow
+                run
+            case Event.End =>
+                end
     }
 
     override def run = {
-        while(controler.running)
+        while true do
             println("New Round")
             state match
             case StatePlayCard =>
@@ -127,12 +128,12 @@ case class TUI(controler: Controler) extends UI with TUIState{
 
     override def end = {
         println("Game ended")
-        println("Winner: " + controler.gameState.players().maxBy(p => p.ochsen).name)
+        println("Winner: " + controler.gameState.players.maxBy(p => p.ochsen).name)
         println("Score: ")
-        println(controler.gameState.players().sortBy(p=>p.ochsen).mkString("\n"))
+        println(controler.gameState.players.sortBy(p=>p.ochsen).mkString("\n"))
     }
 
-    override def interpretLine(controler: Controler, input: String): Unit = {
+    override def interpretLine(controler:InterfaceControler, input: String): Unit = {
         state.interpretLine(controler, input)
     }
 }

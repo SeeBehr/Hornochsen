@@ -2,7 +2,7 @@ package de.htwg.se.hornochsen.model
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
-import de.htwg.se.hornochsen.controler.initDeck
+import de.htwg.se.hornochsen.controler.BaseControler.initDeck
 class Decktest extends AnyWordSpec {
     "Deck" should {
         "have a scalable size" in {

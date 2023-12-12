@@ -1,19 +1,28 @@
-package de.htwg.se.hornochsen.model
+package de.htwg.se.hornochsen.model.BaseModel
 
 import scala.util.{Try, Success, Failure}
+import de.htwg.se.hornochsen.model.{InterfacePlayer, InterfaceDeck, InterfaceBoard}
 
 case class Row(val nummer: Int, val cards: Vector[Int], val filled: Int = 1) {
+    
     override def toString(): String = {
         "Row " + nummer + ": " + cards.mkString(", ") + " filled: " + filled.toString() + "\n"
     }
 }
 
-case class Board(val rows: Vector[Row], var playedCards: Vector[(Int, Player)] = Vector.empty) {
+case class Board(val rows: Vector[Row], var playedCards: Vector[(Int, InterfacePlayer)] = Vector.empty) extends InterfaceBoard {
     override def toString(): String = {
         ("Board:\n\t" + rows.mkString("\n\t") + "\n")
     }
 
-    def playedCardsToString: String = {
+    override def copy(
+        myRows: Vector[Row] = rows,
+        playedCards: Vector[(Int, InterfacePlayer)] = playedCards
+    ): InterfaceBoard = {
+        Board(myRows, playedCards)
+    }
+
+    override def playedCardsToString: String = {
         ("\nPlayed cards: \n"+ playedCards.map(p=>s"${p._1}, von ${p._2.name}\n").mkString(""))
     }
 
@@ -49,3 +58,4 @@ case class Board(val rows: Vector[Row], var playedCards: Vector[(Int, Player)] =
         )
     }
 }
+

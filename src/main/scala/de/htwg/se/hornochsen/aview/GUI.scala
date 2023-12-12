@@ -2,8 +2,8 @@ package de.htwg.se.hornochsen.aview
 
 import de.htwg.se.hornochsen.{util, model, controler}
 import util.Event
-import model.Player
-import controler.Controler
+import model.InterfacePlayer
+import controler.InterfaceControler
 
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.stage.Screen
@@ -18,48 +18,69 @@ import shape.Box
 import scalafx.geometry.{Insets, Pos}
 import scalafx.Includes._
 import scalafx.event.{EventHandler, ActionEvent}
+import de.htwg.se.hornochsen.controler.BaseControler.Controler
+import de.htwg.se.hornochsen.model.BaseModel.Player
 
 
 class GUI(controler: Controler) extends UI with JFXApp3{
+    val width: Double = 720
+    val height: Double = 640
+    var darkmode: Boolean = true
     var state: String = "StatePlayCard"
+    var rows: VBox = new VBox
+    var ops: VBox = new VBox
+    var change: HBox = new HBox
     
     override def start(): Unit = {
-        println("Gui Start")
+        state = "StatePlayCard"
+        rows = reihen(darkmode, height, width)
+        ops = undoRedo(darkmode, height, width)
+        change = player(darkmode, height, width, controler.gameState.playerActive)
         stage = MainStage()
     }
 
     override def update(e:Event, name:String="0") = {
+        println("Update GUI")
         if e == Event.Start then
             state = "StatePlayCard"
         else
             Platform.runLater(() =>
                 e match
                 case Event.Start =>
+                case Event.First =>
+                    change = player(darkmode, height, width, controler.gameState.playerActive)
                 case Event.nextPlayer =>
-                    run
+                    change = player(darkmode, height, width, controler.gameState.playerActive)
                 case Event.TakeRow =>
                     state = "StateTakeRow"
-                    run
+                    change = selectedCards(darkmode, height, width)
                 case Event.Undo =>
                     name match
                     case "StatePlayCard" =>
                         state = "StatePlayCard"
+                        change = player(darkmode, height, width, controler.gameState.playerActive)
                     case "StateTakeRow" =>
                         state = "StateTakeRow"
-                    run
+                        change = selectedCards(darkmode, height, width)
                 case Event.Redo =>
                     name match
                     case "StatePlayCard" =>
                         state = "StatePlayCard"
+                        change = player(darkmode, height, width, controler.gameState.playerActive)
                     case "StateTakeRow" =>
                         state = "StateTakeRow"
-                    run
+                        change = selectedCards(darkmode, height, width)
                 case Event.End =>
                     end
+                rows = reihen(darkmode, height, width)
+                ops = undoRedo(darkmode, height, width)
+                stage = MainStage()
             )
     }
 
-        def MainStage(darkmode: Boolean = true, windowHeight: Double = Screen.primary.bounds.height, windowWidth: Double = Screen.primary.bounds.width): JFXApp3.PrimaryStage = {
+        def MainStage(darkmode: Boolean = true,
+        windowHeight: Double = height,
+        windowWidth: Double = width): JFXApp3.PrimaryStage = {
             new JFXApp3.PrimaryStage {
                 title = "Hornochsen"
                 scene = new Scene {
@@ -69,36 +90,42 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                         children = Seq(
                             new HBox {
                                 children = Seq(
-                                    reihen(darkmode, windowHeight, windowWidth),
-                                    undoRedo(darkmode, windowHeight, windowWidth)
+                                    rows,
+                                    ops
                                 )
                             },
-                            if state == "StatePlayCard" then
-                                player(darkmode, windowHeight, windowWidth, controler.gameState.playerActive)
-                            else
-                                selectedCards(darkmode, windowHeight, windowWidth)
-                        )
+                            change
+                            )
                     }
                 }
-                fullScreen = true
             }
         }
 
         def reihen(darkmode: Boolean, windowHeight: Double, windowWidth: Double): VBox = {
             new VBox {
+                println("Vbox")
+                prefHeight = (3.0/5)*windowHeight
+                prefWidth = (2.0/3)*windowWidth
                 children = (for (i <- 1 to controler.gameState.board.rows.size) yield
                     new HBox {
+                        println("Hbox")
                         border = new Border(new BorderStroke(if darkmode then White else Black, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
                         alignment = Pos.CenterLeft
+                        println("Seq")
                         children = Seq(
                             new Button {
+                                println("Button")
                                 text = "Take"
                                 style = "-fx-font-size: 10pt"
-                                onAction = (event) => {
+                                val row = i
+                                onMouseClicked = (event) => {
                                     print(f"Take Row $i\n")
+                                    if state == "StateTakeRow" then
+                                        controler.takeRow(controler.gameState.playerActive, row+1, "StateTakeRow")
                                 }
                             },
                             new Text {
+                                println("Text")
                                 textAlignment = TextAlignment.Center
                                 text = s"Row $i: "
                                 style = "-fx-font-size: 30pt"
@@ -119,8 +146,6 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                         )
                     }
                 ).toList
-                prefHeight = (3.0/5)*windowHeight
-                prefWidth = (2.0/3)*windowWidth
             }
         }
 
@@ -133,28 +158,32 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                 children = Seq(
                     new Button {
                         alignment = Pos.Center
-                        prefWidth = (1.0/5)*windowWidth
+                        prefWidth = (1.5/5)*windowWidth
                         text = "Undo"
-                        style = "-fx-font-size: 30pt"
-                        onAction = (event) => {
+                        style = "-fx-font-size: 20pt"
+                        onMouseClicked = (event) => {
                             print("Undo\n")
+                            if state == "StatePlayCard" then
+                                controler.doOp("undo", "StatePlayCard")
                         }
                     },
                     new Button {
                         alignment = Pos.Center
-                        prefWidth = (1.0/5)*windowWidth
+                        prefWidth = (1.5/5)*windowWidth
                         text = "Redo"
-                        style = "-fx-font-size: 30pt"
-                        onAction = (event) => {
+                        style = "-fx-font-size: 20pt"
+                        onMouseClicked = (event) => {
                             print("Redo\n")
+                            if state == "StatePlayCard" then
+                                controler.doOp("redo", "StatePlayCard")
                         }
-                    },
-                    new Button {
+                    }
+                    ,new Button {
                         alignment = Pos.Center
-                        prefWidth = (1.0/5)*windowWidth
+                        prefWidth = (1.5/5)*windowWidth
                         text = "Mode"
-                        style = "-fx-font-size: 30pt"
-                        onAction = (event) =>
+                        style = "-fx-font-size: 20pt"
+                        onMouseClicked = (event) =>
                             if darkmode then
                                 stage = MainStage(darkmode = false)
                             else
@@ -164,8 +193,8 @@ class GUI(controler: Controler) extends UI with JFXApp3{
             }
         }
 
-        def selectedCards(darkmode: Boolean, windowHeight: Double, windowWidth: Double): VBox = {
-            new VBox {
+        def selectedCards(darkmode: Boolean, windowHeight: Double, windowWidth: Double): HBox = {
+            new HBox {
                 prefHeight = (3.0/5)*windowHeight
                 prefWidth = (1.0/3)*windowWidth
                 border = new Border(new BorderStroke(if darkmode then White else Black, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
@@ -174,18 +203,18 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                         new Text {
                             alignment = Pos.Center
                             textAlignment = TextAlignment.Center
-                            text = i.toString
+                            text = i._1.toString + i._2.name
                             style = "-fx-font-size: 30pt"
                             if darkmode then fill = White
                             else fill = Black
                             prefWidth = (1.0/3)*windowWidth
-                            prefHeight = ((1.0/3)*windowHeight)/controler.gameState.players().size
+                            prefHeight = ((1.0/3)*windowHeight)/controler.gameState.players.size
                         }
                 ).toList
             }
         }
 
-        def player(darkmode: Boolean, windowHeight: Double, windowWidth: Double, player: Player): HBox = {
+        def player(darkmode: Boolean, windowHeight: Double, windowWidth: Double, player: InterfacePlayer): HBox = {
             new HBox {
                 border = new Border(new BorderStroke(if darkmode then White else Black, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
                 alignment = Pos.Center
@@ -197,7 +226,7 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                         style = "-fx-font-size: 30pt"
                         if darkmode then fill = White
                         else fill = Black
-                        prefWidth = windowWidth/3
+                        prefWidth = (1.0/3)*windowWidth
                     },
                     new HBox {
                         alignment = Pos.Center
@@ -210,7 +239,7 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                         style = "-fx-font-size: 30pt"
                         if darkmode then fill = White
                         else fill = Black
-                        prefWidth = windowWidth/3
+                        prefWidth = (1.0/3)*windowWidth
                     }
                 )
                 prefHeight = (2.0/5)*windowHeight
@@ -218,18 +247,22 @@ class GUI(controler: Controler) extends UI with JFXApp3{
             }
         }
 
-        def playerCards(darkmode: Boolean, windowHeight: Double, windowWidth: Double, player: Player): Pane = {
+        def playerCards(darkmode: Boolean, windowHeight: Double, windowWidth: Double, player: InterfacePlayer): Pane = {
             println("PlayerCards")
-            if player.cards.length < 8 then
+            if player.getCards.length < 8 then
                 new HBox {
                     alignment = Pos.Center
-                    children = (for (i <- 0 to player.cards.length - 1) yield
+                    children = (for (i <- 0 to player.getCards.length - 1) yield
                         new Button {
+                            prefHeight = (1.0/8)*windowWidth 
+                            prefWidth = (1.0/8)*windowWidth
+                            val card = player.getCards(i)
+                            style = "-fx-font-size: 10pt"
                             alignment = Pos.Center
-                            text = player.cards(i).toString
-                            style = "-fx-font-size: 30pt"
-                            onAction = (event) => {
-                                print(s"Play Card ${player.cards(i)}\n")
+                            onMouseClicked = (event) => {
+                                if state == "StatePlayCard" then
+                                    print(s"Play Card ${card}\n")
+                                    controler.playCard(player, card, "StatePlayCard")
                             }
                         }
                     ).toList
@@ -240,26 +273,31 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                     children = Seq(
                         new HBox {
                             alignment = Pos.Center
-                            children = (for (i <- 0 to player.cards.length/2 - 1) yield
+                            children = (for (i <- 0 to player.getCards.length/2 - 1) yield
                                 new Button {
                                     alignment = Pos.Center
-                                    text = player.cards(i).toString
-                                    style = "-fx-font-size: 30pt"
-                                    onAction = (event) => {
-                                        print(s"Play Card ${player.cards(i)}\n")
+                                    text = player.getCards(i).toString
+                                    val card = player.getCards(i)
+                                    style = "-fx-font-size: 10pt"
+                                    onMouseClicked = (event) => {
+                                        print(s"Play Card ${player.getCards(i)}\n")
+                                        controler.playCard(player, card, "StatePlayCard")
                                     }
                                 }
                             )
                         },
                         new HBox {
                             alignment = Pos.Center
-                            children = (for (i <- player.cards.length/2 to player.cards.length - 1) yield
+                            children = (for (i <- player.getCards.length/2 to player.getCards.length - 1) yield
                                 new Button {
                                     alignment = Pos.Center
-                                    text = player.cards(i).toString
-                                    style = "-fx-font-size: 30pt"
-                                    onAction = (event) => {
-                                        print(s"Play Card ${player.cards(i)}\n")
+                                    text = player.getCards(i).toString
+                                    style = "-fx-font-size: 10pt"
+                                    val card = player.getCards(i)
+                                    onMouseClicked = (event) => {
+                                        print(s"Play Card ${player.getCards(i)}\n")
+                                        if state == "StatePlayCard" then
+                                            controler.playCard(player, card, "StatePlayCard")
                                     }
                                 }
                             )
@@ -269,53 +307,10 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                 
         }
 
-    object EndWindow extends JFXApp3 {
-        override def start(): Unit = {
-            stage = mystage()
-        }
-
-        def mystage(darkmode: Boolean = true, windowHeight: Double = Screen.primary.bounds.height, windowWidth: Double = Screen.primary.bounds.width): JFXApp3.PrimaryStage = {
-            new JFXApp3.PrimaryStage {
-                title = "Hornochsen"
-                scene = new Scene {
-                    if darkmode then fill = Black
-                    else fill = White
-                    content = new VBox {
-                        children = Seq(
-                            new Text {
-                                textAlignment = TextAlignment.Center
-                                text = "Game Over"
-                                style = "-fx-font-size: 30pt"
-                                if darkmode then fill = White
-                                else fill = Black
-                                prefHeight = (1.0/5) * windowHeight
-                                prefWidth = windowWidth
-                            },
-                            new HBox {
-                                children = (for (i <- controler.gameState.players().sortBy(p => p.ochsen).reverse) yield
-                                    new Text {
-                                        textAlignment = TextAlignment.Center
-                                        text = i.name + ": " + i.ochsen
-                                        style = "-fx-font-size: 30pt"
-                                        if darkmode then fill = White
-                                        else fill = Black
-                                        prefHeight = (1.0/5) * windowHeight
-                                        prefWidth = windowWidth
-                                    }
-                                ).toList
-                            }
-                        )
-                    }
-                }
-            }
-        }
-    }
-
     def run: Unit = {
         stage = MainStage()
     }
 
     def end: Unit = {
-        EndWindow.main(Array())
     }
 }
