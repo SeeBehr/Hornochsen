@@ -5,23 +5,23 @@ import de.htwg.se.hornochsen.controler._
 import de.htwg.se.hornochsen.util._
 import scala.io.StdIn.readLine
 
-import scala.concurrent.Await
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
 
 @main
 def start() = {
     val controler = Controler(initializeGame(input=TUIplayerNames))
     var tui = new TUI(controler)
     var gui = new GUI(controler)
-    controler.add(tui)
     controler.add(gui)
+    controler.add(tui)
     
-    //controler.notifyObservers(Event.Start)
     implicit val context = scala.concurrent.ExecutionContext.global
     val f = Future {
-        gui.update(Event.Start)
+        println("Starting GUI")
+        gui.main(Array())
     }
-    
-    tui.update(Event.Start)
+    controler.notifyObservers(Event.Start)
+    tui.run
+
     Await.ready(f, scala.concurrent.duration.Duration.Inf)
 }

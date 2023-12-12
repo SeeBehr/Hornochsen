@@ -5,7 +5,7 @@ import util.Event
 import model.Player
 import controler.Controler
 
-import scalafx.application.JFXApp3
+import scalafx.application.{JFXApp3, Platform}
 import scalafx.stage.Screen
 import scalafx.scene.{paint, Scene, layout, text, control, shape}
 import paint._
@@ -20,43 +20,46 @@ import scalafx.Includes._
 import scalafx.event.{EventHandler, ActionEvent}
 
 
-class GUI(controler: Controler) extends UI {
-    var state: String = "0"
-
-    override def update(e:Event, name:String="0") = {
-        e match
-        case Event.Start =>
-            state = "StatePlayCard"
-            run
-        case Event.nextPlayer =>
-            run
-        case Event.TakeRow =>
-            state = "StateTakeRow"
-            run
-        case Event.Undo =>
-            name match
-            case "StatePlayCard" =>
-                state = "StatePlayCard"
-            case "StateTakeRow" =>
-                state = "StateTakeRow"
-            run
-        case Event.Redo =>
-            name match
-            case "StatePlayCard" =>
-                state = "StatePlayCard"
-            case "StateTakeRow" =>
-                state = "StateTakeRow"
-            run
-        case Event.End =>
-            end
+class GUI(controler: Controler) extends UI with JFXApp3{
+    var state: String = "StatePlayCard"
+    
+    override def start(): Unit = {
+        println("Gui Start")
+        stage = MainStage()
     }
 
-    object MainWindow extends JFXApp3 {
-        override def start(): Unit = {
-            stage = mystage()
-        }
+    override def update(e:Event, name:String="0") = {
+        if e == Event.Start then
+            state = "StatePlayCard"
+        else
+            Platform.runLater(() =>
+                e match
+                case Event.Start =>
+                case Event.nextPlayer =>
+                    run
+                case Event.TakeRow =>
+                    state = "StateTakeRow"
+                    run
+                case Event.Undo =>
+                    name match
+                    case "StatePlayCard" =>
+                        state = "StatePlayCard"
+                    case "StateTakeRow" =>
+                        state = "StateTakeRow"
+                    run
+                case Event.Redo =>
+                    name match
+                    case "StatePlayCard" =>
+                        state = "StatePlayCard"
+                    case "StateTakeRow" =>
+                        state = "StateTakeRow"
+                    run
+                case Event.End =>
+                    end
+            )
+    }
 
-        def mystage(darkmode: Boolean = true, windowHeight: Double = Screen.primary.bounds.height, windowWidth: Double = Screen.primary.bounds.width): JFXApp3.PrimaryStage = {
+        def MainStage(darkmode: Boolean = true, windowHeight: Double = Screen.primary.bounds.height, windowWidth: Double = Screen.primary.bounds.width): JFXApp3.PrimaryStage = {
             new JFXApp3.PrimaryStage {
                 title = "Hornochsen"
                 scene = new Scene {
@@ -153,9 +156,9 @@ class GUI(controler: Controler) extends UI {
                         style = "-fx-font-size: 30pt"
                         onAction = (event) =>
                             if darkmode then
-                                stage = mystage(darkmode = false)
+                                stage = MainStage(darkmode = false)
                             else
-                                stage = mystage(darkmode = true)
+                                stage = MainStage(darkmode = true)
                     }
                 )
             }
@@ -265,7 +268,6 @@ class GUI(controler: Controler) extends UI {
                 }
                 
         }
-    }
 
     object EndWindow extends JFXApp3 {
         override def start(): Unit = {
@@ -309,10 +311,8 @@ class GUI(controler: Controler) extends UI {
         }
     }
 
-    def interpretLine(controler: Controler, input: String): Unit = ???
-
     def run: Unit = {
-        MainWindow.main(Array())
+        stage = MainStage()
     }
 
     def end: Unit = {

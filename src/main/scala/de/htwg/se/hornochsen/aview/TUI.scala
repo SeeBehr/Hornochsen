@@ -73,7 +73,6 @@ case class TUI(controler: Controler) extends UI with TUIState{
             println(controler.gameState.board.toString())
             println(controler.gameState.players().mkString("\n"))
             state = StatePlayCard
-            run
         case Event.nextPlayer =>
             println("Next Player")
             println(controler.gameState.board.toString())
