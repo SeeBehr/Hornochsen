@@ -103,18 +103,14 @@ class GUI(controler: Controler) extends UI with JFXApp3{
 
         def reihen(darkmode: Boolean, windowHeight: Double, windowWidth: Double): VBox = {
             new VBox {
-                println("Vbox")
                 prefHeight = (3.0/5)*windowHeight
                 prefWidth = (2.0/3)*windowWidth
                 children = (for (i <- 1 to controler.gameState.board.rows.size) yield
                     new HBox {
-                        println("Hbox")
                         border = new Border(new BorderStroke(if darkmode then White else Black, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
                         alignment = Pos.CenterLeft
-                        println("Seq")
                         children = Seq(
                             new Button {
-                                println("Button")
                                 text = "Take"
                                 style = "-fx-font-size: 10pt"
                                 val row = i
@@ -125,7 +121,6 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                                 }
                             },
                             new Text {
-                                println("Text")
                                 textAlignment = TextAlignment.Center
                                 text = s"Row $i: "
                                 style = "-fx-font-size: 30pt"
@@ -248,7 +243,6 @@ class GUI(controler: Controler) extends UI with JFXApp3{
         }
 
         def playerCards(darkmode: Boolean, windowHeight: Double, windowWidth: Double, player: InterfacePlayer): Pane = {
-            println("PlayerCards")
             if player.getCards.length < 8 then
                 new HBox {
                     alignment = Pos.Center
@@ -257,12 +251,13 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                             prefHeight = (1.0/8)*windowWidth 
                             prefWidth = (1.0/8)*windowWidth
                             val card = player.getCards(i)
+                            val p = player
                             style = "-fx-font-size: 10pt"
                             alignment = Pos.Center
                             onMouseClicked = (event) => {
                                 if state == "StatePlayCard" then
                                     print(s"Play Card ${card}\n")
-                                    controler.playCard(player, card, "StatePlayCard")
+                                    controler.playCard(p, card, "StatePlayCard")
                             }
                         }
                     ).toList
@@ -278,10 +273,11 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                                     alignment = Pos.Center
                                     text = player.getCards(i).toString
                                     val card = player.getCards(i)
+                                    val p = player
                                     style = "-fx-font-size: 10pt"
                                     onMouseClicked = (event) => {
                                         print(s"Play Card ${player.getCards(i)}\n")
-                                        controler.playCard(player, card, "StatePlayCard")
+                                        controler.playCard(p, card, "StatePlayCard")
                                     }
                                 }
                             )
@@ -294,10 +290,11 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                                     text = player.getCards(i).toString
                                     style = "-fx-font-size: 10pt"
                                     val card = player.getCards(i)
+                                    val p = player
                                     onMouseClicked = (event) => {
                                         print(s"Play Card ${player.getCards(i)}\n")
                                         if state == "StatePlayCard" then
-                                            controler.playCard(player, card, "StatePlayCard")
+                                            controler.playCard(p, card, "StatePlayCard")
                                     }
                                 }
                             )

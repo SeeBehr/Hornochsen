@@ -91,12 +91,13 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
                 if stateState.playersDone(0).getCards.length == 0 then
                     notifyObservers(Event.End)
                 stateState = stateState.copy(
-                    playeractive = stateState.playersDone.head,
-                    playerswaiting = stateState.playersDone.tail,
+                    playeractive = makePlayer(),
+                    playerswaiting = stateState.playersDone,
                     playersdone = Vector.empty
                     )
                 placeCards()
                 stateState.board.copy(myRows = stateState.board.rows, playedCards=Vector.empty)
+                notifyObservers(Event.nextPlayer)
             else 
                 notifyObservers(Event.nextPlayer)
             true
@@ -107,12 +108,10 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
     def placeCards(): Unit = {
         println("Place Cards")
         stateState.board.copy(myRows=stateState.board.rows, playedCards=stateState.board.playedCards.sortBy((card: Int, player: InterfacePlayer) => card: Int))
+        println("Played Cards: " + stateState.board.playedCards.toString())
         stateState.board.playedCards.foreach{ p => val player = p._2; val card = p._1
             stateState = stateState.copy(
-                playeractive = Try(stateState.board.playedCards.head._2) match {
-                    case Success(a) => stateState.board.playedCards.head._2
-                    case Failure(b) => makePlayer()
-                },
+                playeractive = player
             )
             if stateState.playerActive != makePlayer() then
                 val index: Int = where(stateState.board, card)
@@ -125,7 +124,7 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
                         player.playCard(card)
                     else
                         takeRow(player, index)
-                stateState.copy(playersdone=stateState.playersDone.appended(stateState.playerActive))
+                stateState = stateState.copy(playersdone=stateState.playersDone.appended(player))
         }
         stateState = stateState.copy(
             playeractive = stateState.playersDone.head,

@@ -9,7 +9,7 @@ import controler.BaseControler.{Controler, initializeGame}
 
 @main
 def start() = {
-    val controler = Controler(initializeGame(input=TUIplayerNames))
+    val controler = Controler(initializeGame(input=(i:Int) => i.toString))
     var tui = new TUI(controler)
     var gui = new GUI(controler)
     controler.add(gui)

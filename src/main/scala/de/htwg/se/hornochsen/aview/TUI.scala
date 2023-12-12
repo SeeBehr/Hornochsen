@@ -79,7 +79,6 @@ case class TUI(controler:InterfaceControler) extends UI with TUIState{
                 println(controler.gameState.board.toString())
                 println(controler.gameState.playerActive.toString())
                 state = StatePlayCard
-                run
             case Event.TakeRow =>
                 println(controler.gameState.board.toString())
                 println(controler.gameState.board.playedCardsToString)
@@ -94,7 +93,6 @@ case class TUI(controler:InterfaceControler) extends UI with TUIState{
                     state = StatePlayCard
                 case "StateTakeRow" =>
                     state = StateTakeRow
-                run
             case Event.Redo =>
                 println("Redo:\n new Gamestate:")
                 println(controler.gameState.board.toString())
@@ -104,9 +102,8 @@ case class TUI(controler:InterfaceControler) extends UI with TUIState{
                     state = StatePlayCard
                 case "StateTakeRow" =>
                     state = StateTakeRow
-                run
             case Event.End =>
-                end
+                println("End. ")
     }
 
     override def run = {
@@ -117,7 +114,7 @@ case class TUI(controler:InterfaceControler) extends UI with TUIState{
                 println("Next Player")
                 println(controler.gameState.board.toString())
                 println(controler.gameState.playerActive.toString())
-                println(s"Player ${controler.gameState.playerActive.name} select Card to play:")
+                println(s"Select Card to play:")
             case StateTakeRow =>
                 println("Next Player")
                 println(controler.gameState.board.toString)
