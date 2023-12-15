@@ -22,7 +22,7 @@ import de.htwg.se.hornochsen.controler.BaseControler.Controler
 import de.htwg.se.hornochsen.model.BaseModel.Player
 
 
-class GUI(controler: Controler) extends UI with JFXApp3{
+class GUI(controler: InterfaceControler) extends UI with JFXApp3{
     val width: Double = 720
     val height: Double = 640
     var darkmode: Boolean = true
@@ -115,7 +115,7 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                                 val row = i
                                 onMouseClicked = (event) => {
                                     if state == "StateTakeRow" then
-                                        controler.takeRow(controler.gameState.playerActive, row+1, "StateTakeRow")
+                                        controler.rownum(row)
                                 }
                             },
                             new Text {

@@ -124,8 +124,7 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
                 val index: Int = where(stateState.board, card)
                 index match 
                 case -1 =>
-                    while Rownum == -1 do
-                        notifyObservers(Event.TakeRow)
+                    notifyObservers(Event.TakeRow)
                     takeRow(player, Rownum)
                     Rownum = -1
                 case _ =>
