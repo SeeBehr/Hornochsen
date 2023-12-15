@@ -1,11 +1,9 @@
 package de.htwg.se.hornochsen.aview
 
+import de.htwg.se.hornochsen.controler.*
+import de.htwg.se.hornochsen.model.*
+import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers._
-import de.htwg.se.hornochsen.aview._
-import de.htwg.se.hornochsen.util._
-import de.htwg.se.hornochsen.controler._
-import de.htwg.se.hornochsen.model._
 
 class TUISpec extends AnyWordSpec {
     "The TUI" should {

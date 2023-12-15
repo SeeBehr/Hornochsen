@@ -1,4 +1,3 @@
-/*
 package de.htwg.se.hornochsen.model
 import de.htwg.se.hornochsen.model._
 import org.scalatest.wordspec.AnyWordSpec
@@ -8,7 +7,7 @@ import BaseModel.Player
 
 class BoardSpec extends AnyWordSpec {
     "Board" should {
-        val row1 = Row(nummer = 1, cards = Vector(3, 4), filled = 2)
+        val row1 = Row(Nummer = 1, myCards = Vector(3, 4), Filled = 2)
 
         "have scalable Row" in {
             row1.toString() should be("Row 1: 3, 4 filled: 2\n")
@@ -25,18 +24,17 @@ class BoardSpec extends AnyWordSpec {
             ret._2 should be (1)
         }
         "add Card should be" in {
-            val b =Board(rows=Vector(Row(nummer=1,cards=Vector(0),filled=0)),
+            val b =Board(rows=Vector(Row(Nummer=1,myCards=Vector(0),Filled=0)),
             playedCards=(Vector[(Int, Player)]((5, Player(Name="Patrick", Cards=Vector(),
                 Ochsen=0))))).addCard(5,1)
             b.toString() should be ("Board:\n\tRow 1: 5 filled: 1\n\n")
         }
         "playedCardstoString" in {
             val b =Board(
-                rows=Vector(Row(nummer=1,cards=Vector(0),filled=0)),
+                rows=Vector(Row(Nummer=1,myCards=Vector(0),Filled=0)),
                 playedCards=(
                     Vector(((5, Player(Name="Patrick", Cards=Vector(), Ochsen=0))))))
             b.playedCardsToString should be ("\nPlayed cards: \n5, von Patrick\n")
         }
     }
 }
-*/

@@ -1,16 +1,9 @@
 package de.htwg.se.hornochsen.controler
 
-import de.htwg.se.hornochsen._
-import model._
-import controler._
-import util._
+import de.htwg.se.hornochsen.*
+import de.htwg.se.hornochsen.model.*
+import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers._
-
-import BaseControler.{initializeGame, Controler}
-import de.htwg.se.hornochsen.model.BaseModel.{Row, Board}
-import de.htwg.se.hornochsen.model.BaseModel.GameState
-import de.htwg.se.hornochsen.model.BaseModel.Player
 
 class Controlerspec extends AnyWordSpec {
     val p1 = makePlayer(name="Patrick",cards=Vector[Int](2))

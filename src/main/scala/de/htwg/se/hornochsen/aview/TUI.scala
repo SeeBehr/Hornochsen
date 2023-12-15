@@ -42,6 +42,7 @@ private case object StatePlayCard extends UIState with TUIState {
 private case object StateTakeRow extends UIState with TUIState {
     var state: TUIState = StateTakeRow
     val name: String = "StateTakeRow"
+
     def interpretLine(controler:InterfaceControler, input: String): Unit = {
         val intPut: Try[Int] = Try(input.toInt)
         intPut match

@@ -122,20 +122,19 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
             )
             if stateState.playerActive != makePlayer() then
                 val index: Int = where(stateState.board, card)
-                index match 
-                case -1 =>
+                if (index == -1) {
                     notifyObservers(Event.TakeRow)
-                    takeRow(player, Rownum)
-                    Rownum = -1
-                case _ =>
-                    if (canAdd(index)) then
+                }
+                if (index != -1) {
+                    if (canAdd(index)) {
                         addCard(card, index)
                         player.playCard(card)
-                    else
+                    } else {
                         takeRow(player, index)
-                stateState = stateState.copy(
-                Board=stateState.board.copy(playedCards = stateState.board.playedCards.filter((c, p) => p != player)),
-                playersdone=stateState.playersDone.appended(player))
+                    }
+                }
+                println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAh")
+                stateState = stateState.copy(playersdone=stateState.playersDone.appended(player))
         }
         stateState = stateState.copy(
             playeractive = stateState.playersDone.head,
