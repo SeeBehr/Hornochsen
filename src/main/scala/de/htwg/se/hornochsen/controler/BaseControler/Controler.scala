@@ -118,8 +118,7 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
         stateState = stateState.copy(Board=stateState.board.copy(myRows=stateState.board.rows, playedCards=stateState.board.playedCards.sortBy((card: Int, player: InterfacePlayer) => card: Int)))
         stateState.board.playedCards.foreach{ p => val player = p._2; val card = p._1
             stateState = stateState.copy(
-                playeractive = player,
-                Board=stateState.board.copy(playedCards = stateState.board.playedCards.filter((c, p) => p != player))
+                playeractive = player
             )
             if stateState.playerActive != makePlayer() then
                 val index: Int = where(stateState.board, card)
