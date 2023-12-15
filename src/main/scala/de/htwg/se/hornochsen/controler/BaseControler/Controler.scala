@@ -161,7 +161,7 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
         )
     }
 
-    override def takeRow(player: InterfacePlayer, row: Int, statename: String = "0"): Try[Boolean] = {
+    def takeRow(player: InterfacePlayer, row: Int, statename: String = "0"): Try[Boolean] = {
         if statename != "0" then undoHistory.save(ConcreteMemento(stateState, statename))
         if (row < 0 | row > stateState.board.rows.length) then Failure(new java.lang.IllegalArgumentException(s"Player ${stateState.playerActive.name} can't take Row ${row}"))
         val (newBoard, moreOchsen) = stateState.board.takeRow(

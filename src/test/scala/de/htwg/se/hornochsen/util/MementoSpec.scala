@@ -9,7 +9,7 @@ import de.htwg.se.hornochsen.controler._
 
 class MementoSpec extends AnyWordSpec {
     val (board, remDeck) = initBoard(1,1,initDeck(1))
-    val gamestate = initGameState(allP=Vector.empty[InterfacePlayer],board=board,deck=remDeck)
+    val gamestate = initGameState(allP=Vector[InterfacePlayer](makePlayer("Patrick",Vector[Int](1),ochsen=0)),board=board,deck=remDeck)
     var controler = makeControler(gamestate)
     val memento = ConcreteMemento(gamestate, "StatePlayCards")
     "The Memento" should {

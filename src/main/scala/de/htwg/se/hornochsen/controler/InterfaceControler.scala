@@ -13,7 +13,6 @@ trait InterfaceControler extends Observable {
     def rownum(num: Int): Try[Int]
     def doOp(input: String, stateName: String): Try[Boolean]
     def playCard(player: InterfacePlayer, card: Int, stateName: String): Boolean
-    def takeRow(player: InterfacePlayer, row: Int, stateName: String): Try[Boolean]
     def placeCards(): Unit
 }
 def makeControler(gameState: InterfaceGameState): InterfaceControler = {
