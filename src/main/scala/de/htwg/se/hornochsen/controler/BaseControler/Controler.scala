@@ -1,15 +1,11 @@
 package de.htwg.se.hornochsen.controler.BaseControler
-import de.htwg.se.hornochsen.controler.InterfaceControler
 
+import de.htwg.se.hornochsen.controler.InterfaceControler
 import de.htwg.se.hornochsen.util._
 import de.htwg.se.hornochsen.model._
 import de.htwg.se.hornochsen.aview._
 
-import scala.util.Try
-import scala.util.Failure
-import scala.util.Success
-import de.htwg.se.hornochsen.model.{InterfacePlayer, InterfaceBoard, InterfaceDeck, InterfaceGameState}
-import java.util.ResourceBundle.Control
+import scala.util.{Try,Success,Failure}
 
 
 
@@ -42,17 +38,6 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
     var undoHistory = new History()
     var redoHistory = new History()
     var running = true
-    //var Rownum = -1
-
-    /*
-    override def rownum(num: Int): Try[Int] = {
-        if num < 1 || num > stateState.board.rows.length then
-            Failure(new IllegalArgumentException("Row does not exist"))
-        else
-            Rownum = num
-            Success(num)
-    }
-    */
 
     override def isrunning: Boolean = running
 
@@ -86,54 +71,35 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
                     playeractive = stateState.playersWaiting.head,
                     playerswaiting = stateState.playersWaiting.tail
                     )
-                )
-            newGameState match
-            case Success(a) =>
-                stateState = a
-            case Failure(b) =>
-                stateState = 
-                    stateState.copy(
-                    Board = stateState.board.copy(playedCards=stateState.board.playedCards.appended((card, newp))),
-                    playersdone = stateState.playersDone.appended(newp),
-                    playeractive = makePlayer(),
-                    playerswaiting = Vector.empty
-                )
+                ) match
+                case Success(a) =>
+                    stateState = a
+                case Failure(b) =>
+                    stateState = 
+                        stateState.copy(
+                        Board = stateState.board.copy(playedCards=stateState.board.playedCards.appended((card, newp))),
+                        playersdone = stateState.playersDone.appended(newp),
+                        playeractive = makePlayer(),
+                        playerswaiting = Vector.empty
+                    )
             if stateState.playerActive == makePlayer() then
-                if stateState.playersDone(0).getCards.length == 0 then
-                    notifyObservers(Event.End)
                 stateState = stateState.copy(
                     playeractive = stateState.playersDone.head,
                     playerswaiting = stateState.playersDone.tail,
                     playersdone = Vector.empty
                     )
-                notifyObservers(Event.PlaceCards)
-                //notifyObservers(Event.nextPlayer)
+                placeCards()
+                if stateState.playerActive.getCards.length == 0 then
+                    notifyObservers(Event.End)
+                else
+                    notifyObservers(Event.nextPlayer)
             else 
                 notifyObservers(Event.nextPlayer)
             true
         case false =>
             false
     }
-
-    override def placeCard(player: InterfacePlayer, card: Int, stateName: String): Boolean = {
-        undoHistory.save(ConcreteMemento(stateState, stateName))
-        val placewhere = where(stateState.board, card)
-        placewhere match
-            case -1 =>
-                notifyObservers(Event.TakeRow)
-                false
-            case _ =>
-                if canAdd(placewhere) then
-                    addCard(card, placewhere)
-                    stateState=stateState.copy(Board=stateState.board.copy(playedCards=stateState.board.playedCards.filter((c, p) => p != player)))
-                    true
-                else
-                    takeRow(player, placewhere, stateName)
-                    stateState=stateState.copy(Board=stateState.board.copy(playedCards=stateState.board.playedCards.filter((c, p) => p != player)))
-                    true
-    }
-
-    /*
+    
     def placeCards(): Unit = {
         stateState = stateState.copy(Board=stateState.board.copy(myRows=stateState.board.rows, playedCards=stateState.board.playedCards.sortBy((card: Int, player: InterfacePlayer) => card: Int)))
 
@@ -141,28 +107,32 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
             stateState = stateState.copy(
                 playeractive = player
             )
-            if stateState.playerActive != makePlayer() then
-                val index: Int = where(stateState.board, card)
+            val index: Int = where(stateState.board, card)
+
+            val (b: InterfaceBoard, o: Int) =
                 if (index == -1) {
-                    notifyObservers(Event.TakeRow)
-                }
-                if (index != -1) {
+                    val take: Int = gameState.board.rows.map((num: InterfaceRow) => (num.value, num.nummer)).min((a,b) => a._1 - b._1)._2
+                    takeRow(player, card, take)
+                } else {
                     if (canAdd(index)) {
-                        addCard(card, index)
-                        player.playCard(card)
+                        (stateState.board.addCard(card, index+1), 0)
                     } else {
-                        takeRow(player, index)
+                        takeRow(player, card, index)
                     }
                 }
-                stateState = stateState.copy(playersdone=stateState.playersDone.appended(player))
+            stateState = stateState.copy(
+                Board = b,
+                playersdone = stateState.playersDone.appended(player.addOchsen(o))
+            )
         }
         stateState = stateState.copy(
+            Board = stateState.board.copy(playedCards = Vector.empty),
             playeractive = stateState.playersDone.head,
             playerswaiting = stateState.playersDone.tail,
             playersdone = Vector.empty
         )
     }
-    */
+    
 
     def where(b: InterfaceBoard, card: Int): Int = {
         val lastElements: Vector[Int] = b.rows.map(row => row.cards(row.filled-1))
@@ -178,24 +148,9 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
         return stateState.board.rows(index).filled < stateState.board.rows(index).cards.length
     }
 
-    def addCard(card: Int, index: Int): Unit = {
-        stateState = stateState.copy(
-            Board = stateState.board.addCard(card, index+1)
-        )
-    }
-
-    override def takeRow(player: InterfacePlayer=gameState.playerActive, row: Int, statename: String = "0"): Try[Boolean] = {
+    def takeRow(player: InterfacePlayer, card: Int, row: Int, statename: String = "0"): (InterfaceBoard, Int) = {
         if statename != "0" then undoHistory.save(ConcreteMemento(stateState, statename))
-        if (row < 0 | row > stateState.board.rows.length) then Failure(new java.lang.IllegalArgumentException(s"Player ${stateState.playerActive.name} can't take Row ${row}"))
-        val (newBoard, moreOchsen) = stateState.board.takeRow(
-            stateState.board.playedCards.filter((c, p) => p == player).head._1, row
-            )
-        stateState = stateState.copy(
-            playeractive = player.addOchsen(moreOchsen),
-            Board = newBoard
-            )
-        stateState=stateState.copy(Board=stateState.board.copy(playedCards=stateState.board.playedCards.filter((c, p) => p != player)))
-        Success(true)
+        stateState.board.takeRow(card, row)
     }
 
     def undo(state: String)= {

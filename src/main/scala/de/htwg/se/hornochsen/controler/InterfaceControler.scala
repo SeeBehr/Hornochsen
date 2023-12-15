@@ -10,11 +10,9 @@ import de.htwg.se.hornochsen.controler.BaseControler._
 trait InterfaceControler extends Observable {
     def isrunning: Boolean
     def gameState: InterfaceGameState
-    //def rownum(num: Int): Try[Int]
     def doOp(input: String, stateName: String): Try[Boolean]
     def playCard(player: InterfacePlayer, card: Int, stateName: String): Boolean
-    def placeCard(player: InterfacePlayer, card: Int, stateName: String): Boolean
-    def takeRow(player: InterfacePlayer=gameState.playerActive, row: Int, statename: String = "0"): Try[Boolean]
+    //def takeRow(player: InterfacePlayer, row: Int, statename: String = "0"): InterfacePlayer
 }
 def makeControler(gameState: InterfaceGameState): InterfaceControler = {
     Controler(gameState)

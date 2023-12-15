@@ -7,6 +7,7 @@ trait InterfaceRow {
     def nummer: Int
     def cards: Vector[Int]
     def filled: Int
+    def value: Int
     def copy(nummer: Int = nummer, cards: Vector[Int] = cards, Filled: Int = 1): InterfaceRow
 }
 

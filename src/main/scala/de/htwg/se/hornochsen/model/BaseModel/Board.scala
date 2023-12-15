@@ -4,6 +4,9 @@ import scala.util.{Try, Success, Failure}
 import de.htwg.se.hornochsen.model.{InterfacePlayer, InterfaceDeck, InterfaceBoard, InterfaceRow}
 
 case class Row(val Nummer: Int, val myCards: Vector[Int], val Filled: Int = 1) extends InterfaceRow {
+    var pvalue: Int = myCards.map(f => if f == 0 then 0 else if f % 10 == 0 then 10 else if f % 5 == 0 then 5 else 1).sum
+
+    override def value: Int = pvalue
     
     override def toString(): String = {
         "Row " + Nummer + ": " + myCards.mkString(", ") + " filled: " + filled.toString() + "\n"
@@ -48,7 +51,6 @@ case class Board(val rows: Vector[InterfaceRow], var playedCards: Vector[(Int, I
     }
 
     def takeRow(card: Int, nummer: Int): (Board, Int) = {
-        println("Take Row")
         val returnRow = this.rows(nummer)
         (Board(
             rows = rows.updated(
