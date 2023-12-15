@@ -9,6 +9,8 @@ import scala.util.Try
 import scala.util.Failure
 import scala.util.Success
 import de.htwg.se.hornochsen.model.{InterfacePlayer, InterfaceBoard, InterfaceDeck, InterfaceGameState}
+import java.util.ResourceBundle.Control
+import scalafx.scene.input.KeyCode.R
 
 
 
@@ -42,12 +44,14 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
     var redoHistory = new History()
     var running = true
     var Rownum = -1
-    def rownum(num: Int): Try[Int] = {
-        if (num < 0 | num > stateState.board.rows(0).cards.length) then Failure(new IllegalArgumentException("Row does not exist"))
-        Rownum = num
-        Success(num)
-    }
 
+    override def rownum(num: Int): Try[Int] = {
+        if num < 1 || num > stateState.board.rows.length then
+            Failure(new IllegalArgumentException("Row does not exist"))
+        else
+            Rownum = num
+            Success(num)
+    }
     override def isrunning: Boolean = running
 
     override def gameState: InterfaceGameState = stateState

@@ -5,6 +5,7 @@ import de.htwg.se.hornochsen.model._
 import scala.util.Try
 import de.htwg.se.hornochsen.model.BaseModel.GameState
 import de.htwg.se.hornochsen.model.BaseModel.Player
+import de.htwg.se.hornochsen.controler.BaseControler._
 
 trait InterfaceControler extends Observable {
     def isrunning: Boolean
@@ -15,3 +16,7 @@ trait InterfaceControler extends Observable {
     def takeRow(player: InterfacePlayer, row: Int, stateName: String): Try[Boolean]
     def placeCards(): Unit
 }
+def makeControler(gameState: InterfaceGameState): InterfaceControler = {
+    Controler(gameState)
+}
+

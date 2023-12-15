@@ -17,6 +17,9 @@ case class GameState (
         "Gamestate: \n\n" + "Players: \n" + players.mkString("\n") + "\n" + board.toString() + remDeck.toString() + "\n"
     }
 
+    
+
+
     override def playersDone: Vector[InterfacePlayer] = playersdone
     
     override def playerActive: InterfacePlayer = playeractive

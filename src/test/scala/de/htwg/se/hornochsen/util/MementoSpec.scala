@@ -4,15 +4,13 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
 import de.htwg.se.hornochsen.model._
 import de.htwg.se.hornochsen.util._
-import de.htwg.se.hornochsen.controler.BaseControler.{initDeck, Controler, initBoard}
-import de.htwg.se.hornochsen.model.BaseModel.GameState
-import de.htwg.se.hornochsen.model.BaseModel.Player
+import de.htwg.se.hornochsen.controler._
 
 
 class MementoSpec extends AnyWordSpec {
     val (board, remDeck) = initBoard(1,1,initDeck(1))
-    val gamestate = GameState(playersDone = Vector.empty, playerActive= Player(), playersWaiting=Vector.empty, board=board, remDeck=remDeck)
-    var controler = Controler(gamestate)
+    val gamestate = initGameState(allP=Vector.empty[InterfacePlayer],board=board,deck=remDeck)
+    var controler = makeControler(gamestate)
     val memento = ConcreteMemento(gamestate, "StatePlayCards")
     "The Memento" should {
         "have a originator" in {

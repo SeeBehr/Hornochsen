@@ -5,16 +5,15 @@ import de.htwg.se.hornochsen.aview._
 import de.htwg.se.hornochsen.util._
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
-import de.htwg.se.hornochsen.controler.BaseControler.{initDeck, Controler}
-import de.htwg.se.hornochsen.model.BaseModel.{Row, Board}
-import de.htwg.se.hornochsen.model.BaseModel.GameState
-import de.htwg.se.hornochsen.model.BaseModel.Player
+import de.htwg.se.hornochsen.controler._
+import de.htwg.se.hornochsen.model._
 
 class ObserverSpec extends AnyWordSpec {
     "The Observer" should {
-        val p1 = Player(name="Patrick",cards=Vector[Int](2))
-        val p2 = Player(name="Patrick",cards=Vector[Int](0))
-        val controler = Controler(GameState(playersDone= Vector.empty[Player], playerActive = Player(), playersWaiting=Vector(p1, p2), board=Board(rows=Vector[Row](Row(nummer=1,cards=Vector(1,0)))),remDeck=initDeck(0)))
+        val p1 = makePlayer(name="Patrick",cards=Vector[Int](2))
+        val p2 = makePlayer(name="Patrick",cards=Vector[Int](0))
+        val gs = initGameState(allP=Vector[InterfacePlayer](p1,p2),board=initBoard(1,6,initDeck(1))._1,deck=initDeck(0))
+        val controler = makeControler(gs)
         val tui = TUI(controler)
         "have a add method" in {
             controler.add(tui) should be (())
