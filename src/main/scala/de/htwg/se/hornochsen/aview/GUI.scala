@@ -22,7 +22,7 @@ import de.htwg.se.hornochsen.controler.BaseControler.Controler
 import de.htwg.se.hornochsen.model.BaseModel.Player
 
 
-class GUI(controler: Controler) extends UI with JFXApp3{
+case class GUI(controler: Controler) extends UI with JFXApp3{
     val width: Double = 720
     val height: Double = 640
     var darkmode: Boolean = true

@@ -10,8 +10,9 @@ import controler.BaseControler.{Controler, initializeGame}
 @main
 def start() = {
     val controler = Controler(initializeGame(input=(i:Int) => i.toString))
-    var tui = new TUI(controler)
-    var gui = new GUI(controler)
+    val tui = TUI(controler)
+    val gui = GUI(controler)
+
     controler.add(gui)
     controler.add(tui)
     
