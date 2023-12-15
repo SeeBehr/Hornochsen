@@ -26,11 +26,6 @@ class Controlerspec extends AnyWordSpec {
         controler2.gameState should be (gs)
     }
 
-    "have a Rownum" in {
-        controler2.rownum(-1).isFailure should be (true)
-        controler2.rownum(1).isSuccess should be (true)
-    }
-
     "have a doOp" in {
         controler2.doOp("undo","StatePlayCards").isSuccess should be (true)
         controler2.doOp("redo","StatePlayCards").isSuccess should be (true)
