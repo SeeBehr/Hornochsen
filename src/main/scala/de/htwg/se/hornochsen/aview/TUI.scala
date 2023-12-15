@@ -136,7 +136,6 @@ case class TUI(controler:InterfaceControler) extends UI with TUIState{
                     println("New Round")
                     println("State: " + state)
                     interpretLine(controler, readLine)
-                    controler.placeCards()
                     state = StatePlayCard
     }
 
