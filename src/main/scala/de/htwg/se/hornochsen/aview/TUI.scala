@@ -46,11 +46,12 @@ private case object StateTakeRow extends UIState with TUIState {
         val intPut: Try[Int] = Try(input.toInt)
         intPut match
         case Success(i) =>
-            var cantake = controler.rownum(intPut.get)
+            var cantake = !(intPut.get < 1 || intPut.get > controler.gameState.board.rows.length)
             cantake match
-            case Success(a) =>
-            case Failure(b) =>
-                println(b)
+            case true =>
+                controler.takeRow(intPut.get)
+            case false =>
+                println("Reihe existiert nicht. ")
                 interpretLine(controler, readLine)
         case Failure(exception) =>
             val op = controler.doOp(input, name)

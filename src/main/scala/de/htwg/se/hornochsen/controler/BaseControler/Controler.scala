@@ -43,8 +43,9 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
     var undoHistory = new History()
     var redoHistory = new History()
     var running = true
-    var Rownum = -1
+    //var Rownum = -1
 
+    /*
     override def rownum(num: Int): Try[Int] = {
         if num < 1 || num > stateState.board.rows.length then
             Failure(new IllegalArgumentException("Row does not exist"))
@@ -52,6 +53,8 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
             Rownum = num
             Success(num)
     }
+    */
+
     override def isrunning: Boolean = running
 
     override def gameState: InterfaceGameState = stateState
@@ -105,8 +108,8 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
                     playersdone = Vector.empty
                     )
                 placeCards()
-                stateState.board.copy(myRows = stateState.board.rows, playedCards=Vector.empty)
-                notifyObservers(Event.nextPlayer)
+                stateState = stateState.copy(Board=stateState.board.copy(myRows = stateState.board.rows, playedCards=Vector.empty))
+                //notifyObservers(Event.nextPlayer)
             else 
                 notifyObservers(Event.nextPlayer)
             true
@@ -116,6 +119,7 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
 
     def placeCards(): Unit = {
         stateState = stateState.copy(Board=stateState.board.copy(myRows=stateState.board.rows, playedCards=stateState.board.playedCards.sortBy((card: Int, player: InterfacePlayer) => card: Int)))
+
         stateState.board.playedCards.foreach{ p => val player = p._2; val card = p._1
             stateState = stateState.copy(
                 playeractive = player
@@ -133,7 +137,6 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
                         takeRow(player, index)
                     }
                 }
-                println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAh")
                 stateState = stateState.copy(playersdone=stateState.playersDone.appended(player))
         }
         stateState = stateState.copy(
@@ -161,6 +164,10 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
         stateState = stateState.copy(
             Board = stateState.board.addCard(card, index+1)
         )
+    }
+
+    override def takeRow(row: Int): Try[Boolean] = {
+        takeRow(player = gameState.playerActive, row = row);
     }
 
     def takeRow(player: InterfacePlayer, row: Int, statename: String = "0"): Try[Boolean] = {

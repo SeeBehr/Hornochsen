@@ -115,7 +115,7 @@ case class GUI(controler: Controler) extends UI with JFXApp3{
                                 val row = i
                                 onMouseClicked = (event) => {
                                     if state == "StateTakeRow" then
-                                        controler.takeRow(controler.gameState.playerActive, row+1, "StateTakeRow")
+                                        controler.takeRow(row)
                                 }
                             },
                             new Text {
