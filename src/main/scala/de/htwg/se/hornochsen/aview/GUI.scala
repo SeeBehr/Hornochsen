@@ -18,8 +18,6 @@ import shape.Box
 import scalafx.geometry.{Insets, Pos}
 import scalafx.Includes._
 import scalafx.event.{EventHandler, ActionEvent}
-import de.htwg.se.hornochsen.controler.BaseControler.Controler
-import de.htwg.se.hornochsen.model.BaseModel.Player
 
 
 class GUI(controler: InterfaceControler) extends UI with JFXApp3{

@@ -10,7 +10,6 @@ import scala.util.Failure
 import scala.util.Success
 import de.htwg.se.hornochsen.model.{InterfacePlayer, InterfaceBoard, InterfaceDeck, InterfaceGameState}
 import java.util.ResourceBundle.Control
-import scalafx.scene.input.KeyCode.R
 
 
 
@@ -124,6 +123,8 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
                 val index: Int = where(stateState.board, card)
                 if (index == -1) {
                     notifyObservers(Event.TakeRow)
+                    takeRow(player, Rownum)
+                    Rownum = -1
                 }
                 if (index != -1) {
                     if (canAdd(index)) {
@@ -133,7 +134,6 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
                         takeRow(player, index)
                     }
                 }
-                println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAh")
                 stateState = stateState.copy(playersdone=stateState.playersDone.appended(player))
         }
         stateState = stateState.copy(
