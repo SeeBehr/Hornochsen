@@ -8,6 +8,7 @@ import org.scalactic.Fail
 import scalafx.scene.input.KeyCode.T
 import java.awt.Taskbar.State
 import de.htwg.se.hornochsen.controler.InterfaceControler
+import scala.compiletime.ops.int
 
 trait TUIState {
     var state: TUIState
@@ -129,16 +130,10 @@ case class TUI(controler:InterfaceControler) extends UI with TUIState{
 
     override def run = {
         while controler.isrunning do
-            state match
-                case StatePlayCard =>
-                    println("New Round")
-                    println("State: " + state)
-                    interpretLine(controler, readLine)
-                case _ =>
-                    println("New Round")
-                    println("State: " + state)
-                    interpretLine(controler, readLine)
-                    state = StatePlayCard
+            println("New Round")
+            println("State: " + state)
+            interpretLine(controler, readLine)
+            state = StatePlayCard
     }
 
     override def end = {

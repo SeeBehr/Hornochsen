@@ -18,11 +18,9 @@ import shape.Box
 import scalafx.geometry.{Insets, Pos}
 import scalafx.Includes._
 import scalafx.event.{EventHandler, ActionEvent}
-import de.htwg.se.hornochsen.controler.BaseControler.Controler
-import de.htwg.se.hornochsen.model.BaseModel.Player
 
 
-case class GUI(controler: Controler) extends UI with JFXApp3{
+class GUI(controler: InterfaceControler) extends UI with JFXApp3{
     val width: Double = 720
     val height: Double = 640
     var darkmode: Boolean = true

@@ -6,13 +6,13 @@ import scala.io.StdIn.readLine
 
 import scala.concurrent.{Await, Future}
 import controler.BaseControler.{Controler, initializeGame}
+import de.htwg.se.hornochsen.controler.makeControler
 
 @main
 def start() = {
-    val controler = Controler(initializeGame(input=(i:Int) => i.toString))
-    val tui = TUI(controler)
-    val gui = GUI(controler)
-
+    val controler = makeControler(initializeGame(input=(i:Int) => i.toString))
+    var tui = new TUI(controler)
+    var gui = new GUI(controler)
     controler.add(gui)
     controler.add(tui)
     
