@@ -127,12 +127,17 @@ case class TUI(controler:InterfaceControler) extends UI with TUIState{
 
     override def run = {
         while controler.isrunning do
-            println("New Round")
-            println("State: " + state)
-            interpretLine(controler, readLine)
-            if state == StateTakeRow then
-                controler.placeCards()
-                state = StatePlayCard
+            state match
+                case StatePlayCard =>
+                    println("New Round")
+                    println("State: " + state)
+                    interpretLine(controler, readLine)
+                case _ =>
+                    println("New Round")
+                    println("State: " + state)
+                    interpretLine(controler, readLine)
+                    controler.placeCards()
+                    state = StatePlayCard
     }
 
     override def end = {
