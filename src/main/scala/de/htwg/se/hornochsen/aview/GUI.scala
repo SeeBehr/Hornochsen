@@ -18,22 +18,26 @@ import shape.Box
 import scalafx.geometry.{Insets, Pos}
 import scalafx.Includes._
 import scalafx.event.{EventHandler, ActionEvent}
+import scalafx.scene.input.KeyCode.I
+import javafx.scene.image.{Image, ImageView}
 
 
 class GUI(controler: InterfaceControler) extends UI with JFXApp3{
-    val width: Double = 720
-    val height: Double = 640
+    val windowWidth: Double = 720
+    val windowHeight: Double = 640
     var darkmode: Boolean = true
     var state: String = "StatePlayCard"
     var rows: VBox = new VBox
     var ops: VBox = new VBox
     var active: HBox = new HBox
+    var dark: Color = new Color(20,20,20)
+    var bright: Color = new Color(100,100,100)
     
     override def start(): Unit = {
         state = "StatePlayCard"
-        rows = reihen(height, width)
-        ops = undoRedo(height, width)
-        active = player(height, width, controler.gameState.playerActive)
+        rows = reihen(windowHeight, windowWidth)
+        ops = undoRedo(windowHeight, windowWidth)
+        active = player(windowHeight, windowWidth, controler.gameState.playerActive)
         stage = MainStage()
     }
 
@@ -45,30 +49,30 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                 e match
                 case Event.Start =>
                 case Event.First =>
-                    active = player(height, width, controler.gameState.playerActive)
+                    active = player(windowHeight, windowWidth, controler.gameState.playerActive)
                 case Event.nextPlayer =>
-                    active = player(height, width, controler.gameState.playerActive)
+                    active = player(windowHeight, windowWidth, controler.gameState.playerActive)
                 case Event.Undo =>
                     state = "StatePlayCard"
-                    active = player(height, width, controler.gameState.playerActive)
+                    active = player(windowHeight, windowWidth, controler.gameState.playerActive)
                 case Event.Redo =>
                     state = "StatePlayCard"
-                    active = player(height, width, controler.gameState.playerActive)
+                    active = player(windowHeight, windowWidth, controler.gameState.playerActive)
                 case Event.End =>
                     end
-                rows = reihen(height, width)
-                ops = undoRedo(height, width)
-                stage = MainStage(height, width)
+                rows = reihen(windowHeight, windowWidth)
+                ops = undoRedo(windowHeight, windowWidth)
+                stage = MainStage(windowHeight, windowWidth)
             )
     }
 
-        def MainStage(windowHeight: Double = height,
-        windowWidth: Double = width): JFXApp3.PrimaryStage = {
+        def MainStage(windowHeight: Double = windowHeight,
+        windowWidth: Double = windowWidth): JFXApp3.PrimaryStage = {
             new JFXApp3.PrimaryStage {
                 title = "Hornochsen"
                 scene = new Scene {
-                    if darkmode then fill = Black
-                    else fill = White
+                    if darkmode then fill = dark
+                    else fill = bright
                     content = new VBox {
                         children = Seq(
                             new HBox {
@@ -85,25 +89,21 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
         }
 
         def reihen(windowHeight: Double, windowWidth: Double): VBox = {
+            val playingCard = new ImageView(new Image("file:images/playingCards.png"))
             new VBox {
                 prefHeight = (3.0/5)*windowHeight
                 prefWidth = (2.0/3)*windowWidth
                 children = (for (i <- 1 to controler.gameState.board.rows.size) yield
                     new HBox {
-                        border = new Border(new BorderStroke(if darkmode then White else Black, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
+                        border = new Border(new BorderStroke(if darkmode then bright else dark, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
                         alignment = Pos.CenterLeft
                         children = Seq(
-                            new Text {
-                                border = new Border(new BorderStroke(if darkmode then White else Black, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
-                                text = s"Row $i: "
-                                style = "-fx-font-size: 20pt"
-                            },
                             new Text {
                                 textAlignment = TextAlignment.Center
                                 text = s"Row $i: "
                                 style = "-fx-font-size: 20pt"
                                 if darkmode then fill = White
-                                else fill = Black
+                                else fill = dark
                                 prefHeight = ((3.0/5)*windowHeight)/controler.gameState.board.rows.size
                                 prefWidth = (2.0/3)*windowWidth
                             },
@@ -112,7 +112,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                 text = controler.gameState.board.rows(i-1).cards.mkString(", ")
                                 style = "-fx-font-size: 20pt"
                                 if darkmode then fill = White
-                                else fill = Black
+                                else fill = dark
                                 prefHeight = ((3.0/5)*windowHeight)/controler.gameState.board.rows.size
                                 prefWidth = (2.0/3)*windowWidth
                             }
@@ -126,7 +126,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
             new VBox {
                 prefHeight = (3.0/5)*windowHeight
                 prefWidth = (1.0/3)*windowWidth
-                border = new Border(new BorderStroke(if darkmode then White else Black, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
+                border = new Border(new BorderStroke(if darkmode then bright else dark, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
                 alignment = Pos.Center
                 children = Seq(
                     new Button {
@@ -156,45 +156,30 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                         style = "-fx-font-size: 20pt"
                         onMouseClicked = (event) =>
                             darkmode = !darkmode
+                            if darkmode then
+                                bright = new Color(100,100,100)
+                            else
+                                bright = new Color(200,200,200)
+                            rows = reihen(windowHeight, windowWidth)
+                            ops = undoRedo(windowHeight, windowWidth)
+                            active = player(windowHeight, windowWidth, controler.gameState.playerActive)
                             stage = MainStage()
                     }
                 )
             }
         }
 
-        def selectedCards(windowHeight: Double, windowWidth: Double): HBox = {
-            new HBox {
-                prefHeight = (3.0/5)*windowHeight
-                prefWidth = (1.0/3)*windowWidth
-                border = new Border(new BorderStroke(if darkmode then White else Black, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
-                alignment = Pos.Center
-                children = (for (i <- controler.gameState.board.playedCards) yield
-                        new Text {
-                            alignment = Pos.Center
-                            textAlignment = TextAlignment.Center
-                            text = i._1.toString + i._2.name
-                            style = "-fx-font-size: 20pt"
-                            if darkmode then fill = White
-                            else fill = Black
-                            prefWidth = (1.0/3)*windowWidth
-                            prefHeight = ((1.0/3)*windowHeight)/controler.gameState.players.size
-                        }
-                ).toList
-            }
-        }
-
         def player(windowHeight: Double, windowWidth: Double, player: InterfacePlayer): HBox = {
             new HBox {
-                border = new Border(new BorderStroke(if darkmode then White else Black, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
+                border = new Border(new BorderStroke(if darkmode then bright else dark, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
                 alignment = Pos.Center
                 children = Seq(
                     new Text {
                         alignment = Pos.Center
-                        textAlignment = TextAlignment.Left
                         text = player.name
                         style = "-fx-font-size: 20pt"
                         if darkmode then fill = White
-                        else fill = Black
+                        else fill = dark
                         prefWidth = (1.0/3)*windowWidth
                     },
                     new HBox {
@@ -203,11 +188,10 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                     },
                     new Text {
                         alignment = Pos.Center
-                        textAlignment = TextAlignment.Right
                         text = "Ochsen: " + player.ochsen
                         style = "-fx-font-size: 20pt"
                         if darkmode then fill = White
-                        else fill = Black
+                        else fill = dark
                         prefWidth = (1.0/3)*windowWidth
                     }
                 )
@@ -217,11 +201,14 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
         }
 
         def playerCards(windowHeight: Double, windowWidth: Double, player: InterfacePlayer): Pane = {
+            val playingCard = new ImageView(new Image("file:images/playingCards.png"))
             if player.getCards.length < 8 then
                 new HBox {
                     alignment = Pos.Center
                     children = (for (i <- 0 to player.getCards.length - 1) yield
                         new Button {
+                            prefHeight = ((2.0/5)*windowHeight)/player.getCards.length
+                            prefWidth = (1.0/3)*windowWidth/player.getCards.length
                             alignment = Pos.Center
                             val card = player.getCards(i)
                             val p = player
@@ -241,7 +228,10 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                             alignment = Pos.Center
                             children = (for (i <- 0 to player.getCards.length/2 - 1) yield
                                 new Button {
+                                    prefHeight = ((2.0/5)*windowHeight)/4
+                                    prefWidth = (1.0/3)*windowWidth/4
                                     alignment = Pos.Center
+                                    graphic = playingCard
                                     text = player.getCards(i).toString
                                     val card = player.getCards(i)
                                     val p = player
@@ -256,6 +246,8 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                             alignment = Pos.Center
                             children = (for (i <- player.getCards.length/2 to player.getCards.length - 1) yield
                                 new Button {
+                                    prefHeight = ((2.0/5)*windowHeight)/4
+                                    prefWidth = (1.0/3)*windowWidth/4
                                     alignment = Pos.Center
                                     text = player.getCards(i).toString
                                     style = "-fx-font-size: 10pt"
