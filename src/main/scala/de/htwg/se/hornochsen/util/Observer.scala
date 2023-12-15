@@ -13,6 +13,7 @@ enum Event:
     case Start
     case First
     case nextPlayer
+    case PlaceCards
     case TakeRow
     case Undo
     case Redo

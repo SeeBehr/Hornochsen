@@ -51,6 +51,8 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                 case Event.TakeRow =>
                     state = "StateTakeRow"
                     change = selectedCards(darkmode, height, width)
+                case Event.PlaceCards =>
+                    state = "PlaceCards"
                 case Event.Undo =>
                     name match
                     case "StatePlayCard" =>
@@ -113,7 +115,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                 val row = i
                                 onMouseClicked = (event) => {
                                     if state == "StateTakeRow" then
-                                        controler.takeRow(row)
+                                        controler.takeRow(controler.gameState.playerActive, row)
                                 }
                             },
                             new Text {

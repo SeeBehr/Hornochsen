@@ -39,6 +39,16 @@ private case object StatePlayCard extends UIState with TUIState {
     }
 }
 
+private case object StatePlaceCards extends UIState with TUIState {
+    def interpretLine(controler: InterfaceControler, input: String): Unit = {
+        
+    }
+    var state: TUIState = StatePlaceCards
+    val name: String = "StatePlaceCards"
+
+
+}
+
 private case object StateTakeRow extends UIState with TUIState {
     var state: TUIState = StateTakeRow
     val name: String = "StateTakeRow"
@@ -50,7 +60,7 @@ private case object StateTakeRow extends UIState with TUIState {
             var cantake = !(intPut.get < 1 || intPut.get > controler.gameState.board.rows.length)
             cantake match
             case true =>
-                controler.takeRow(intPut.get)
+                controler.takeRow(controler.gameState.playerActive, intPut.get)
             case false =>
                 println("Reihe existiert nicht. ")
                 interpretLine(controler, readLine)
@@ -85,6 +95,12 @@ case class TUI(controler:InterfaceControler) extends UI with TUIState{
                 println(controler.gameState.playerActive.toString())
                 println(s"Select Card to play:")
                 state = StatePlayCard
+            case Event.PlaceCards =>
+                println("Next Player")
+                println(controler.gameState.board.toString())
+                println(controler.gameState.board.playedCardsToString)
+                println(s"Player ${controler.gameState.playerActive.name} select Row to take:")
+                state = StatePlaceCards
             case Event.TakeRow =>
                 println(controler.gameState.board.toString())
                 println(controler.gameState.board.playedCardsToString)
@@ -130,10 +146,11 @@ case class TUI(controler:InterfaceControler) extends UI with TUIState{
 
     override def run = {
         while controler.isrunning do
-            println("New Round")
-            println("State: " + state)
-            interpretLine(controler, readLine)
-            state = StatePlayCard
+            if state != StatePlaceCards then
+                println("New Round")
+                println("State: " + state)
+                interpretLine(controler, readLine)
+                state = StatePlayCard
     }
 
     override def end = {
