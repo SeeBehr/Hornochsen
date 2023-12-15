@@ -6,7 +6,7 @@ import BaseModel.Player
 
 class PlayerSpec extends AnyWordSpec {
   "Player" should {
-        val player1 = Player(name = "Sebastian", cards = Vector(1, 2), ochsen = 0)
+        val player1 = Player(Name = "Sebastian", Cards = Vector(1, 2), Ochsen = 0)
         "have a Player as String of form\n'name:\n\tcards: x, y\n\tOchsen: n\n'" in {
             player1.toString() should be("Sebastian:\n\tcards: 1, 2\n\tOchsen: 0\n")
         }
