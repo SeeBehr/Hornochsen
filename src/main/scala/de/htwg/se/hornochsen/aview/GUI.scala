@@ -40,7 +40,6 @@ class GUI(controler: Controler) extends UI with JFXApp3{
     }
 
     override def update(e:Event, name:String="0") = {
-        println("Update GUI")
         if e == Event.Start then
             state = "StatePlayCard"
         else
@@ -74,7 +73,7 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                     end
                 rows = reihen(darkmode, height, width)
                 ops = undoRedo(darkmode, height, width)
-                stage = MainStage()
+                stage = MainStage(darkmode, height, width)
             )
     }
 
@@ -115,7 +114,6 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                                 style = "-fx-font-size: 10pt"
                                 val row = i
                                 onMouseClicked = (event) => {
-                                    print(f"Take Row $i\n")
                                     if state == "StateTakeRow" then
                                         controler.takeRow(controler.gameState.playerActive, row+1, "StateTakeRow")
                                 }
@@ -123,7 +121,7 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                             new Text {
                                 textAlignment = TextAlignment.Center
                                 text = s"Row $i: "
-                                style = "-fx-font-size: 30pt"
+                                style = "-fx-font-size: 20pt"
                                 if darkmode then fill = White
                                 else fill = Black
                                 prefHeight = ((3.0/5)*windowHeight)/controler.gameState.board.rows.size
@@ -132,7 +130,7 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                             new Text {
                                 textAlignment = TextAlignment.Center
                                 text = controler.gameState.board.rows(i-1).cards.mkString(", ")
-                                style = "-fx-font-size: 30pt"
+                                style = "-fx-font-size: 20pt"
                                 if darkmode then fill = White
                                 else fill = Black
                                 prefHeight = ((3.0/5)*windowHeight)/controler.gameState.board.rows.size
@@ -157,7 +155,6 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                         text = "Undo"
                         style = "-fx-font-size: 20pt"
                         onMouseClicked = (event) => {
-                            print("Undo\n")
                             if state == "StatePlayCard" then
                                 controler.doOp("undo", "StatePlayCard")
                         }
@@ -168,12 +165,11 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                         text = "Redo"
                         style = "-fx-font-size: 20pt"
                         onMouseClicked = (event) => {
-                            print("Redo\n")
                             if state == "StatePlayCard" then
                                 controler.doOp("redo", "StatePlayCard")
                         }
                     }
-                    ,new Button {
+                    /*,new Button {
                         alignment = Pos.Center
                         prefWidth = (1.5/5)*windowWidth
                         text = "Mode"
@@ -183,7 +179,7 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                                 stage = MainStage(darkmode = false)
                             else
                                 stage = MainStage(darkmode = true)
-                    }
+                    }*/
                 )
             }
         }
@@ -199,7 +195,7 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                             alignment = Pos.Center
                             textAlignment = TextAlignment.Center
                             text = i._1.toString + i._2.name
-                            style = "-fx-font-size: 30pt"
+                            style = "-fx-font-size: 20pt"
                             if darkmode then fill = White
                             else fill = Black
                             prefWidth = (1.0/3)*windowWidth
@@ -218,7 +214,7 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                         alignment = Pos.Center
                         textAlignment = TextAlignment.Left
                         text = player.name
-                        style = "-fx-font-size: 30pt"
+                        style = "-fx-font-size: 20pt"
                         if darkmode then fill = White
                         else fill = Black
                         prefWidth = (1.0/3)*windowWidth
@@ -231,7 +227,7 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                         alignment = Pos.Center
                         textAlignment = TextAlignment.Right
                         text = "Ochsen: " + player.ochsen
-                        style = "-fx-font-size: 30pt"
+                        style = "-fx-font-size: 20pt"
                         if darkmode then fill = White
                         else fill = Black
                         prefWidth = (1.0/3)*windowWidth
@@ -248,15 +244,12 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                     alignment = Pos.Center
                     children = (for (i <- 0 to player.getCards.length - 1) yield
                         new Button {
-                            prefHeight = (1.0/8)*windowWidth 
-                            prefWidth = (1.0/8)*windowWidth
+                            alignment = Pos.Center
                             val card = player.getCards(i)
                             val p = player
                             style = "-fx-font-size: 10pt"
-                            alignment = Pos.Center
                             onMouseClicked = (event) => {
                                 if state == "StatePlayCard" then
-                                    print(s"Play Card ${card}\n")
                                     controler.playCard(p, card, "StatePlayCard")
                             }
                         }
@@ -276,7 +269,6 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                                     val p = player
                                     style = "-fx-font-size: 10pt"
                                     onMouseClicked = (event) => {
-                                        print(s"Play Card ${player.getCards(i)}\n")
                                         controler.playCard(p, card, "StatePlayCard")
                                     }
                                 }
@@ -292,7 +284,6 @@ class GUI(controler: Controler) extends UI with JFXApp3{
                                     val card = player.getCards(i)
                                     val p = player
                                     onMouseClicked = (event) => {
-                                        print(s"Play Card ${player.getCards(i)}\n")
                                         if state == "StatePlayCard" then
                                             controler.playCard(p, card, "StatePlayCard")
                                     }

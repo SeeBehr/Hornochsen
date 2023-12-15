@@ -1,22 +1,32 @@
 package de.htwg.se.hornochsen.model.BaseModel
 
 import scala.util.{Try, Success, Failure}
-import de.htwg.se.hornochsen.model.{InterfacePlayer, InterfaceDeck, InterfaceBoard}
+import de.htwg.se.hornochsen.model.{InterfacePlayer, InterfaceDeck, InterfaceBoard, InterfaceRow}
 
-case class Row(val nummer: Int, val cards: Vector[Int], val filled: Int = 1) {
+case class Row(val Nummer: Int, val myCards: Vector[Int], val Filled: Int = 1) extends InterfaceRow {
     
     override def toString(): String = {
-        "Row " + nummer + ": " + cards.mkString(", ") + " filled: " + filled.toString() + "\n"
+        "Row " + Nummer + ": " + myCards.mkString(", ") + " filled: " + filled.toString() + "\n"
     }
+
+    override def nummer: Int = Nummer
+
+    override def copy(nummer: Int = Nummer, Cards: Vector[Int] = myCards, filled: Int = Filled): InterfaceRow = {
+        Row(nummer, Cards, filled)
+    }
+
+    override def filled: Int = Filled
+
+    override def cards: Vector[Int] = myCards
 }
 
-case class Board(val rows: Vector[Row], var playedCards: Vector[(Int, InterfacePlayer)] = Vector.empty) extends InterfaceBoard {
+case class Board(val rows: Vector[InterfaceRow], var playedCards: Vector[(Int, InterfacePlayer)] = Vector.empty) extends InterfaceBoard {
     override def toString(): String = {
         ("Board:\n\t" + rows.mkString("\n\t") + "\n")
     }
 
     override def copy(
-        myRows: Vector[Row] = rows,
+        myRows: Vector[InterfaceRow] = rows,
         playedCards: Vector[(Int, InterfacePlayer)] = playedCards
     ): InterfaceBoard = {
         Board(myRows, playedCards)
@@ -31,8 +41,8 @@ case class Board(val rows: Vector[Row], var playedCards: Vector[(Int, InterfaceP
         val indexC: Int = rows(indexR).filled
         Board(
             rows = rows.updated((num - 1),
-            Row(nummer = num, rows(indexR).cards.updated(indexC, playedCard),
-            filled = rows((num - 1)).filled + 1)),
+            Row(Nummer = num, rows(indexR).cards.updated(indexC, playedCard),
+            Filled = rows((num - 1)).filled + 1)),
             playedCards = playedCards.filter(x => x._1 != playedCard)
         )
     }
@@ -44,9 +54,9 @@ case class Board(val rows: Vector[Row], var playedCards: Vector[(Int, InterfaceP
             rows = rows.updated(
                 nummer-1,
                 Row(
-                    nummer = nummer,
-                    cards = rows(nummer-1).cards.zipWithIndex.map(f => if f._2 == 0 then card else 0),
-                    filled = 1
+                    Nummer = nummer,
+                    myCards = rows(nummer-1).cards.zipWithIndex.map(f => if f._2 == 0 then card else 0),
+                    Filled = 1
                 )
             ),
             playedCards = Try(playedCards.tail) match {

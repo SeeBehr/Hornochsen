@@ -41,6 +41,12 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
     var undoHistory = new History()
     var redoHistory = new History()
     var running = true
+    var Rownum = -1
+    def rownum(num: Int): Try[Int] = {
+        if (num < 0 | num > stateState.board.rows(0).cards.length) then Failure(new IllegalArgumentException("Row does not exist"))
+        Rownum = num
+        Success(num)
+    }
 
     override def isrunning: Boolean = running
 
@@ -86,7 +92,6 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
                     playeractive = makePlayer(),
                     playerswaiting = Vector.empty
                 )
-                println("Played Cards: " + stateState.board.playedCards.toString()) 
             if stateState.playerActive == makePlayer() then
                 if stateState.playersDone(0).getCards.length == 0 then
                     notifyObservers(Event.End)
@@ -106,12 +111,11 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
     }
 
     def placeCards(): Unit = {
-        println("Place Cards")
-        stateState.board.copy(myRows=stateState.board.rows, playedCards=stateState.board.playedCards.sortBy((card: Int, player: InterfacePlayer) => card: Int))
-        println("Played Cards: " + stateState.board.playedCards.toString())
+        stateState = stateState.copy(Board=stateState.board.copy(myRows=stateState.board.rows, playedCards=stateState.board.playedCards.sortBy((card: Int, player: InterfacePlayer) => card: Int)))
         stateState.board.playedCards.foreach{ p => val player = p._2; val card = p._1
             stateState = stateState.copy(
-                playeractive = player
+                playeractive = player,
+                Board=stateState.board.copy(playedCards = stateState.board.playedCards.filter((c, p) => p != player))
             )
             if stateState.playerActive != makePlayer() then
                 val index: Int = where(stateState.board, card)
@@ -157,9 +161,8 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
         if statename != "0" then undoHistory.save(ConcreteMemento(stateState, statename))
         if (row < 0 | row > stateState.board.rows.length) then Failure(new java.lang.IllegalArgumentException(s"Player ${stateState.playerActive.name} can't take Row ${row}"))
         val (newBoard, moreOchsen) = stateState.board.takeRow(
-            stateState.board.playedCards.filter((c, p) => p == player).head._1, row+1
+            stateState.board.playedCards.filter((c, p) => p == player).head._1, row
             )
-        println("Ochsen: " + moreOchsen.toString)
         stateState = stateState.copy(
             playeractive = player.addOchsen(moreOchsen),
             Board = newBoard
