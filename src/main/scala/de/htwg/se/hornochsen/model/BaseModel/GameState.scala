@@ -8,12 +8,12 @@ import com.google.inject.Inject
 import com.google.inject.assistedinject.Assisted
 
 
-case class GameState @Inject() (
-    @Assisted("playerswaiting") var playerswaiting: Vector[InterfacePlayer],
-    @Assisted("playeractive") var playeractive: InterfacePlayer,
-    @Assisted("playersdone") var playersdone: Vector[InterfacePlayer],
-    @Assisted("myBoard") var myBoard: InterfaceBoard,
-    @Assisted("RemDeck") var RemDeck: InterfaceDeck
+case class GameState (
+    var playerswaiting: Vector[InterfacePlayer],
+    var playeractive: InterfacePlayer,
+    var playersdone: Vector[InterfacePlayer],
+    var myBoard: InterfaceBoard,
+    var RemDeck: InterfaceDeck
 ) extends InterfaceGameState {
     override def toString(): String = {
         "Gamestate: \n\n" + "Players: \n" + players.mkString("\n") + "\n" + board.toString() + remDeck.toString() + "\n"

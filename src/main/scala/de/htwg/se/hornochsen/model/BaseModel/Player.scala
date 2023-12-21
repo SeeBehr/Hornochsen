@@ -2,6 +2,8 @@ package de.htwg.se.hornochsen.model.BaseModel
 
 import de.htwg.se.hornochsen.model.InterfacePlayer
 
+import scala.annotation.static
+
 case class Player(val Name: String = "", val Cards: Vector[Int] = Vector.empty[Int], val Ochsen: Int = 0) extends InterfacePlayer {
     override def toString(): String = {
         name + ":\n\tcards: " + Cards.mkString(", ") + "\n\tOchsen: " + ochsen.toString() + "\n"

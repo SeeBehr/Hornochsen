@@ -6,10 +6,10 @@ import de.htwg.se.hornochsen.controler.InterfaceControler
 import de.htwg.se.hornochsen.model.{InterfaceDeck, initDeck}
 
 
-class HornochsenTestModule() extends AbstractModule {
+class HornochsenTestModule(decksize: Int = 120) extends AbstractModule {
 
   override def configure(): Unit = {
-    bind(classOf[InterfaceControler]).toInstance(new Controler(initializeGame(input = (i: Int) => i.toString)))
+    bind(classOf[InterfaceControler]).toInstance(new Controler(initializeGame(initDeck(120), input = (i: Int) => i.toString)))
     bind(classOf[InterfaceDeck]).toInstance(initDeck(120))
   }
 
