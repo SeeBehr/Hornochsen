@@ -11,14 +11,14 @@ import scala.util.{Try,Success,Failure}
 
 
 def initializeGame(
-    shuffle: Boolean = true,
-    sizeDeck: Int = 120,
-    numRows: Int = 4,
-    numRowCards: Int = 6,
-    numPlayer: Int = 4,
-    numHandCards: Int = 12,
-    input: Int => String):
-        InterfaceGameState = {
+        shuffle: Boolean = true,
+        sizeDeck: Int = 120,
+        numRows: Int = 4,
+        numRowCards: Int = 6,
+        numPlayer: Int = 4,
+        numHandCards: Int = 12,
+        input: Int => String,
+    ): InterfaceGameState = {
             val deck = if (shuffle) {
                 initDeck(sizeDeck).shuffle()
             } else {

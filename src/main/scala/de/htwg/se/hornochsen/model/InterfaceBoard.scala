@@ -1,7 +1,6 @@
 package de.htwg.se.hornochsen.model
 
-import de.htwg.se.hornochsen.model.BaseModel._
-import de.htwg.se.hornochsen.model.InterfaceDeck
+import de.htwg.se.hornochsen.model.BaseModel.*
 
 trait InterfaceRow {
     def nummer: Int

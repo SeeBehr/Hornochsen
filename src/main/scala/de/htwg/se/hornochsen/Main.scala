@@ -1,21 +1,20 @@
 package de.htwg.se.hornochsen
 
-import de.htwg.se.hornochsen.aview._
-import de.htwg.se.hornochsen.util._
-import scala.io.StdIn.readLine
+import com.google.inject.{Guice, Injector}
+import de.htwg.se.hornochsen.aview.*
+import de.htwg.se.hornochsen.controler.BaseControler.initializeGame
+import de.htwg.se.hornochsen.controler.{InterfaceControler, makeControler}
+import de.htwg.se.hornochsen.util.*
 
 import scala.concurrent.{Await, Future}
-import controler.BaseControler.{Controler, initializeGame}
-import de.htwg.se.hornochsen.controler.makeControler
-import com.google.inject.Injector
-import com.google.inject.Guice
-import de.htwg.se.hornochsen.model.InterfaceGameState
 
 @main
 def start() = {
-    val controler = makeControler(initializeGame(input=(i:Int) => i.toString))
-    var tui = new TUI(controler)
-    var gui = new GUI(controler)
+    val injector: Injector = Guice.createInjector(new HornochsenModule())
+    val controler = injector.getInstance(classOf[InterfaceControler])
+
+    val tui = new TUI(controler)
+    val gui = new GUI(controler)
     controler.add(gui)
     controler.add(tui)
     
