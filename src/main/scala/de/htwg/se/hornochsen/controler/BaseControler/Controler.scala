@@ -4,6 +4,7 @@ import de.htwg.se.hornochsen.controler.InterfaceControler
 import de.htwg.se.hornochsen.util._
 import de.htwg.se.hornochsen.model._
 import de.htwg.se.hornochsen.aview._
+import com.google.inject.{Guice, Inject, Injector}
 
 import scala.util.{Try,Success,Failure}
 
@@ -34,7 +35,7 @@ def initializeGame(
             initGameState(allP, board, refilldeck)
 }
 
-class Controler(var stateState: InterfaceGameState) extends Observable with InterfaceControler {
+class Controler @Inject() (var stateState: InterfaceGameState) extends InterfaceControler with Observable  {
     var undoHistory = new History()
     var redoHistory = new History()
     var running = true

@@ -7,7 +7,9 @@ import scala.io.StdIn.readLine
 import scala.concurrent.{Await, Future}
 import controler.BaseControler.{Controler, initializeGame}
 import de.htwg.se.hornochsen.controler.makeControler
-import de.htwg.se.hornochsen.controler.modules.Default.{given}
+import com.google.inject.Injector
+import com.google.inject.Guice
+import de.htwg.se.hornochsen.model.InterfaceGameState
 
 @main
 def start() = {
