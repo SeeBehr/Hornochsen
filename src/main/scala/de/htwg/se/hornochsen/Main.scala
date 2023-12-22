@@ -2,8 +2,7 @@ package de.htwg.se.hornochsen
 
 import com.google.inject.{Guice, Injector}
 import de.htwg.se.hornochsen.aview.*
-import de.htwg.se.hornochsen.controler.BaseControler.initializeGame
-import de.htwg.se.hornochsen.controler.{InterfaceControler, makeControler}
+import de.htwg.se.hornochsen.controler.InterfaceControler
 import de.htwg.se.hornochsen.util.*
 
 import scala.concurrent.{Await, Future}

@@ -36,7 +36,7 @@ class InterfaceControlerspec extends AnyWordSpec {
 }
 
 class BaseControlerSpec extends AnyWordSpec {
-    val Interfaceinitgame = initializeGame(shuffle=false,10,1,1,1,1,input=Int=>"Patrick")
+    val Interfaceinitgame = initializeGame(initDeck(10),1,1,1,1,input=Int=>"Patrick")
     val initgame = Controler(Interfaceinitgame)
     val full = Controler(stateState=initgame.gameState.copy(Board=initgame.gameState.board.copy(Vector[InterfaceRow](Row(1,Vector[Int](1,2,3,4,5,6),6)))))
     "has a init method" in {
