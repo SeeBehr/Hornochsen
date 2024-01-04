@@ -4,6 +4,8 @@ import de.htwg.se.hornochsen.model
 import model.{InterfaceBoard, InterfacePlayer, InterfaceDeck}
 import model.makePlayer
 import de.htwg.se.hornochsen.model.InterfaceGameState
+import play.api.libs.json._
+import java.io._
 
 
 case class GameState (
@@ -16,9 +18,6 @@ case class GameState (
     override def toString(): String = {
         "Gamestate: \n\n" + "Players: \n" + players.mkString("\n") + "\n" + board.toString() + remDeck.toString() + "\n"
     }
-
-    
-
 
     override def playersDone: Vector[InterfacePlayer] = playersdone
     
@@ -46,4 +45,14 @@ case class GameState (
     override def board: InterfaceBoard = myBoard
 
     override def remDeck: InterfaceDeck = RemDeck
+
+    override def toJSON: play.api.libs.json.JsValue = {
+        play.api.libs.json.Json.obj(
+            "playerswaiting" -> playersWaiting.map(_.toJSON),
+            "playeractive" -> playerActive.toJSON,
+            "playersdone" -> playersDone.map(_.toJSON),
+            "board" -> board.toJSON,
+            "remDeck" -> remDeck.toJSON
+        )
+    }
 }

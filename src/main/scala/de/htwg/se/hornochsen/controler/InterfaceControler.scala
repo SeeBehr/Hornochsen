@@ -12,5 +12,6 @@ trait InterfaceControler extends Observable {
     def gameState: InterfaceGameState
     def doOp(input: String, stateName: String): Try[Boolean]
     def playCard(player: InterfacePlayer, card: Int, stateName: String): Boolean
-    //def takeRow(player: InterfacePlayer, row: Int, statename: String = "0"): InterfacePlayer
+    def save: Unit
+    def load: Unit
 }
