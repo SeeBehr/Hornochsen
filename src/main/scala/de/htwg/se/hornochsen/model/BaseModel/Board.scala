@@ -2,6 +2,8 @@ package de.htwg.se.hornochsen.model.BaseModel
 
 import scala.util.{Try, Success, Failure}
 import de.htwg.se.hornochsen.model.{InterfacePlayer, InterfaceDeck, InterfaceBoard, InterfaceRow}
+import play.api.libs.json._
+import scalafx.scene.input.KeyCode.J
 
 case class Row(val Nummer: Int, val myCards: Vector[Int], val Filled: Int = 1) extends InterfaceRow {
     var pvalue: Int = myCards.map(f => if f == 0 then 0 else if f % 10 == 0 then 10 else if f % 5 == 0 then 5 else 1).sum
@@ -21,6 +23,15 @@ case class Row(val Nummer: Int, val myCards: Vector[Int], val Filled: Int = 1) e
     override def filled: Int = Filled
 
     override def cards: Vector[Int] = myCards
+
+    override def toJSON: JsValue = {
+        Json.obj(
+            "nummer" -> nummer,
+            "cards" -> cards,
+            "filled" -> filled,
+            "value" -> value
+        )
+    }
 }
 
 case class Board(val rows: Vector[InterfaceRow], var playedCards: Vector[(Int, InterfacePlayer)] = Vector.empty) extends InterfaceBoard {
@@ -67,6 +78,16 @@ case class Board(val rows: Vector[InterfaceRow], var playedCards: Vector[(Int, I
             }
         ),
         returnRow.cards.map(f => if f == 0 then 0 else if f % 10 == 0 then 10 else if f % 5 == 0 then 5 else 1).sum
+        )
+    }
+
+    override def toJSON: JsValue = {
+        Json.obj(
+            "rows" -> rows.map(_.toJSON),
+            "playedCards" -> playedCards.map(p => Json.obj(
+                "card" -> p._1,
+                "player" -> p._2.toJSON
+            )) 
         )
     }
 }

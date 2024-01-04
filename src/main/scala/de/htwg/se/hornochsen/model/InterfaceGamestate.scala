@@ -1,6 +1,7 @@
 package de.htwg.se.hornochsen.model
 
 import de.htwg.se.hornochsen.model.BaseModel.{GameState, Player}
+import play.api.libs.json._
 
 trait InterfaceGameState {
     def players: Vector[InterfacePlayer]
@@ -16,6 +17,7 @@ trait InterfaceGameState {
     ): InterfaceGameState
     def board: InterfaceBoard
     def remDeck: InterfaceDeck
+    def toJSON: JsValue
 }
 
 def initGameState(allP: Vector[InterfacePlayer], board: InterfaceBoard, deck: InterfaceDeck): InterfaceGameState = {

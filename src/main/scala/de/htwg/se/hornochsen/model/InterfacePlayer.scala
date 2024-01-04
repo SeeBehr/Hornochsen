@@ -1,5 +1,6 @@
 package de.htwg.se.hornochsen.model
 import de.htwg.se.hornochsen.model.BaseModel.Player
+import play.api.libs.json._
 
 trait InterfacePlayer {
     def playCard(cardNr: Int): InterfacePlayer
@@ -9,6 +10,7 @@ trait InterfacePlayer {
     def getCards: Vector[Int]
     def name: String
     def ochsen: Int
+    def toJSON: JsValue
 }
 def makePlayer(name: String = "", cards: Vector[Int] = Vector.empty[Int], ochsen: Int = 0): InterfacePlayer = {
     Player(name, cards.sorted, ochsen)

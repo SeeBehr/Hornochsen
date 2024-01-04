@@ -2,6 +2,7 @@ package de.htwg.se.hornochsen.model.BaseModel
 
 import de.htwg.se.hornochsen.model.InterfaceDeck
 import scala.util.Random
+import play.api.libs.json._
 
 case class Deck(cards: Vector[Int]) extends InterfaceDeck {
     def shuffle(): Deck = {
@@ -15,4 +16,10 @@ case class Deck(cards: Vector[Int]) extends InterfaceDeck {
     }
     
     override def getCards: Vector[Int] = cards
+
+    override def toJSON: JsValue = {
+        Json.obj(
+            "cards" -> cards
+        )
+    }
 }

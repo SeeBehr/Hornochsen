@@ -2,6 +2,7 @@ package de.htwg.se.hornochsen.model
 
 import de.htwg.se.hornochsen.model.BaseModel._
 import de.htwg.se.hornochsen.model.InterfaceDeck
+import play.api.libs.json._
 
 trait InterfaceRow {
     def nummer: Int
@@ -9,6 +10,7 @@ trait InterfaceRow {
     def filled: Int
     def value: Int
     def copy(nummer: Int = nummer, cards: Vector[Int] = cards, Filled: Int = 1): InterfaceRow
+    def toJSON: JsValue
 }
 
 trait InterfaceBoard {
@@ -21,6 +23,7 @@ trait InterfaceBoard {
         playedCards: Vector[(Int, InterfacePlayer)] = playedCards
     ): InterfaceBoard
     def playedCardsToString: String
+    def toJSON: JsValue
 }
 
 def initBoard(numRows: Int, numRowCards: Int, deck: InterfaceDeck): (InterfaceBoard, InterfaceDeck) = {
