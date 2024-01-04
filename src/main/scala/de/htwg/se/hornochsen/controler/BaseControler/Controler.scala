@@ -111,7 +111,7 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
                     if (canAdd(index)) {
                         (stateState.board.addCard(card, index+1), 0)
                     } else {
-                        takeRow(player, card, index)
+                        takeRow(player, card, index+1)
                     }
                 }
             stateState = stateState.copy(

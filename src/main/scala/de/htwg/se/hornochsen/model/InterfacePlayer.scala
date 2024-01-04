@@ -11,5 +11,5 @@ trait InterfacePlayer {
     def ochsen: Int
 }
 def makePlayer(name: String = "", cards: Vector[Int] = Vector.empty[Int], ochsen: Int = 0): InterfacePlayer = {
-    Player(name, cards, ochsen)
+    Player(name, cards.sorted, ochsen)
 }

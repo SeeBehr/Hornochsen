@@ -212,6 +212,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                             alignment = Pos.Center
                             val card = player.getCards(i)
                             val p = player
+                            text = card.toString
                             style = "-fx-font-size: 10pt"
                             onMouseClicked = (event) => {
                                 if state == "StatePlayCard" then
@@ -235,6 +236,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                     text = player.getCards(i).toString
                                     val card = player.getCards(i)
                                     val p = player
+                                    text = card.toString
                                     style = "-fx-font-size: 10pt"
                                     onMouseClicked = (event) => {
                                         controler.playCard(p, card, "StatePlayCard")
@@ -253,6 +255,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                     style = "-fx-font-size: 10pt"
                                     val card = player.getCards(i)
                                     val p = player
+                                    text = card.toString
                                     onMouseClicked = (event) => {
                                         if state == "StatePlayCard" then
                                             controler.playCard(p, card, "StatePlayCard")
