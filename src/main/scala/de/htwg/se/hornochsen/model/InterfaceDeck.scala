@@ -6,6 +6,7 @@ trait InterfaceDeck {
     def shuffle(): InterfaceDeck
     def remcount(count: Int): InterfaceDeck
     def getCards: Vector[Int]
+    def toXml(): String
 }
 
 def initDeck(number: Int): InterfaceDeck = Deck{Vector.tabulate(number)(x => x+1)}

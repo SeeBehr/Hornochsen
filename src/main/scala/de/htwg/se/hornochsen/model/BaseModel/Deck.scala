@@ -15,4 +15,12 @@ case class Deck(cards: Vector[Int]) extends InterfaceDeck {
     }
     
     override def getCards: Vector[Int] = cards
+
+    override def toXml(): String = {
+        val cardsXml = cards.map{card => s"<card>${card}</card>" }.mkString;
+        
+        s"<deck>" +
+          s"<cards>${cardsXml}</cards>" +
+        s"</deck>"
+    }
 }

@@ -25,6 +25,16 @@ case class Player(val Name: String = "", val Cards: Vector[Int] = Vector.empty[I
         Cards.contains(card)
     }
 
+    override def toXml(): String = {
+        val cardXml = Cards.map{card => s"<card>${card}</card>" }.mkString;
+        
+        s"<person>" +
+          s"<name>${name}</name>" +
+          s"<cards>${cardXml}</cards>" +
+          s"<ochsen>${ochsen}</ochsen>" +
+        s"</person>"
+    }
+
     override def name = Name
 
     override def ochsen = Ochsen
