@@ -1,11 +1,11 @@
 package de.htwg.se.hornochsen.model.BaseModel
 
 import de.htwg.se.hornochsen.model
-import model.{InterfaceBoard, InterfacePlayer, InterfaceDeck}
-import model.makePlayer
-import de.htwg.se.hornochsen.model.InterfaceGameState
+import model.{InterfaceBoard, InterfaceRow, InterfacePlayer, InterfaceDeck, InterfaceGameState}
 import play.api.libs.json._
 import java.io._
+import de.htwg.se.hornochsen.model.*
+import java.net.InterfaceAddress
 
 
 case class GameState (
@@ -46,7 +46,13 @@ case class GameState (
 
     override def remDeck: InterfaceDeck = RemDeck
 
-    override def toJSON: play.api.libs.json.JsValue = {
+    override def save: Unit = {
+        val pw = new PrintWriter(new File("Save/gamestate.json"))
+        pw.write(this.toJSON.toString)
+        pw.close()
+    }
+
+    def toJSON: play.api.libs.json.JsValue = {
         play.api.libs.json.Json.obj(
             "playerswaiting" -> playersWaiting.map(_.toJSON),
             "playeractive" -> playerActive.toJSON,
@@ -54,5 +60,23 @@ case class GameState (
             "board" -> board.toJSON,
             "remDeck" -> remDeck.toJSON
         )
+    }
+
+    override def load(file: String): InterfaceGameState = {
+        val p = makePlayer()
+        val b = makeDummyBoard()
+        val d = makeDummyDeck()
+        val json = Json.parse(file)
+        val jsonPlayersWaiting = (json \ "playerswaiting").as[JsArray]
+        val playersWaiting = (for (i <- jsonPlayersWaiting.value) yield p.load(i)).toVector
+        val jsonPlayerActive = (json \ "playeractive").get
+        val playerActive = p.load(jsonPlayerActive)
+        val jsonPlayersDone = (json \ "playersdone").as[JsArray]
+        val playersDone = (for (i <- jsonPlayersDone.value) yield p.load(i)).toVector
+        val jsonBoard = (json \ "board").get
+        val board = b.load(jsonBoard)
+        val jsonRemDeck = (json \ "remDeck").get
+        val remDeck = d.load(jsonRemDeck)
+        return GameState(playersWaiting, playerActive, playersDone, board, remDeck)
     }
 }

@@ -1,9 +1,8 @@
 package de.htwg.se.hornochsen.model.BaseModel
 
 import scala.util.{Try, Success, Failure}
-import de.htwg.se.hornochsen.model.{InterfacePlayer, InterfaceDeck, InterfaceBoard, InterfaceRow}
+import de.htwg.se.hornochsen.model.{InterfacePlayer, InterfaceDeck, InterfaceBoard, InterfaceRow, makePlayer, makeDummyRow}
 import play.api.libs.json._
-import scalafx.scene.input.KeyCode.J
 
 case class Row(val Nummer: Int, val myCards: Vector[Int], val Filled: Int = 1) extends InterfaceRow {
     var pvalue: Int = myCards.map(f => if f == 0 then 0 else if f % 10 == 0 then 10 else if f % 5 == 0 then 5 else 1).sum
@@ -31,6 +30,14 @@ case class Row(val Nummer: Int, val myCards: Vector[Int], val Filled: Int = 1) e
             "filled" -> filled,
             "value" -> value
         )
+    }
+
+    override def load(json: JsValue): InterfaceRow = {
+        val nummer = (json \ "nummer").as[Int]
+        val cards = (json \ "cards").as[Vector[Int]]
+        val filled = (json \ "filled").as[Int]
+        val value = (json \ "value").as[Int]
+        Row(nummer, cards, filled)
     }
 }
 
@@ -89,6 +96,16 @@ case class Board(val rows: Vector[InterfaceRow], var playedCards: Vector[(Int, I
                 "player" -> p._2.toJSON
             )) 
         )
+    }
+
+    override def load(json: JsValue): InterfaceBoard = {
+        val r = makeDummyRow()
+        val p = makePlayer()
+        val jsonRows = (json \ "rows").as[JsArray]
+        val rows = (for (i <- jsonRows.value) yield r.load(i)).toVector
+        val jsonPlayedCards = (json \ "playedCards").as[JsArray]
+        val playedCards = (for (i <- jsonPlayedCards.value) yield ((i \ "card").as[Int], p.load((i \ "player").as[JsValue]))).toVector
+        Board(rows, playedCards)
     }
 }
 

@@ -9,6 +9,9 @@ trait InterfaceDeck {
     def getCards: Vector[Int]
     def toXml(): String
     def toJSON: JsValue
+    def load(json: JsValue): InterfaceDeck
 }
+
+def makeDummyDeck(): InterfaceDeck = Deck(Vector.empty)
 
 def initDeck(number: Int): InterfaceDeck = Deck{Vector.tabulate(number)(x => x+1)}

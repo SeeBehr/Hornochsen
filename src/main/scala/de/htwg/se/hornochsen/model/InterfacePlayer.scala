@@ -12,6 +12,7 @@ trait InterfacePlayer {
     def ochsen: Int
     def toXml(): String
     def toJSON: JsValue
+    def load(json: JsValue): InterfacePlayer
 }
 def makePlayer(name: String = "", cards: Vector[Int] = Vector.empty[Int], ochsen: Int = 0): InterfacePlayer = {
     Player(name, cards.sorted, ochsen)

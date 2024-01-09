@@ -17,7 +17,8 @@ trait InterfaceGameState {
     ): InterfaceGameState
     def board: InterfaceBoard
     def remDeck: InterfaceDeck
-    def toJSON: JsValue
+    def save: Unit
+    def load(file: String): InterfaceGameState
 }
 
 def initGameState(allP: Vector[InterfacePlayer], board: InterfaceBoard, deck: InterfaceDeck): InterfaceGameState = {

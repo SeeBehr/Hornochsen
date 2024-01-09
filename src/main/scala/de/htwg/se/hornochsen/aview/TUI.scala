@@ -39,16 +39,6 @@ private case object StatePlayCard extends UIState with TUIState {
     }
 }
 
-private case object StatePlaceCards extends UIState with TUIState {
-    def interpretLine(controler: InterfaceControler, input: String): Unit = {
-        
-    }
-    var state: TUIState = StatePlaceCards
-    val name: String = "StatePlaceCards"
-
-
-}
-
 // Start of the Programm.
 case class TUI(controler:InterfaceControler) extends UI with TUIState{
     var state: TUIState = StatePlayCard

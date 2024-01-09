@@ -165,6 +165,26 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                             active = player(windowHeight, windowWidth, controler.gameState.playerActive)
                             stage = MainStage()
                     }
+                    ,new Button {
+                        alignment = Pos.Center
+                        prefWidth = (1.5/5)*windowWidth
+                        text = "Save"
+                        style = "-fx-font-size: 20pt"
+                        onMouseClicked = (event) => {
+                            if state == "StatePlayCard" then
+                                controler.save
+                        }
+                    }
+                    ,new Button {
+                        alignment = Pos.Center
+                        prefWidth = (1.5/5)*windowWidth
+                        text = "Load"
+                        style = "-fx-font-size: 20pt"
+                        onMouseClicked = (event) => {
+                            if state == "StatePlayCard" then
+                                controler.load
+                        }
+                    }
                 )
             }
         }

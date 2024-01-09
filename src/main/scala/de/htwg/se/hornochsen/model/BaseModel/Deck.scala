@@ -30,4 +30,9 @@ case class Deck(cards: Vector[Int]) extends InterfaceDeck {
             "cards" -> cards
         )
     }
+
+    override def load(json: JsValue): InterfaceDeck = {
+        val cards = (json \ "cards").as[Vector[Int]]
+        Deck(cards)
+    }
 }

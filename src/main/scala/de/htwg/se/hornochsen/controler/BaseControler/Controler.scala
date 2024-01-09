@@ -10,25 +10,6 @@ import java.io._
 import play.api.libs.json._
 
 
-def initializeGame(
-    deck: InterfaceDeck,
-    numRows: Int = 4,
-    numRowCards: Int = 6,
-    numPlayer: Int = 4,
-    numHandCards: Int = 12,
-    input: Int => String):
-        InterfaceGameState = {
-            val (board, playerdeck) = initBoard(numRows, numRowCards, deck)
-            val (allP, refilldeck) =
-                PlayerFactory.getInstance(
-                    playerCount = numPlayer,
-                    numHandCards = numHandCards,
-                    input = input,
-                    deck = playerdeck
-                )
-            initGameState(allP, board, refilldeck)
-}
-
 class Controler(var stateState: InterfaceGameState) extends Observable with InterfaceControler {
     var undoHistory = new History()
     var redoHistory = new History()
@@ -48,6 +29,12 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
                 Success(true)
             case "end" =>
                 end
+                Success(true)
+            case "save" =>
+                save
+                Success(true)
+            case "load" =>
+                load
                 Success(true)
             case _ =>
                 Failure(new java.lang.IllegalArgumentException(s"Unknown Command: ${input}"))
@@ -173,17 +160,14 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
     def end = notifyObservers(Event.End)
 
     override def save: Unit = {
-        val pw = new PrintWriter(new File("gamestate.json"))
-        pw.write(stateState.toJSON.toString)
-        pw.close()
+        stateState.save
     }
 
     override def load: Unit = {
-        val file = io.Source.fromFile("gamestate.json").mkString
-        val json = Json.parse(file)
-        stateState = stateState.load(json, type)
-
-
+        val file = io.Source.fromFile("Save/gamestate.json").mkString
+        stateState = stateState.load(file)
+        notifyObservers(Event.nextPlayer)
+    /*
         val playersWaiting = (json \ "playerswaiting").as[Vector[InterfacePlayer]]
         val pWaiting = playersWaiting.map(p => makePlayer(p.name, p.cards, p.ochsen))
         val playerActive = (json \ "playeractive").as[InterfacePlayer]
@@ -197,7 +181,27 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
         val playedCards = jplayedCards.map(p => (p._1, makePlayer(p._2.name, p._2.cards, p._2.ochsen))) 
         val remDeck = (json \ "remDeck").as[InterfaceDeck]
         stateState = GameState(pWaiting, pActive, pDone, Board(rows, playedCards), remDeck)
+    */
     }
+}
+
+def initializeGame(
+    deck: InterfaceDeck,
+    numRows: Int = 4,
+    numRowCards: Int = 6,
+    numPlayer: Int = 4,
+    numHandCards: Int = 12,
+    input: Int => String):
+        InterfaceGameState = {
+            val (board, playerdeck) = initBoard(numRows, numRowCards, deck)
+            val (allP, refilldeck) =
+                PlayerFactory.getInstance(
+                    playerCount = numPlayer,
+                    numHandCards = numHandCards,
+                    input = input,
+                    deck = playerdeck
+                )
+            initGameState(allP, board, refilldeck)
 }
 
 object PlayerFactory {

@@ -11,6 +11,7 @@ trait InterfaceRow {
     def value: Int
     def copy(nummer: Int = nummer, cards: Vector[Int] = cards, Filled: Int = 1): InterfaceRow
     def toJSON: JsValue
+    def load(json: JsValue): InterfaceRow
 }
 
 trait InterfaceBoard {
@@ -24,6 +25,15 @@ trait InterfaceBoard {
     ): InterfaceBoard
     def playedCardsToString: String
     def toJSON: JsValue
+    def load(json: JsValue): InterfaceBoard
+}
+
+def makeDummyBoard(): InterfaceBoard = {
+    Board(rows = Vector.empty, playedCards = Vector.empty)
+}
+
+def makeDummyRow(): InterfaceRow = {
+    Row(Nummer = 0, myCards = Vector.empty, Filled = 0)
 }
 
 def initBoard(numRows: Int, numRowCards: Int, deck: InterfaceDeck): (InterfaceBoard, InterfaceDeck) = {

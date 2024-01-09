@@ -47,4 +47,11 @@ case class Player(val Name: String = "", val Cards: Vector[Int] = Vector.empty[I
             "ochsen" -> ochsen
         )
     }
+
+    override def load(json:JsValue): InterfacePlayer = {
+        val name = (json \ "name").as[String]
+        val cards = (json \ "cards").as[Vector[Int]]
+        val ochsen = (json \ "ochsen").as[Int]
+        Player(name, cards, ochsen)
+    }
 }
