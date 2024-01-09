@@ -27,14 +27,14 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
             case "redo" =>
                 redo(stateName)
                 Success(true)
-            case "end" =>
-                end
-                Success(true)
             case "save" =>
                 save
                 Success(true)
             case "load" =>
                 load
+                Success(true)
+            case "end" =>
+                end
                 Success(true)
             case _ =>
                 Failure(new java.lang.IllegalArgumentException(s"Unknown Command: ${input}"))
