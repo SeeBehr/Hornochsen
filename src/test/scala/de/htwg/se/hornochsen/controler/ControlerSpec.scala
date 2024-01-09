@@ -32,16 +32,15 @@ class ControlerSpec extends AnyWordSpec {
             controler.doOp("asdfkl", "StatePlayCards").isSuccess should be (false)
         }
 
-        /*
         "have a playCard method" in {
             val p1 = makePlayer(name="Patrick",cards=Vector[Int](2))
             val p2 = makePlayer(name="Patrick",cards=Vector[Int](3))
-            val baseC = Controler(gameState)
+            val g = GameState(playeractive=p1, playerswaiting=Vector(p2), playersdone=Vector.empty, myBoard=Board(rows=Vector(Row(Nummer=1, myCards=Vector(1,0,0,0))), playedCards=Vector.empty), RemDeck=Deck(cards=Vector.empty))
+            val baseC = Controler(g)
             baseC.playCard(p1,1, "StatePlayCard") should be (false)
             baseC.playCard(p1,2, "StatePlayCard") should be (true)
             baseC.playCard(p2,3, "StatePlayCard") should be (true)   
         }
-        */
 
         /*
         "have a placeCard method" in {
