@@ -47,12 +47,6 @@ case class TUI(controler:InterfaceControler) extends UI with TUIState{
         e match
             case Event.First =>
             case Event.Start =>
-                println("Game started")
-                println("Next Player")
-                println(controler.gameState.board.toString())
-                println(controler.gameState.playerActive.toString())
-                println(s"Select Card to play:")
-                state = StatePlayCard
             case Event.nextPlayer =>
                 println("Next Player")
                 println(controler.gameState.board.toString())

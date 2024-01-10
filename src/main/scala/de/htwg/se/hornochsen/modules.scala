@@ -21,7 +21,7 @@ object Default {
         numRowCards = 6,
         numPlayer = 4,
         numHandCards = 10,
-        input = TUIplayerNames
+        input = Int => " "
       )
   given InterfaceControler(using state: InterfaceGameState): InterfaceControler = new Controler(state)
   given InterfacePlayer: InterfacePlayer = makePlayer()

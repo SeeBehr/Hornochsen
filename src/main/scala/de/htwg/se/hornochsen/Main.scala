@@ -22,7 +22,6 @@ def start() = {
         gui.main(Array())
     }
     controler.notifyObservers(Event.Start)
-    tui.run
 
     Await.ready(f, scala.concurrent.duration.Duration.Inf)
 }

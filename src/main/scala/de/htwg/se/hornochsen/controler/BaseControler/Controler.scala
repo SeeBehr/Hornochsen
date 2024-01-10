@@ -8,6 +8,7 @@ import de.htwg.se.hornochsen.aview._
 import scala.util.{Try,Success,Failure}
 import java.io._
 import play.api.libs.json._
+import de.htwg.se.hornochsen.modules.Default.defaultDeck
 
 
 class Controler(var stateState: InterfaceGameState) extends Observable with InterfaceControler {
@@ -19,6 +20,9 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
 
     override def gameState: InterfaceGameState = stateState
 
+    override def start(names: Vector[String]) = {
+        stateState = initializeGame(defaultDeck, 4, 6, names.length, 12, names(_))
+    }
     override def doOp(input: String, stateName: String): Try[Boolean] = {
         input match
             case "undo" =>
@@ -167,21 +171,6 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
         val file = io.Source.fromFile("Save/gamestate.json").mkString
         stateState = stateState.load(file)
         notifyObservers(Event.nextPlayer)
-    /*
-        val playersWaiting = (json \ "playerswaiting").as[Vector[InterfacePlayer]]
-        val pWaiting = playersWaiting.map(p => makePlayer(p.name, p.cards, p.ochsen))
-        val playerActive = (json \ "playeractive").as[InterfacePlayer]
-        val pActive = makePlayer(playerActive.name, playerActive.cards, playerActive.ochsen)
-        val playersDone = (json \ "playersdone").as[Vector[InterfacePlayer]]
-        val pDone = playersDone.map(p => makePlayer(p.name, p.cards, p.ochsen))
-        val jboard = (json \ "board").as[InterfaceBoard]
-        val jrows = (jboard \ "rows").as[Vector[InterfaceRow]]
-        val rows = jrows.map(r => Row(r.nummer, r.cards, r.filled, r.value))
-        val jplayedCards = (jboard \ "playedCards").as[Vector[(Int, InterfacePlayer)]]
-        val playedCards = jplayedCards.map(p => (p._1, makePlayer(p._2.name, p._2.cards, p._2.ochsen))) 
-        val remDeck = (json \ "remDeck").as[InterfaceDeck]
-        stateState = GameState(pWaiting, pActive, pDone, Board(rows, playedCards), remDeck)
-    */
     }
 }
 

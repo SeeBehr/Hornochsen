@@ -25,6 +25,7 @@ class ConcreteMemento(origin: InterfaceGameState, state: String) extends Memento
 class History {
     val maxUndo = 10
     var mementos: List[Memento] = List()
+
     def save(newMemento: Memento): Unit = {
         if (mementos.length >= maxUndo)
         then
@@ -33,19 +34,15 @@ class History {
     }
 
     def restore(): Try[Memento] = {
-        val empty = mementos.isEmpty
-        
-        val memento: Try[Memento] = {
-            if empty
-            then
-                Failure(new IllegalStateException("Nooop, no state here"))
-            else
+        if mementos.isEmpty then
+            Failure(new IllegalStateException("Nooop, no state here"))
+        else
+            val memento: Try[Memento] = {
                 val temp = mementos.head
                 mementos = mementos.tail
                 Success(temp)
-        }
-        
-        memento
+            }
+            memento
     }
 
     def clear() : Unit = {
