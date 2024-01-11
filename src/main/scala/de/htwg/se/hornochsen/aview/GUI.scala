@@ -7,20 +7,23 @@ import controler.InterfaceControler
 
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.stage.Screen
-import scalafx.scene.{paint, Scene, layout, text, control, shape}
+import scalafx.scene.{paint, Scene, layout, text, control, shape, image, media}
 import paint._
 import Color._
 import layout._
+import control.{Dialog, DialogPane, ButtonType}
 import text.{Text, TextAlignment}
 import control.{Button, TextField, Alert}
-import Alert.AlertType
-import shape.Box
+import image.{Image, ImageView}
+import media.{MediaPlayer, MediaView, Media}
 import scalafx.geometry.{Insets, Pos}
 import scalafx.Includes._
 import scalafx.event.{EventHandler, ActionEvent}
-import scalafx.scene.input.KeyCode.I
-import scalafx.scene.image.{Image, ImageView}
 import scala.annotation.meta.setter
+import scalafx.geometry.Bounds
+import java.io.File
+import scalafx.stage.Popup
+import scalafx.util.Duration
 
 
 class GUI(controler: InterfaceControler) extends UI with JFXApp3{
@@ -31,12 +34,12 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
     var rows: VBox = new VBox
     var ops: VBox = new VBox
     var active: HBox = new HBox
-    var dark: Color = new Color(20,20,20)
-    var bright: Color = new Color(100,100,100)
+    var dark: Color = new Color(50,50,50)
+    var bright: Color = new Color(140,140,140)
     var player: Vector[String] = Vector.empty;
     
     override def start(): Unit = {
-        stage = InitStage(50,100)
+        stage = InitStage(500,800)
     }
 
     override def update(e:Event, name:String="0") = {
@@ -74,6 +77,62 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
             )
     }
 
+    def mediaPlayer: Popup = {
+        val mediap = new MediaPlayer(
+                new Media(new File("src/main/resources/video/tutorial.mp4").toURI().toString())
+            )
+            mediap.setAutoPlay(true)
+            mediap.volume = 0.1
+        new Popup {
+            content.add(
+                new VBox {
+                    children = Seq(
+                        new HBox {
+                            alignment = Pos.TOP_RIGHT
+                            background = new Background(fills = Seq(new BackgroundFill(Black, CornerRadii.Empty, Insets.Empty)), images = Seq.empty)
+                            children = Seq(
+                                new Button {
+                                    text = "-5"
+                                    style = "-fx-font-size: 20pt; -fx-background-color: black; -fx-font-color: white; -fx-font-weight: bold"
+                                    minWidth = 30
+                                    minHeight = 30
+                                    alignment = Pos.Center
+                                    onMouseClicked = (event) => {
+                                        mediap.seek(mediap.getCurrentTime().subtract(Duration.apply(5*Math.pow(10,3))))
+                                    }
+                                }
+                                ,new Button {
+                                    text = "+5"
+                                    style = "-fx-font-size: 20pt; -fx-background-color: black; -fx-font-color: white; -fx-font-weight: bold"
+                                    minWidth = 30
+                                    minHeight = 30
+                                    alignment = Pos.Center
+                                    onMouseClicked = (event) => {
+                                        mediap.seek(mediap.getCurrentTime().add(Duration.apply(5*Math.pow(10,3))))
+                                    }
+                                }
+                                ,new Button {
+                                    text = "X"
+                                    style = "-fx-font-size: 20pt; -fx-background-color: DarkRed; -fx-font-color: white; -fx-font-weight: bold"
+                                    minWidth = 30
+                                    minHeight = 30
+                                    alignment = Pos.Center
+                                    onMouseClicked = (event) => {
+                                        mediap.stop()
+                                        hide()
+                                    }
+                                })
+                        }
+                        ,new MediaView(mediap) {
+                            fitWidth = 800
+                            fitHeight = 500
+                        }
+                    )
+                }
+            )
+        }
+    }
+
     def InitStage(windowHeight: Double, windowWidth: Double): JFXApp3.PrimaryStage = {
         new JFXApp3.PrimaryStage {
             title = "Hornochsen"
@@ -82,41 +141,133 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                 val nameField = new TextField {
                     promptText = "Playername"
                     style = "-fx-font-size: 20pt"
-                    minWidth = 1/2 * windowWidth
-                    minHeight = 3/4 * windowHeight
+                    minWidth = 1/6 * windowWidth
+                    minHeight = 1/7 * windowHeight
                     alignment = Pos.Center
                 }
-                content = new HBox {
-                    minHeight = windowHeight
-                    minWidth = windowWidth
+                content = new VBox {
                     children = Seq(
-                        nameField
-                        ,new Button {
-                            text = "Add"
-                            style = "-fx-font-size: 20pt"
-                            minWidth = 1/4 * windowWidth
-                            minHeight = 3/4 * windowHeight
+                        new Text {
+                            text = "Hornochsen"
+                            style = "-fx-font-size: 40pt"
+                            fill = Red
                             alignment = Pos.Center
-                            onMouseClicked = (event) => {
-                                player = player :+ nameField.text.value
-                                nameField.clear()
-                            }
                         }
-                        ,new Button {
-                            text = "Start"
+                        ,new HBox {
+                            minHeight = 30
+                        }
+                        ,new HBox {
+                            children = Seq(
+                                new HBox {
+                                    minWidth = 30
+                                }
+                                ,new Text {
+                                    text = "Wilkommen bei Hornochsen\nFür eine kurze Einführung klicke auf den Button"
+                                    style = "-fx-font-size: 20pt"
+                                    fill = bright
+                                    alignment = Pos.CenterLeft
+                                }
+                                ,new HBox {
+                                    minWidth = 30
+                                }
+                                ,new Button {
+                                    text = "Tutorial"
+                                    style = "-fx-font-size: 20pt"
+                                    minWidth = 1/6 * windowWidth
+                                    minHeight = 1/6 * windowHeight
+                                    alignment = Pos.CenterRight
+                                    onMouseClicked = (event) => {
+                                        mediaPlayer.show(stage)
+                                    }
+                                }
+                            )
+                        }
+                        ,new HBox {
+                            minHeight = 30
+                        }
+                        ,new Text {
+                            text = "Es müssen 2-6 Spieler spielen"
                             style = "-fx-font-size: 20pt"
-                            minWidth = 1/4 * windowWidth
-                            minHeight = 3/4 * windowHeight
+                            fill = bright
                             alignment = Pos.Center
-                            onMouseClicked = (event) => {
-                                if player.length > 1 then
-                                    print("Start Game\n")
-                                    controler.start(player)
-                            }
+                        }
+                        ,new HBox {
+                            minHeight = 1/3 * windowHeight
+                            minWidth = windowWidth
+                            alignment = Pos.CenterRight
+                            children = Seq(
+                                new Text {
+                                    text = "Playername"
+                                    style = "-fx-font-size: 20pt"
+                                    fill = bright
+                                }
+                                ,new HBox {
+                                    minWidth = 10
+                                }
+                                ,nameField
+                                ,new HBox {
+                                    minWidth = 10
+                                }
+                                ,new Button {
+                                    text = "Add"
+                                    style = "-fx-font-size: 20pt"
+                                    minWidth = 1/6 * windowWidth
+                                    minHeight = 1/6 * windowHeight
+                                    alignment = Pos.Center
+                                    onMouseClicked = (event) => {
+                                        player = player :+ nameField.text.value
+                                        nameField.clear()
+                                    }
+                                }
+                                ,new HBox {
+                                    minWidth = 10
+                                }
+                                ,new Button {
+                                    text = "Start"
+                                    style = "-fx-font-size: 20pt"
+                                    minWidth = 1/6 * windowWidth
+                                    minHeight = 1/6 * windowHeight
+                                    alignment = Pos.Center
+                                    onMouseClicked = (event) => {
+                                        if player.length > 1 then
+                                            print("Start Game\n")
+                                            controler.start(player)
+                                    }
+                                }
+                                ,new HBox {
+                                    minWidth = 30
+                                }
+                                ,new Button {
+                                    text = "Load"
+                                    style = "-fx-font-size: 20pt"
+                                    minWidth = 1/6 * windowWidth
+                                    minHeight = 1/6 * windowHeight
+                                    alignment = Pos.Center
+                                    onMouseClicked = (event) => {
+                                        controler.load
+                                    }
+                                }
+                                ,new HBox {
+                                    minWidth = 30
+                                }
+                            )
+                        }
+                        ,new HBox {
+                            minHeight = 30
                         }
                     )
                 }
+                resizable = false
             }
+        }
+    }
+
+    def buffer(l:Int, r:Int, o:Int, u:Int): HBox ={
+        new HBox {
+            minWidth = l
+            maxWidth = r
+            minHeight = o
+            maxHeight = u
         }
     }
 
@@ -129,15 +280,20 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                 else fill = bright
                 content = new VBox {
                     children = Seq(
-                        new HBox {
+                        buffer(10,10,10,10)
+                        ,new HBox {
                             children = Seq(
-                                rows,
-                                ops
+                                buffer(10,10,10,10)
+                                ,rows
+                                ,ops
+                                ,buffer(10,10,10,10)
                             )
                         },
-                        active
-                        )
+                        buffer(10,10,10,10)
+                        ,active
+                    )
                 }
+                resizable = false
             }
         }
     }
@@ -252,7 +408,8 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
             border = new Border(new BorderStroke(if darkmode then bright else dark, BorderStrokeStyle.Solid, CornerRadii.Empty, BorderWidths.Default))
             alignment = Pos.Center
             children = Seq(
-                new Text {
+                buffer(10,10,10,10)
+                ,new Text {
                     alignment = Pos.Center
                     text = player.name
                     style = "-fx-font-size: 20pt"
@@ -273,6 +430,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                     else fill = dark
                     prefWidth = (1.0/4)*windowWidth
                 }
+                ,buffer(10,10,10,10)
             )
             prefHeight = (2.0/5)*windowHeight
             prefWidth = windowWidth
