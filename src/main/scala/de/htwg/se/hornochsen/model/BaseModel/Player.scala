@@ -60,7 +60,7 @@ case class Player(val Name: String = "", val Cards: Vector[Int] = Vector.empty[I
         <player>
           <name>{name}</name>
           <cards>{cardXml}</cards>
-          <ochsen>{ochsen}</ochsen>
+          <ochsen>{ochsen.toString}</ochsen>
         </player>
     }
 
