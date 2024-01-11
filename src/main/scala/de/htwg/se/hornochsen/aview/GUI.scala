@@ -19,7 +19,8 @@ import scalafx.geometry.{Insets, Pos}
 import scalafx.Includes._
 import scalafx.event.{EventHandler, ActionEvent}
 import scalafx.scene.input.KeyCode.I
-import javafx.scene.image.{Image, ImageView}
+import scalafx.scene.image.{Image, ImageView}
+import scala.annotation.meta.setter
 
 
 class GUI(controler: InterfaceControler) extends UI with JFXApp3{
@@ -35,7 +36,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
     var player: Vector[String] = Vector.empty;
     
     override def start(): Unit = {
-        stage = InitStage(windowHeight,windowWidth)
+        stage = InitStage(50,100)
     }
 
     override def update(e:Event, name:String="0") = {
@@ -45,7 +46,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
             Platform.runLater(() =>
                 e match
                 case Event.Start =>
-                    stage = InitStage(windowHeight,windowWidth)
+                    stage = InitStage(50,100)
                 case Event.First =>
                     active = player(windowHeight, windowWidth, controler.gameState.playerActive)
                     rows = reihen(windowHeight, windowWidth)
@@ -81,34 +82,35 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                 val nameField = new TextField {
                     promptText = "Playername"
                     style = "-fx-font-size: 20pt"
-                    prefWidth = 1/3 * windowWidth
-                    prefHeight = 1/4 * windowHeight
+                    minWidth = 1/2 * windowWidth
+                    minHeight = 3/4 * windowHeight
                     alignment = Pos.Center
                 }
                 content = new HBox {
-                    prefHeight = windowHeight
-                    prefWidth = windowWidth
+                    minHeight = windowHeight
+                    minWidth = windowWidth
                     children = Seq(
                         nameField
                         ,new Button {
                             text = "Add"
                             style = "-fx-font-size: 20pt"
-                            prefWidth = 1/4 * windowWidth
-                            prefHeight = 1/4 * windowHeight
+                            minWidth = 1/4 * windowWidth
+                            minHeight = 3/4 * windowHeight
                             alignment = Pos.Center
                             onMouseClicked = (event) => {
-                                player = player :+ "Player"
+                                player = player :+ nameField.text.value
                                 nameField.clear()
                             }
                         }
                         ,new Button {
                             text = "Start"
                             style = "-fx-font-size: 20pt"
-                            prefWidth = 1/4 * windowWidth
-                            prefHeight = 1/4 * windowHeight
+                            minWidth = 1/4 * windowWidth
+                            minHeight = 3/4 * windowHeight
                             alignment = Pos.Center
                             onMouseClicked = (event) => {
                                 if player.length > 1 then
+                                    print("Start Game\n")
                                     controler.start(player)
                             }
                         }
@@ -141,7 +143,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
     }
 
     def reihen(windowHeight: Double, windowWidth: Double): VBox = {
-        val playingCard = new ImageView(new Image("file:images/playingCards.png"))
+        val playingcardImage = new Image("file:images/playingCard.png")
         new VBox {
             prefHeight = (3.0/5)*windowHeight
             prefWidth = (2.0/3)*windowWidth
@@ -159,16 +161,20 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                             prefHeight = ((3.0/5)*windowHeight)/controler.gameState.board.rows.size
                             prefWidth = (2.0/3)*windowWidth
                         },
-                        new Text {
-                            textAlignment = TextAlignment.Center
-                            text = controler.gameState.board.rows(i-1).cards.mkString(", ")
-                            style = "-fx-font-size: 20pt"
-                            if darkmode then fill = White
-                            else fill = dark
-                            prefHeight = ((3.0/5)*windowHeight)/controler.gameState.board.rows.size
-                            prefWidth = (2.0/3)*windowWidth
+                        new HBox {
+                            alignment = Pos.Center
+                            children = (
+                                for (j <- 0 to controler.gameState.board.rows(i-1).filled-1) yield
+                                    new Button {
+                                        prefHeight = 80
+                                        prefWidth = 40
+                                        alignment = Pos.Center
+                                        style="-fx-background-image: url('images/playingCard.png'); -fx-background-size: cover; -fx-font-size: 10pt"
+                                        text=controler.gameState.board.rows(i-1).cards(j).toString
+                                    }
+                            ).toList
                         }
-                    )
+                    ).toList
                 }
             ).toList
         }
@@ -183,9 +189,9 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
             children = Seq(
                 new Button {
                     alignment = Pos.Center
-                    prefWidth = (1.5/5)*windowWidth
-                    text = "Undo"
-                    style = "-fx-font-size: 20pt"
+                    style = "-fx-background-image: url('images/undoButton.png'); -fx-background-color: transparent; -fx-background-size: cover; -fx-font-size: 20pt"
+                    prefHeight = ((3.0/5)*windowHeight)/5
+                    prefWidth = ((3.0/5)*windowHeight)/5
                     onMouseClicked = (event) => {
                         if state == "StatePlayCard" then
                             controler.doOp("undo", "StatePlayCard")
@@ -193,9 +199,9 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                 },
                 new Button {
                     alignment = Pos.Center
-                    prefWidth = (1.5/5)*windowWidth
-                    text = "Redo"
-                    style = "-fx-font-size: 20pt"
+                    style = "-fx-background-image: url('images/redoButton.png'); -fx-background-color: transparent; -fx-background-size: cover; -fx-font-size: 20pt"
+                    prefHeight = ((3.0/5)*windowHeight)/5
+                    prefWidth = ((3.0/5)*windowHeight)/5
                     onMouseClicked = (event) => {
                         if state == "StatePlayCard" then
                             controler.doOp("redo", "StatePlayCard")
@@ -252,11 +258,12 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                     style = "-fx-font-size: 20pt"
                     if darkmode then fill = White
                     else fill = dark
-                    prefWidth = (1.0/3)*windowWidth
+                    prefWidth = (1.0/4)*windowWidth
                 },
                 new HBox {
                     alignment = Pos.Center
                     children = playerCards(windowHeight, windowWidth, player)
+                    prefWidth = (1.0/2)*windowWidth
                 },
                 new Text {
                     alignment = Pos.Center
@@ -264,7 +271,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                     style = "-fx-font-size: 20pt"
                     if darkmode then fill = White
                     else fill = dark
-                    prefWidth = (1.0/3)*windowWidth
+                    prefWidth = (1.0/4)*windowWidth
                 }
             )
             prefHeight = (2.0/5)*windowHeight
@@ -273,19 +280,18 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
     }
 
     def playerCards(windowHeight: Double, windowWidth: Double, player: InterfacePlayer): Pane = {
-        val playingCard = new ImageView(new Image("file:images/playingCards.png"))
         if player.getCards.length < 8 then
             new HBox {
                 alignment = Pos.Center
                 children = (for (i <- 0 to player.getCards.length - 1) yield
                     new Button {
-                        prefHeight = ((2.0/5)*windowHeight)/player.getCards.length
-                        prefWidth = (1.0/3)*windowWidth/player.getCards.length
+                        prefHeight = 80
+                        prefWidth = 40
                         alignment = Pos.Center
+                        style="-fx-background-image: url('images/playingCard.png'); -fx-background-size: cover; -fx-font-size: 10pt"
                         val card = player.getCards(i)
                         val p = player
                         text = card.toString
-                        style = "-fx-font-size: 10pt"
                         onMouseClicked = (event) => {
                             if state == "StatePlayCard" then
                                 controler.playCard(p, card, "StatePlayCard")
@@ -301,15 +307,14 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                         alignment = Pos.Center
                         children = (for (i <- 0 to player.getCards.length/2 - 1) yield
                             new Button {
-                                prefHeight = ((2.0/5)*windowHeight)/4
-                                prefWidth = (1.0/3)*windowWidth/4
+                                prefHeight = 80
+                                prefWidth = 40
                                 alignment = Pos.Center
-                                graphic = playingCard
+                                style="-fx-background-image: url('images/playingCard.png'); -fx-background-size: cover; -fx-font-size: 10pt"
                                 text = player.getCards(i).toString
                                 val card = player.getCards(i)
                                 val p = player
                                 text = card.toString
-                                style = "-fx-font-size: 10pt"
                                 onMouseClicked = (event) => {
                                     controler.playCard(p, card, "StatePlayCard")
                                 }
@@ -320,11 +325,11 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                         alignment = Pos.Center
                         children = (for (i <- player.getCards.length/2 to player.getCards.length - 1) yield
                             new Button {
-                                prefHeight = ((2.0/5)*windowHeight)/4
-                                prefWidth = (1.0/3)*windowWidth/4
+                                prefHeight = 80
+                                prefWidth = 40
                                 alignment = Pos.Center
+                                style="-fx-background-image: url('images/playingCard.png'); -fx-background-size: cover; -fx-font-size: 10pt"
                                 text = player.getCards(i).toString
-                                style = "-fx-font-size: 10pt"
                                 val card = player.getCards(i)
                                 val p = player
                                 text = card.toString

@@ -22,6 +22,7 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
 
     override def start(names: Vector[String]) = {
         stateState = initializeGame(defaultDeck, 4, 6, names.length, 12, names(_))
+        notifyObservers(Event.nextPlayer)
     }
     override def doOp(input: String, stateName: String): Try[Boolean] = {
         input match
@@ -199,7 +200,7 @@ object PlayerFactory {
         (
             Vector.tabulate(playerCount)(index => {
             makePlayer(
-                name = input(index + 1),
+                name = input(index),
                 cards = Vector.tabulate(numHandCards)(count =>
                 deck.getCards(count + numHandCards * index)
                 ),
