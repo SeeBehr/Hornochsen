@@ -35,7 +35,7 @@ class PlayerSpec extends AnyWordSpec {
         }
 
         "have a toXml" in {
-            player1.toXml() should be("<person><name>Sebastian</name><cards><card>1</card><card>2</card></cards><ochsen>0</ochsen></person>")
+            player1.saveToXML() should be("<person><name>Sebastian</name><cards><card>1</card><card>2</card></cards><ochsen>0</ochsen></person>")
         }
 
         "have a name" in {
@@ -47,7 +47,7 @@ class PlayerSpec extends AnyWordSpec {
         }
 
         "have a toJSON" in {
-            player1.toJSON.toString should be (Json.obj(
+            player1.saveToJson.toString should be (Json.obj(
                 "name" -> "Sebastian",
                 "cards" -> Vector(1, 2),
                 "ochsen" -> 0
@@ -55,7 +55,7 @@ class PlayerSpec extends AnyWordSpec {
         }
 
         "have a load" in {
-            player1.load(Json.obj(
+            player1.loadFromJson(Json.obj(
                 "name" -> "Sebastian",
                 "cards" -> Vector(1, 2),
                 "ochsen" -> 0

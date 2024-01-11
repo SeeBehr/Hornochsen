@@ -10,9 +10,10 @@ trait InterfacePlayer {
     def getCards: Vector[Int]
     def name: String
     def ochsen: Int
-    def toXml(): String
-    def toJSON: JsValue
-    def load(json: JsValue): InterfacePlayer
+    def saveToXML(): String
+    def loadFromXML(xml: scala.xml.Node): InterfacePlayer
+    def saveToJson: JsValue
+    def loadFromJson(json: JsValue): InterfacePlayer
 }
 def makePlayer(name: String = "", cards: Vector[Int] = Vector.empty[Int], ochsen: Int = 0): InterfacePlayer = {
     Player(name, cards.sorted, ochsen)

@@ -3,8 +3,10 @@ package de.htwg.se.hornochsen.model.BaseModel
 import scala.util.{Try, Success, Failure}
 import de.htwg.se.hornochsen.model.{InterfacePlayer, InterfaceDeck, InterfaceBoard, InterfaceRow, makePlayer, makeDummyRow}
 import play.api.libs.json._
+import de.htwg.se.hornochsen.model.makeDummyBoard
 
 case class Row(val Nummer: Int, val myCards: Vector[Int], val Filled: Int = 1) extends InterfaceRow {
+
     var pvalue: Int = myCards.map(f => if f == 0 then 0 else if f % 10 == 0 then 10 else if f % 5 == 0 then 5 else 1).sum
 
     override def value: Int = pvalue
@@ -23,7 +25,15 @@ case class Row(val Nummer: Int, val myCards: Vector[Int], val Filled: Int = 1) e
 
     override def cards: Vector[Int] = myCards
 
-    override def toJSON: JsValue = {
+    override def saveToXML(): String = {
+        return " "
+    }
+
+    override def loadFromXML(xml: scala.xml.Node): InterfaceRow = {
+        return makeDummyRow()
+    }
+
+    override def saveToJson(): JsValue = {
         Json.obj(
             "nummer" -> nummer,
             "cards" -> cards,
@@ -32,7 +42,7 @@ case class Row(val Nummer: Int, val myCards: Vector[Int], val Filled: Int = 1) e
         )
     }
 
-    override def load(json: JsValue): InterfaceRow = {
+    override def loadFromJson(json: JsValue): InterfaceRow = {
         val nummer = (json \ "nummer").as[Int]
         val cards = (json \ "cards").as[Vector[Int]]
         val filled = (json \ "filled").as[Int]
@@ -88,24 +98,32 @@ case class Board(val rows: Vector[InterfaceRow], var playedCards: Vector[(Int, I
         )
     }
 
-    override def toJSON: JsValue = {
+    override def saveToJson: JsValue = {
         Json.obj(
-            "rows" -> rows.map(_.toJSON),
+            "rows" -> rows.map(_.saveToJson()),
             "playedCards" -> playedCards.map(p => Json.obj(
                 "card" -> p._1,
-                "player" -> p._2.toJSON
+                "player" -> p._2.saveToJson
             )) 
         )
     }
 
-    override def load(json: JsValue): InterfaceBoard = {
+    override def loadFromJson(json: JsValue): InterfaceBoard = {
         val r = makeDummyRow()
         val p = makePlayer()
         val jsonRows = (json \ "rows").as[JsArray]
-        val rows = (for (i <- jsonRows.value) yield r.load(i)).toVector
+        val rows = (for (i <- jsonRows.value) yield r.loadFromJson(i)).toVector
         val jsonPlayedCards = (json \ "playedCards").as[JsArray]
-        val playedCards = (for (i <- jsonPlayedCards.value) yield ((i \ "card").as[Int], p.load((i \ "player").as[JsValue]))).toVector
+        val playedCards = (for (i <- jsonPlayedCards.value) yield ((i \ "card").as[Int], p.loadFromJson((i \ "player").as[JsValue]))).toVector
         Board(rows, playedCards)
+    }
+
+    override def saveToXML(): String = {
+        return " "
+    }
+
+    override def loadFromXML(xml: scala.xml.Node): InterfaceBoard = {
+        return makeDummyBoard()
     }
 }
 

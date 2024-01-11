@@ -17,8 +17,10 @@ trait InterfaceGameState {
     ): InterfaceGameState
     def board: InterfaceBoard
     def remDeck: InterfaceDeck
-    def save: Unit
-    def load(file: String): InterfaceGameState
+    def saveToXML(file: String): String
+    def loadFromXML(file: String): InterfaceGameState
+    def saveToJson(file: String): Unit
+    def loadFromJson(file: String): InterfaceGameState
 }
 
 def initGameState(allP: Vector[InterfacePlayer], board: InterfaceBoard, deck: InterfaceDeck): InterfaceGameState = {

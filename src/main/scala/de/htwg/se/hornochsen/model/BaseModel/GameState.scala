@@ -6,6 +6,7 @@ import play.api.libs.json._
 import java.io._
 import de.htwg.se.hornochsen.model.*
 import java.net.InterfaceAddress
+import scalafx.scene.input.KeyCode.G
 
 
 case class GameState (
@@ -46,37 +47,43 @@ case class GameState (
 
     override def remDeck: InterfaceDeck = RemDeck
 
-    override def save: Unit = {
-        val pw = new PrintWriter(new File("Save/gamestate.json"))
-        pw.write(this.toJSON.toString)
+    override def saveToJson(file: String): Unit = {
+        val pw = new PrintWriter(new File(file))
+        pw.write(
+            play.api.libs.json.Json.obj(
+                "playerswaiting" -> playersWaiting.map(_.saveToJson),
+                "playeractive" -> playerActive.saveToJson,
+                "playersdone" -> playersDone.map(_.saveToJson),
+                "board" -> board.saveToJson,
+                "remDeck" -> remDeck.saveToJson
+            ).toString
+        )
         pw.close()
     }
 
-    def toJSON: play.api.libs.json.JsValue = {
-        play.api.libs.json.Json.obj(
-            "playerswaiting" -> playersWaiting.map(_.toJSON),
-            "playeractive" -> playerActive.toJSON,
-            "playersdone" -> playersDone.map(_.toJSON),
-            "board" -> board.toJSON,
-            "remDeck" -> remDeck.toJSON
-        )
-    }
-
-    override def load(file: String): InterfaceGameState = {
+    override def loadFromJson(file: String): InterfaceGameState = {
         val p = makePlayer()
         val b = makeDummyBoard()
         val d = makeDummyDeck()
         val json = Json.parse(file)
         val jsonPlayersWaiting = (json \ "playerswaiting").as[JsArray]
-        val playersWaiting = (for (i <- jsonPlayersWaiting.value) yield p.load(i)).toVector
+        val playersWaiting = (for (i <- jsonPlayersWaiting.value) yield p.loadFromJson(i)).toVector
         val jsonPlayerActive = (json \ "playeractive").get
-        val playerActive = p.load(jsonPlayerActive)
+        val playerActive = p.loadFromJson(jsonPlayerActive)
         val jsonPlayersDone = (json \ "playersdone").as[JsArray]
-        val playersDone = (for (i <- jsonPlayersDone.value) yield p.load(i)).toVector
+        val playersDone = (for (i <- jsonPlayersDone.value) yield p.loadFromJson(i)).toVector
         val jsonBoard = (json \ "board").get
-        val board = b.load(jsonBoard)
+        val board = b.loadFromJson(jsonBoard)
         val jsonRemDeck = (json \ "remDeck").get
-        val remDeck = d.load(jsonRemDeck)
+        val remDeck = d.loadFromJson(jsonRemDeck)
+        return GameState(playersWaiting, playerActive, playersDone, board, remDeck)
+    }
+
+    override def saveToXML(file: String): String = {
+        return " "
+    }
+
+    override def loadFromXML(file: String): InterfaceGameState = {
         return GameState(playersWaiting, playerActive, playersDone, board, remDeck)
     }
 }

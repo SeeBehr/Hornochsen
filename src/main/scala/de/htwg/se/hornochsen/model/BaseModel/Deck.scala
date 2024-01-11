@@ -17,22 +17,27 @@ case class Deck(cards: Vector[Int]) extends InterfaceDeck {
     
     override def getCards: Vector[Int] = cards
 
-    override def toXml(): String = {
+    
+    override def saveToJson: JsValue = {
+        Json.obj(
+            "cards" -> cards
+        )
+    }
+
+    override def loadFromJson(json: JsValue): InterfaceDeck = {
+        val cards = (json \ "cards").as[Vector[Int]]
+        Deck(cards)
+    }
+    
+    override def saveToXML(): String = {
         val cardsXml = cards.map{card => s"<card>${card}</card>" }.mkString;
         
         s"<deck>" +
           s"<cards>${cardsXml}</cards>" +
         s"</deck>"
     }
-    
-    override def toJSON: JsValue = {
-        Json.obj(
-            "cards" -> cards
-        )
-    }
 
-    override def load(json: JsValue): InterfaceDeck = {
-        val cards = (json \ "cards").as[Vector[Int]]
-        Deck(cards)
+    override def loadFromXML(xml: scala.xml.Node): InterfaceDeck = {
+        Deck(Vector.empty)
     }
 }
