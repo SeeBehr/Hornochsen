@@ -38,7 +38,7 @@ class Decktest extends AnyWordSpec {
             deck.saveToXML() should be ("<deck><cards><card>1</card></cards></deck>")
         }
 
-        "have a toJSON" in {
+        "have a toJson" in {
             deck.saveToJson.toString should be (Json.obj(
                 "cards" -> Vector(1)
             ).toString)

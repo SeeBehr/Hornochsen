@@ -7,7 +7,6 @@ import controler.BaseControler.{Controler, initializeGame}
 import de.htwg.se.hornochsen.modules.Default.InterfaceControler
 import de.htwg.se.hornochsen.modules.Default.InterfaceGameState
 
-
 @main
 def start() = {
     val controler = summon[de.htwg.se.hornochsen.controler.InterfaceControler]

@@ -66,7 +66,7 @@ class BoardSpec extends AnyWordSpec {
             ret._2 should be (1)
         }
         
-        "have a toJSON" in {
+        "have a toJson" in {
             board1.saveToJson.toString should be (Json.obj(
                 "rows" -> Vector(Json.obj(
                     "nummer" -> 1,

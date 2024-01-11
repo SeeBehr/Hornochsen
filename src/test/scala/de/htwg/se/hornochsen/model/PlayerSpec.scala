@@ -46,7 +46,7 @@ class PlayerSpec extends AnyWordSpec {
             player1.ochsen should be(0)
         }
 
-        "have a toJSON" in {
+        "have a toJson" in {
             player1.saveToJson.toString should be (Json.obj(
                 "name" -> "Sebastian",
                 "cards" -> Vector(1, 2),

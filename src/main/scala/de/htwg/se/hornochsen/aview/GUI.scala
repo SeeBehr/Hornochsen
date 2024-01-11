@@ -35,7 +35,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
     var player: Vector[String] = Vector.empty;
     
     override def start(): Unit = {
-        stage = InitStage(windowHeight,windowWidth)
+        stage = InitStage(100,500)
     }
 
     override def update(e:Event, name:String="0") = {
@@ -45,7 +45,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
             Platform.runLater(() =>
                 e match
                 case Event.Start =>
-                    stage = InitStage(windowHeight,windowWidth)
+                    stage = InitStage(100,500)
                 case Event.First =>
                     active = player(windowHeight, windowWidth, controler.gameState.playerActive)
                     rows = reihen(windowHeight, windowWidth)
@@ -80,9 +80,9 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                 fill = dark
                 val nameField = new TextField {
                     promptText = "Playername"
-                    style = "-fx-font-size: 20pt"
-                    prefWidth = 1/3 * windowWidth
+                    minWidth = 1/3 * windowWidth
                     prefHeight = 1/4 * windowHeight
+                    style = "-fx-font-size: 20pt"
                     alignment = Pos.Center
                 }
                 content = new HBox {
@@ -92,9 +92,9 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                         nameField
                         ,new Button {
                             text = "Add"
-                            style = "-fx-font-size: 20pt"
                             prefWidth = 1/4 * windowWidth
                             prefHeight = 1/4 * windowHeight
+                            style = "-fx-font-size: 20pt"
                             alignment = Pos.Center
                             onMouseClicked = (event) => {
                                 player = player :+ "Player"
