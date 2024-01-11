@@ -15,6 +15,25 @@ trait TUIState {
     def interpretLine(controler:InterfaceControler, input: String): Unit
 }
 
+private case object StateInit extends UIState with TUIState {
+    var state: TUIState = StateInit
+    val name: String = "StateInit"
+    var players: Vector[String] = Vector.empty
+    def interpretLine(controler:InterfaceControler, input: String): Unit = {
+        input match 
+            case "start" =>
+                if players.length < 2 then
+                    println("Not enough players")
+                    interpretLine(controler, readLine)
+                else
+                    state = StatePlayCard
+                    controler.start(players)
+            case _ =>
+                players = players.appended(input)
+                interpretLine(controler, readLine)
+    }
+}
+
 private case object StatePlayCard extends UIState with TUIState {
     var state: TUIState = StatePlayCard
     val name: String = "StatePlayCard"
@@ -47,6 +66,8 @@ case class TUI(controler:InterfaceControler) extends UI with TUIState{
         e match
             case Event.First =>
             case Event.Start =>
+                state = StateInit
+                run
             case Event.nextPlayer =>
                 println("Next Player")
                 println(controler.gameState.board.toString())
