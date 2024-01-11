@@ -9,6 +9,8 @@ import scala.util.{Try,Success,Failure}
 import play.api.libs.json._
 import de.htwg.se.hornochsen.modules.Default.FileIO
 import de.htwg.se.hornochsen.modules.Default.defaultDeck
+import java.util.concurrent.ForkJoinPool
+import java.util.concurrent.ForkJoinTask
 
 
 class Controler(var stateState: InterfaceGameState) extends Observable with InterfaceControler {
@@ -19,11 +21,19 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
 
     override def isrunning: Boolean = running
 
+    override def setrunning(b: Boolean): Unit = running = b
+
     override def gameState: InterfaceGameState = stateState
 
     override def start(names: Vector[String]) = {
         stateState = initializeGame(defaultDeck, 4, 6, names.length, 12, names(_))
         notifyObservers(Event.nextPlayer)
+    }
+
+    override def restart = {
+        val newP = ProcessBuilder("./start.bat")
+        newP.start()
+        System.exit(0)
     }
     override def doOp(input: String, stateName: String): Try[Boolean] = {
         input match
@@ -47,6 +57,7 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
     }
 
     override def playCard(player: InterfacePlayer, card: Int, stateName: String): Boolean = {
+        if redoHistory.mementos.length > 0 then redoHistory = new History()
         undoHistory.save(ConcreteMemento(stateState, stateName))
         val canplay = player.canPlay(card)
         canplay match

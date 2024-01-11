@@ -24,6 +24,7 @@ import scalafx.geometry.Bounds
 import java.io.File
 import scalafx.stage.Popup
 import scalafx.util.Duration
+import scalafx.scene.input.KeyCode.G
 
 
 class GUI(controler: InterfaceControler) extends UI with JFXApp3{
@@ -135,6 +136,9 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
 
     def InitStage(windowHeight: Double, windowWidth: Double): JFXApp3.PrimaryStage = {
         new JFXApp3.PrimaryStage {
+            onCloseRequest = (event) => {
+                System.exit(0)
+            }
             title = "Hornochsen"
             scene = new Scene {
                 fill = dark
@@ -274,6 +278,9 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
     def MainStage(windowHeight: Double = windowHeight,
     windowWidth: Double = windowWidth): JFXApp3.PrimaryStage = {
         new JFXApp3.PrimaryStage {
+            onCloseRequest = (event) => {
+                System.exit(0)
+            }
             title = "Hornochsen"
             scene = new Scene {
                 if darkmode then fill = dark
@@ -507,6 +514,63 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
     }
 
     def end: Unit = {
-        stage = new JFXApp3.PrimaryStage()
+        val order = controler.gameState.players.sortBy((player: InterfacePlayer) => player.ochsen)
+        stage = new JFXApp3.PrimaryStage() {
+            onCloseRequest = (event) => {
+                System.exit(0)
+            }
+            title = "Hornochsen"
+            scene = new Scene {
+                fill = dark
+                content = new HBox {
+                    children = Seq(
+                        buffer(20,20,20,20)
+                        ,new VBox {
+                            children = Seq(
+                                buffer(10,10,10,10)
+                                ,new VBox {
+                                    children = Seq(
+                                        buffer(10,10,10,10)
+                                        ,new Text {
+                                            text = order.head.name + " hat mit " + order.head.ochsen + " Ochsen gewonnen"
+                                            style = "-fx-font-size: 40pt; -fx-font-weight: bold"
+                                            fill = Green
+                                            alignment = Pos.Center
+                                        }
+                                        ,buffer(20,20,20,20)
+                                        ,new Text {
+                                            text = "Die anderen Spieler:"
+                                            style = "-fx-font-size: 20pt"
+                                        }
+                                        ,buffer(10,10,10,10)
+                                        ,new Text {
+                                            text = (for p <- order.tail yield p.name + " mit " + p.ochsen + " Ochsen\n").mkString
+                                            style = "-fx-font-size: 20pt"
+                                            fill = bright
+                                            alignment = Pos.Center
+                                        }
+                                        ,new Button {
+                                            text = "Restart"
+                                            style = "-fx-font-size: 20pt"
+                                            minWidth = 1/6 * windowWidth
+                                            minHeight = 1/6 * windowHeight
+                                            alignment = Pos.Center
+                                            onMouseClicked = (event) => {
+                                                controler.restart
+                                            }
+                                        }
+                                        ,buffer(10,10,10,10)
+                                    )
+                                }
+                                ,
+                                buffer(10,10,10,10)
+                            )
+                        }
+                        ,buffer(20,20,20,20)
+                    )
+                }
+                resizable = false
+            }
+        }
     }
 }

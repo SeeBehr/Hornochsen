@@ -1,3 +1,3 @@
 Branch for production
 
-[![Coverage Status](https://coveralls.io/repos/github/SeeBehr/Hornochsen/badge.svg?branch=descendencyInjectionDie2t)](https://coveralls.io/github/SeeBehr/Hornochsen?branch=descendencyInjectionDie2t)
+[![Coverage Status](https://coveralls.io/repos/github/SeeBehr/Hornochsen/badge.svg?branch=initWindow)](https://coveralls.io/github/SeeBehr/Hornochsen?branch=initWindow)

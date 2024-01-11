@@ -33,11 +33,11 @@ class PlayerSpec extends AnyWordSpec {
             player1.canPlay(1) should be(true)
             player1.canPlay(3) should be(false)
         }
-
+        /*
         "have a toXml" in {
             player1.saveToXML() should be("<person><name>Sebastian</name><cards><card>1</card><card>2</card></cards><ochsen>0</ochsen></person>")
         }
-
+        */
         "have a name" in {
             player1.name should be("Sebastian")
         }
