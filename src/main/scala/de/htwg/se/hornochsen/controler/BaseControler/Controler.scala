@@ -6,8 +6,8 @@ import de.htwg.se.hornochsen.model._
 import de.htwg.se.hornochsen.aview._
 
 import scala.util.{Try,Success,Failure}
-import java.io._
 import play.api.libs.json._
+import de.htwg.se.hornochsen.modules.Default.FileIO
 import de.htwg.se.hornochsen.modules.Default.defaultDeck
 
 
@@ -15,6 +15,7 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
     var undoHistory = new History()
     var redoHistory = new History()
     var running = true
+    val io = summon[FileIO]
 
     override def isrunning: Boolean = running
 
@@ -165,12 +166,11 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
     def end = notifyObservers(Event.End)
 
     override def save: Unit = {
-        stateState.save
+        io.save(stateState)
     }
 
     override def load: Unit = {
-        val file = io.Source.fromFile("Save/gamestate.json").mkString
-        stateState = stateState.load(file)
+        stateState = io.load(stateState)
         notifyObservers(Event.nextPlayer)
     }
 }

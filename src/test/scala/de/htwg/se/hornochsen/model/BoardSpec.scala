@@ -36,7 +36,7 @@ class BoardSpec extends AnyWordSpec {
         }
 
         "have a load" in {
-            row1.load(Json.obj(
+            row1.loadFromJson(Json.obj(
                 "nummer" -> 1,
                 "cards" -> Vector(3, 4),
                 "filled" -> 2,
@@ -67,7 +67,7 @@ class BoardSpec extends AnyWordSpec {
         }
         
         "have a toJSON" in {
-            board1.toJSON.toString should be (Json.obj(
+            board1.saveToJson.toString should be (Json.obj(
                 "rows" -> Vector(Json.obj(
                     "nummer" -> 1,
                     "cards" -> Vector(3, 4),

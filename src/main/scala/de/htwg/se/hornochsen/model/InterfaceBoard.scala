@@ -10,8 +10,10 @@ trait InterfaceRow {
     def filled: Int
     def value: Int
     def copy(nummer: Int = nummer, cards: Vector[Int] = cards, Filled: Int = 1): InterfaceRow
-    def toJSON: JsValue
-    def load(json: JsValue): InterfaceRow
+    def saveToXML(): String
+    def loadFromXML(xml: scala.xml.Node): InterfaceRow
+    def saveToJson(): JsValue
+    def loadFromJson(json: JsValue): InterfaceRow
 }
 
 trait InterfaceBoard {
@@ -24,8 +26,10 @@ trait InterfaceBoard {
         playedCards: Vector[(Int, InterfacePlayer)] = playedCards
     ): InterfaceBoard
     def playedCardsToString: String
-    def toJSON: JsValue
-    def load(json: JsValue): InterfaceBoard
+    def saveToXML(): String
+    def loadFromXML(xml: scala.xml.Node): InterfaceBoard
+    def saveToJson: JsValue
+    def loadFromJson(json: JsValue): InterfaceBoard
 }
 
 def makeDummyBoard(): InterfaceBoard = {
