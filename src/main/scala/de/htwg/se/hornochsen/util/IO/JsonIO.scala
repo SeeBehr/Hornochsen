@@ -8,7 +8,7 @@ class JsonIO extends FileIO {
 
   override def load(state: InterfaceGameState): InterfaceGameState = state.loadFromJson(file = Source.fromFile("Save/gamestate.json").getLines.mkString)
 
-  override def save(state: InterfaceGameState): Unit = state.saveToJson(file = Source.fromFile("Save/gamestate.json").getLines.mkString)
+  override def save(state: InterfaceGameState): Unit = state.saveToJson(file = "Save/gamestate.json")
 
     
 }

@@ -90,13 +90,13 @@ case class Board(val rows: Vector[InterfaceRow], var playedCards: Vector[(Int, I
     }
 
     def takeRow(card: Int, nummer: Int): (Board, Int) = {
-        val returnRow = this.rows(nummer)
+        val returnRow = this.rows(nummer-1)
         (Board(
             rows = rows.updated(
                 nummer-1,
                 Row(
                     Nummer = nummer,
-                    myCards = rows(nummer).cards.zipWithIndex.map(f => if f._2 == 0 then card else 0),
+                    myCards = rows(nummer-1).cards.zipWithIndex.map(f => if f._2 == 0 then card else 0),
                     Filled = 1
                 )
             ),

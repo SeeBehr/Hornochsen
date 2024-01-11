@@ -135,6 +135,9 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
 
     def InitStage(windowHeight: Double, windowWidth: Double): JFXApp3.PrimaryStage = {
         new JFXApp3.PrimaryStage {
+            onCloseRequest = (event) => {
+                System.exit(0)
+            }
             title = "Hornochsen"
             scene = new Scene {
                 fill = dark
@@ -274,6 +277,9 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
     def MainStage(windowHeight: Double = windowHeight,
     windowWidth: Double = windowWidth): JFXApp3.PrimaryStage = {
         new JFXApp3.PrimaryStage {
+            onCloseRequest = (event) => {
+                System.exit(0)
+            }
             title = "Hornochsen"
             scene = new Scene {
                 if darkmode then fill = dark
@@ -507,6 +513,51 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
     }
 
     def end: Unit = {
-        stage = new JFXApp3.PrimaryStage()
+        stage = new JFXApp3.PrimaryStage() {
+            onCloseRequest = (event) => {
+                System.exit(0)
+            }
+            title = "Hornochsen"
+            scene = new Scene {
+                fill = dark
+                content = new VBox {
+                    children = Seq(
+                        new Text {
+                            text = "Game Over"
+                            style = "-fx-font-size: 40pt"
+                            fill = Red
+                            alignment = Pos.Center
+                        }
+                        ,buffer(10,10,10,10)
+                        ,new HBox {
+                            children = Seq(
+                                buffer(10,10,10,10)
+                                ,new Text {
+                                    text = "Player: " + controler.gameState.playerActive.name + " hat gewonnen"
+                                    style = "-fx-font-size: 20pt"
+                                    fill = bright
+                                    alignment = Pos.CenterLeft
+                                }
+                                ,buffer(10,10,10,10)
+                                ,new Button {
+                                    text = "Restart"
+                                    style = "-fx-font-size: 20pt"
+                                    minWidth = 1/6 * windowWidth
+                                    minHeight = 1/6 * windowHeight
+                                    alignment = Pos.CenterRight
+                                    onMouseClicked = (event) => {
+                                        controler.restart
+                                    }
+                                }
+                                ,buffer(10,10,10,10)
+                            )
+                        }
+                        ,
+                        buffer(10,10,10,10)
+                    )
+                }
+                resizable = false
+            }
+        }
     }
 }
