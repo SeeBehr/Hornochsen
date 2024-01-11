@@ -46,17 +46,29 @@ case class Player(val Name: String = "", val Cards: Vector[Int] = Vector.empty[I
         Player(name, cards, ochsen)
     }
 
-    override def saveToXML(): String = {
-        val cardXml = Cards.map{card => s"<card>${card}</card>" }.mkString;
+    override def saveToXML(): xml.Elem = {
+        val cardXml = Cards.map{card => <card>{card}</card>};
         
+        /*
         s"<person>" +
           s"<name>${name}</name>" +
           s"<cards>${cardXml}</cards>" +
           s"<ochsen>${ochsen}</ochsen>" +
         s"</person>"
+        */
+
+        <player>
+          <name>{name}</name>
+          <cards>{cardXml}</cards>
+          <ochsen>{ochsen}</ochsen>
+        </player>
     }
 
-    override def loadFromXML(xml: scala.xml.Node): InterfacePlayer = {
-        return makePlayer()
+    override def loadFromXML(node: scala.xml.Node): InterfacePlayer = {
+        val name = (node \ "name").text
+        val cards = (node \ "cards" \ "card").map(_.text.toInt)
+        val ochsen = (node \ "ochsen").text.toInt
+        
+        Player(name, cards.toVector, ochsen)
     }
 }

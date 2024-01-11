@@ -17,7 +17,7 @@ trait InterfaceGameState {
     ): InterfaceGameState
     def board: InterfaceBoard
     def remDeck: InterfaceDeck
-    def saveToXML(file: String): String
+    def saveToXML(file: String): Unit
     def loadFromXML(file: String): InterfaceGameState
     def saveToJson(file: String): Unit
     def loadFromJson(file: String): InterfaceGameState

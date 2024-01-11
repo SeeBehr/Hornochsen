@@ -29,15 +29,16 @@ case class Deck(cards: Vector[Int]) extends InterfaceDeck {
         Deck(cards)
     }
     
-    override def saveToXML(): String = {
-        val cardsXml = cards.map{card => s"<card>${card}</card>" }.mkString;
+    override def saveToXML(): xml.Elem = {
+        val cardsXml = cards.map{card => <card>{card}</card>}
         
-        s"<deck>" +
-          s"<cards>${cardsXml}</cards>" +
-        s"</deck>"
+        <deck>
+          <cards>{cardsXml}</cards>
+        </deck>
     }
 
     override def loadFromXML(xml: scala.xml.Node): InterfaceDeck = {
-        Deck(Vector.empty)
+        val cards = (xml \ "cards" \ "card").map(_.text.toInt).toVector
+        Deck(cards)
     }
 }

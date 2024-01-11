@@ -4,6 +4,7 @@ import scala.util.{Try, Success, Failure}
 import de.htwg.se.hornochsen.model.{InterfacePlayer, InterfaceDeck, InterfaceBoard, InterfaceRow, makePlayer, makeDummyRow}
 import play.api.libs.json._
 import de.htwg.se.hornochsen.model.makeDummyBoard
+import de.htwg.se.hornochsen.model.InterfacePlayer
 
 case class Row(val Nummer: Int, val myCards: Vector[Int], val Filled: Int = 1) extends InterfaceRow {
 
@@ -25,12 +26,22 @@ case class Row(val Nummer: Int, val myCards: Vector[Int], val Filled: Int = 1) e
 
     override def cards: Vector[Int] = myCards
 
-    override def saveToXML(): String = {
-        return " "
+    override def saveToXML(): xml.Elem = {
+        <row>
+            <nummer>{nummer}</nummer>
+            <cards>{cards.map{(card: Int) => <card>{card}</card>}}</cards>
+            <filled>{filled}</filled>
+            <value>{value}</value>
+        </row>
     }
 
     override def loadFromXML(xml: scala.xml.Node): InterfaceRow = {
-        return makeDummyRow()
+        val nummer = (xml \ "nummer").text.toInt
+        val cards = (xml \ "cards" \ "card").map(_.text.toInt).toVector
+        val filled = (xml \ "filled").text.toInt
+        val value = (xml \ "value").text.toInt
+        
+        Row(nummer, cards, filled)
     }
 
     override def saveToJson(): JsValue = {
@@ -118,12 +129,30 @@ case class Board(val rows: Vector[InterfaceRow], var playedCards: Vector[(Int, I
         Board(rows, playedCards)
     }
 
-    override def saveToXML(): String = {
-        return " "
+    override def saveToXML(): xml.Elem = {
+        <board>
+            <rows>{rows.map(_.saveToXML())}</rows>
+            <playedCards>
+                {playedCards.map(p => {
+                    <card>{p._1}</card>
+                    <player>{p._2.saveToXML()}</player>
+                })}
+            </playedCards>
+        </board>
     }
 
     override def loadFromXML(xml: scala.xml.Node): InterfaceBoard = {
-        return makeDummyBoard()
+        val p = makePlayer()
+        val r = makeDummyRow()
+
+        val rows = (xml \ "rows").headOption.map(_.child.map(rowNode => r.loadFromXML(rowNode)).toVector).getOrElse(Vector.empty)
+        
+        val playedCards = (xml \ "playedCards" \ "card").zip(xml \ "playedCards" \ "player").map {
+            case (cardNode, playerNode) =>
+            (cardNode.text.toInt, p.loadFromXML(playerNode))
+        }
+
+        Board(rows, playedCards.toVector)
     }
 }
 

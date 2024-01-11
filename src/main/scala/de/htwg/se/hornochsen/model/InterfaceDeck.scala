@@ -7,7 +7,7 @@ trait InterfaceDeck {
     def shuffle(): InterfaceDeck
     def remcount(count: Int): InterfaceDeck
     def getCards: Vector[Int]
-    def saveToXML(): String
+    def saveToXML(): xml.Elem
     def loadFromXML(xml: scala.xml.Node): InterfaceDeck
     def saveToJson: JsValue
     def loadFromJson(json: JsValue): InterfaceDeck

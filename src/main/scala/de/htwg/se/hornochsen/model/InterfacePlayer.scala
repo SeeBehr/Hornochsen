@@ -10,7 +10,7 @@ trait InterfacePlayer {
     def getCards: Vector[Int]
     def name: String
     def ochsen: Int
-    def saveToXML(): String
+    def saveToXML(): xml.Elem
     def loadFromXML(xml: scala.xml.Node): InterfacePlayer
     def saveToJson: JsValue
     def loadFromJson(json: JsValue): InterfacePlayer

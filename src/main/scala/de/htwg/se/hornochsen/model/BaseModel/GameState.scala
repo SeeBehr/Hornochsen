@@ -7,6 +7,7 @@ import java.io._
 import de.htwg.se.hornochsen.model.*
 import java.net.InterfaceAddress
 import scalafx.scene.input.KeyCode.G
+import scala.xml.XML
 
 
 case class GameState (
@@ -79,11 +80,33 @@ case class GameState (
         return GameState(playersWaiting, playerActive, playersDone, board, remDeck)
     }
 
-    override def saveToXML(file: String): String = {
-        return " "
+    override def saveToXML(file: String): Unit = {
+        val pw = new PrintWriter(new File(file))
+        pw.write(
+            "<gamestate>" + 
+                "<playerswaiting>" + playersWaiting.map(_.saveToXML()).mkString + "</playerswaiting>" + 
+                "<playeractive>" + playerActive.saveToXML() + "</playeractive>" + 
+                "<playersdone>" + playersDone.map(_.saveToXML()).mkString + "</playersdone>" + 
+                board.saveToXML() + 
+                remDeck.saveToXML()  + 
+            "</gamestate>" 
+        )
+        pw.close()
     }
 
     override def loadFromXML(file: String): InterfaceGameState = {
-        return GameState(playersWaiting, playerActive, playersDone, board, remDeck)
+        val p = makePlayer()
+        val b = makeDummyBoard()
+        val d = makeDummyDeck()
+
+        val xml = XML.loadFile(file).head
+        
+        val playersWaiting = (xml \ "playerswaiting" \ "player").map(p.loadFromXML).toVector
+        val playerActive = p.loadFromXML((xml \ "playeractive" \ "player").head)
+        val playersDone = (xml \ "playersdone" \ "player").map(p.loadFromXML).toVector
+        val board = b.loadFromXML((xml \ "board").head)
+        val remDeck = d.loadFromXML((xml \ "deck").head)
+
+        GameState(playersWaiting, playerActive, playersDone, board, remDeck)
     }
 }
