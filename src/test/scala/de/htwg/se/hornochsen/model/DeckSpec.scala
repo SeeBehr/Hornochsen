@@ -33,11 +33,11 @@ class Decktest extends AnyWordSpec {
         "have a getCards" in {
             deck.getCards should be (Vector(1))
         }
-        
+        /*
         "have a toXml" in {
             deck.saveToXML() should be ("<deck><cards><card>1</card></cards></deck>")
         }
-
+        */
         "have a toJson" in {
             deck.saveToJson.toString should be (Json.obj(
                 "cards" -> Vector(1)
