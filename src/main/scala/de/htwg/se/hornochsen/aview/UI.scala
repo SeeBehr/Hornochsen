@@ -5,10 +5,9 @@ import de.htwg.se.hornochsen.model._
 import de.htwg.se.hornochsen.util._
 
 trait UI extends Observer {
-    override def update(e: Event, name:String="0"): Unit
+    override def update(e: Event): Unit
     def run: Unit
     def end: Unit
 }
 trait UIState {
-    val name: String
 }

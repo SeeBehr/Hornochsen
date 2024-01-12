@@ -13,8 +13,8 @@ trait InterfaceControler extends Observable {
     def setrunning(running: Boolean): Unit
     def isrunning: Boolean
     def gameState: InterfaceGameState
-    def doOp(input: String, stateName: String): Try[Boolean]
-    def playCard(player: InterfacePlayer, card: Int, stateName: String): Boolean
+    def doOp(input: String): Try[Boolean]
+    def playCard(player: InterfacePlayer, card: Int): Boolean
     def save: Unit
     def load: Unit
 }

@@ -7,10 +7,7 @@ import de.htwg.se.hornochsen.aview._
 
 import scala.util.{Try,Success,Failure}
 import play.api.libs.json._
-import de.htwg.se.hornochsen.modules.Default.FileIO
-import de.htwg.se.hornochsen.modules.Default.defaultDeck
-import java.util.concurrent.ForkJoinPool
-import java.util.concurrent.ForkJoinTask
+import de.htwg.se.hornochsen.modules.Default.{FileIO, defaultDeck}
 
 
 class Controler(var stateState: InterfaceGameState) extends Observable with InterfaceControler {
@@ -32,19 +29,14 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
 
     override def restart = {
         notifyObservers(Event.Start)
-        /*
-        val newP = ProcessBuilder("./start.bat")
-        newP.start()
-        System.exit(0)
-        */
     }
-    override def doOp(input: String, stateName: String): Try[Boolean] = {
+    override def doOp(input: String): Try[Boolean] = {
         input match
             case "undo" =>
-                undo(stateName)
+                undo()
                 Success(true)
             case "redo" =>
-                redo(stateName)
+                redo()
                 Success(true)
             case "save" =>
                 save
@@ -59,9 +51,9 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
                 Failure(new java.lang.IllegalArgumentException(s"Unknown Command: ${input}"))
     }
 
-    override def playCard(player: InterfacePlayer, card: Int, stateName: String): Boolean = {
+    override def playCard(player: InterfacePlayer, card: Int): Boolean = {
         if redoHistory.mementos.length > 0 then redoHistory = new History()
-        undoHistory.save(ConcreteMemento(stateState, stateName))
+        undoHistory.save(ConcreteMemento(stateState))
         val canplay = player.canPlay(card)
         canplay match
         case true =>
@@ -151,28 +143,28 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
     }
 
     def takeRow(player: InterfacePlayer, card: Int, row: Int, statename: String = "0"): (InterfaceBoard, Int) = {
-        if statename != "0" then undoHistory.save(ConcreteMemento(stateState, statename))
+        if statename != "0" then undoHistory.save(ConcreteMemento(stateState))
         stateState.board.takeRow(card, row)
     }
 
-    def undo(state: String)= {
+    def undo()= {
         val memento = undoHistory.restore()
         memento match
         case Success(a) =>
-            redoHistory.save(ConcreteMemento(stateState, state))
+            redoHistory.save(ConcreteMemento(stateState))
             stateState = a.restore()
-            notifyObservers(Event.Undo, a.stateName)
+            notifyObservers(Event.Undo)
         case Failure(b) =>
             println(b)
     }
 
-    def redo(state: String) = {
+    def redo() = {
         val memento = redoHistory.restore()
         memento match
         case Success(a) =>
-            undoHistory.save(ConcreteMemento(stateState, state))
+            undoHistory.save(ConcreteMemento(stateState))
             stateState = a.restore()
-            notifyObservers(Event.Redo, a.stateName)
+            notifyObservers(Event.Redo)
         case Failure(b) =>
             println(b)
     }

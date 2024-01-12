@@ -7,7 +7,6 @@ import de.htwg.se.hornochsen.util.FileIO
 import de.htwg.se.hornochsen.util.IO
 import IO.JsonIO
 import IO.XMLIO
-import de.htwg.se.hornochsen.aview.TUIplayerNames
 
 object Default {
     val defaultDeck: InterfaceDeck = initDeck(104).shuffle()
