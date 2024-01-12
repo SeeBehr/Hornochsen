@@ -1,10 +1,8 @@
 package de.htwg.se.hornochsen.model.BaseModel
 
-import scala.util.{Try, Success, Failure}
-import de.htwg.se.hornochsen.model.{InterfacePlayer, InterfaceDeck, InterfaceBoard, InterfaceRow, makePlayer, makeDummyRow}
-import play.api.libs.json._
-import de.htwg.se.hornochsen.model.makeDummyBoard
-import de.htwg.se.hornochsen.model.InterfacePlayer
+import de.htwg.se.hornochsen.model.*
+import play.api.libs.json.*
+import scala.util.{Failure, Success, Try}
 
 case class Row(val Nummer: Int, val myCards: Vector[Int], val Filled: Int = 1) extends InterfaceRow {
 

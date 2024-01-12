@@ -1,4 +1,5 @@
 package de.htwg.se.hornochsen.model
+
 import de.htwg.se.hornochsen.model._
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._

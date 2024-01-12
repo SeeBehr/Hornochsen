@@ -1,12 +1,10 @@
 package de.htwg.se.hornochsen.modules
 
-import de.htwg.se.hornochsen.controler.BaseControler._
+import de.htwg.se.hornochsen.controler.BaseControler.*
 import de.htwg.se.hornochsen.controler.InterfaceControler
-import de.htwg.se.hornochsen.model._
-import de.htwg.se.hornochsen.util.FileIO
-import de.htwg.se.hornochsen.util.IO
-import IO.JsonIO
-import IO.XMLIO
+import de.htwg.se.hornochsen.model.*
+import de.htwg.se.hornochsen.util.{FileIO, IO}
+import de.htwg.se.hornochsen.util.IO.JsonIO
 
 object Default {
     val defaultDeck: InterfaceDeck = initDeck(104).shuffle()

@@ -1,11 +1,10 @@
 package de.htwg.se.hornochsen
 
-import de.htwg.se.hornochsen.aview._
-import de.htwg.se.hornochsen.util._
+import de.htwg.se.hornochsen.aview.*
+import de.htwg.se.hornochsen.modules.Default.{InterfaceControler, InterfaceGameState}
+import de.htwg.se.hornochsen.util.*
+
 import scala.concurrent.{Await, Future}
-import controler.BaseControler.{Controler, initializeGame}
-import de.htwg.se.hornochsen.modules.Default.InterfaceControler
-import de.htwg.se.hornochsen.modules.Default.InterfaceGameState
 
 @main
 def start() = {

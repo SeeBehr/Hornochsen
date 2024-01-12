@@ -1,8 +1,7 @@
 package de.htwg.se.hornochsen.model.BaseModel
 
 import de.htwg.se.hornochsen.model.InterfacePlayer
-import play.api.libs.json._
-import de.htwg.se.hornochsen.model.makePlayer
+import play.api.libs.json.*
 
 case class Player(val Name: String = "", val Cards: Vector[Int] = Vector.empty[Int], val Ochsen: Int = 0) extends InterfacePlayer {
     override def toString(): String = {

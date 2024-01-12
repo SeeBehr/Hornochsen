@@ -1,13 +1,11 @@
 package de.htwg.se.hornochsen.controler.BaseControler
 
 import de.htwg.se.hornochsen.controler.InterfaceControler
-import de.htwg.se.hornochsen.util._
-import de.htwg.se.hornochsen.model._
-import de.htwg.se.hornochsen.aview._
-
-import scala.util.{Try,Success,Failure}
-import play.api.libs.json._
+import de.htwg.se.hornochsen.model.*
 import de.htwg.se.hornochsen.modules.Default.{FileIO, defaultDeck}
+import de.htwg.se.hornochsen.util.*
+
+import scala.util.{Failure, Success, Try}
 
 
 class Controler(var stateState: InterfaceGameState) extends Observable with InterfaceControler {
