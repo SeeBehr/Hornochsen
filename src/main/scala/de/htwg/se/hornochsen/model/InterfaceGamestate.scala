@@ -1,7 +1,6 @@
 package de.htwg.se.hornochsen.model
 
-import de.htwg.se.hornochsen.model.BaseModel.{GameState, Player}
-import play.api.libs.json._
+import de.htwg.se.hornochsen.model.BaseModel.GameState
 
 trait InterfaceGameState {
     def players: Vector[InterfacePlayer]

@@ -1,4 +1,5 @@
 package de.htwg.se.hornochsen.model
+
 import de.htwg.se.hornochsen.model.BaseModel.Player
 import play.api.libs.json._
 

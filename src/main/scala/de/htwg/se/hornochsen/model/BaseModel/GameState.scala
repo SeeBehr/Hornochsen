@@ -1,12 +1,9 @@
 package de.htwg.se.hornochsen.model.BaseModel
 
 import de.htwg.se.hornochsen.model
-import model.{InterfaceBoard, InterfaceRow, InterfacePlayer, InterfaceDeck, InterfaceGameState}
-import play.api.libs.json._
-import java.io._
 import de.htwg.se.hornochsen.model.*
-import java.net.InterfaceAddress
-import scalafx.scene.input.KeyCode.G
+import play.api.libs.json.*
+import java.io.*
 import scala.xml.XML
 
 

@@ -1,14 +1,10 @@
 package de.htwg.se.hornochsen.aview
 
-import de.htwg.se.hornochsen.model._
-import de.htwg.se.hornochsen.util._
-import scala.io.StdIn.readLine
-import scala.util.{Try, Success, Failure}
-import org.scalactic.Fail
-import scalafx.scene.input.KeyCode.T
-import java.awt.Taskbar.State
 import de.htwg.se.hornochsen.controler.InterfaceControler
-import scala.compiletime.ops.int
+import de.htwg.se.hornochsen.util.*
+
+import scala.io.StdIn.readLine
+import scala.util.{Failure, Success, Try}
 
 trait TUIState {
     var state: TUIState

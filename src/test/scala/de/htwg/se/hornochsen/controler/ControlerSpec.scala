@@ -1,17 +1,15 @@
 package de.htwg.se.hornochsen.controler
 
+import de.htwg.se.hornochsen.controler
+import de.htwg.se.hornochsen.controler.BaseControler.*
+import de.htwg.se.hornochsen.model.*
+import de.htwg.se.hornochsen.model.BaseModel.*
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
-import de.htwg.se.hornochsen.controler
-import controler.*
-import controler.BaseControler.*
-import de.htwg.se.hornochsen.model.*
-import de.htwg.se.hornochsen.model.BaseModel.GameState
-import de.htwg.se.hornochsen.model.BaseModel._
 
 class ControlerSpec extends AnyWordSpec {
-    val deck = initDeck(3)
-    val gameState = initializeGame(deck=deck, numRows=1, numRowCards=2, numPlayer=2, numHandCards=1, input=Int=>"Patrick")
+    val deck: InterfaceDeck = initDeck(3)
+    val gameState: InterfaceGameState = initializeGame(deck=deck, numRows=1, numRowCards=2, numPlayer=2, numHandCards=1, input= Int=>"Patrick")
     val controler: InterfaceControler = Controler(gameState)
 
     "Controler" should {

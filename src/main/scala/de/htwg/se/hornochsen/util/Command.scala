@@ -1,8 +1,8 @@
 package de.htwg.se.hornochsen.util
 
-import de.htwg.se.hornochsen.controler.BaseControler.Controler
 import de.htwg.se.hornochsen.model.BaseModel.GameState
-import scala.util.{Try, Success, Failure}
+
+import scala.util.Try
 
 trait Command {
     def PlayCard: Unit

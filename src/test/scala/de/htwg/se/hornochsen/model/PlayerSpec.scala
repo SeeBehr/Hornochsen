@@ -1,9 +1,9 @@
 package de.htwg.se.hornochsen.model
+
+import de.htwg.se.hornochsen.model.BaseModel.Player
+import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers._
-import de.htwg.se.hornochsen.model._
-import BaseModel.Player
-import play.api.libs.json._
+import play.api.libs.json.*
 
 class PlayerSpec extends AnyWordSpec {
   "Player" should {
