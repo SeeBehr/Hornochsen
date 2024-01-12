@@ -135,7 +135,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                 fill = dark
                 val nameField = new TextField {
                     promptText = "Playername"
-                    style = "-fx-font-size: 20pt"
+                    style = f"-fx-font-size: 20pt; -fx-color: ${dark.toString.replace("[SFX]0x","#")}}"
                     minWidth = 1/7 * windowWidth
                     minHeight = 1/7 * windowHeight
                     alignment = Pos.Center
@@ -144,7 +144,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                     children = Seq(
                         new Text {
                             text = "Hornochsen"
-                            style = "-fx-font-size: 40pt"
+                            style = "-fx-font-size: 40pt; -fx-font-weight: bold"
                             fill = Red
                             alignment = Pos.Center
                         }
@@ -161,7 +161,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                 ,buffer(30,30,30,30)
                                 ,new Button {
                                     text = "Tutorial"
-                                    style = "-fx-font-size: 20pt"
+                                    style = "-fx-font-size: 20pt; -fx-background-color: transparent; -fx-text-fill: blue; -fx-font-weight: bold"
                                     minWidth = 1/6 * windowWidth
                                     minHeight = 1/6 * windowHeight
                                     alignment = Pos.CenterRight
@@ -194,7 +194,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                 ,new VBox{
                                     children = Seq(new Button {
                                         text = "Add"
-                                        style = "-fx-font-size: 15pt"
+                                        style = f"-fx-font-size: 10pt; -fx-background-color: transparent; -fx-font-weight: bold; -fx-text-fill: ${bright.toString.replace("[SFX]0x","#")}"
                                         minWidth = 2/7 * windowWidth
                                         minHeight = 2/7 * windowHeight
                                         alignment = Pos.Center
@@ -206,7 +206,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                     ,buffer(10,10,10,10)
                                     ,new Button {
                                         text = "Remove"
-                                        style = "-fx-font-size: 10pt"
+                                        style = f"-fx-font-size: 10pt; -fx-background-color: transparent; -fx-font-weight: bold; -fx-text-fill: ${bright.toString.replace("[SFX]0x","#")}}"
                                         minWidth = 1/7 * windowWidth
                                         minHeight = 1/7 * windowHeight
                                         alignment = Pos.Center
@@ -219,7 +219,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                 ,buffer(10,10,10,10)
                                 ,new Button {
                                     text = "Spielerliste"
-                                    style = "-fx-font-size: 10pt"
+                                    style = f"-fx-font-size: 10pt; -fx-background-color: transparent; -fx-font-weight: bold; -fx-text-fill: ${bright.toString.replace("[SFX]0x","#")}"
                                     minWidth = 1/7 * windowWidth
                                     minHeight = 1/7 * windowHeight
                                     alignment = Pos.Center
@@ -237,7 +237,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                 ,new VBox {
                                     children = Seq(new Button {
                                         text = "Start"
-                                        style = "-fx-font-size: 15pt"
+                                        style = f"-fx-font-size: 10pt; -fx-background-color: transparent; -fx-font-weight: bold; -fx-text-fill: ${bright.toString.replace("[SFX]0x","#")}"
                                         minWidth = 1/7 * windowWidth
                                         minHeight = 1/7 * windowHeight
                                         alignment = Pos.Center
@@ -250,7 +250,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                     ,buffer(10,10,10,10)
                                     ,new Button {
                                         text = "Load"
-                                        style = "-fx-font-size: 15pt"
+                                        style = f"-fx-font-size: 10pt; -fx-background-color: transparent; -fx-font-weight: bold; -fx-text-fill: ${bright.toString.replace("[SFX]0x","#")}"
                                         minWidth = 1/7 * windowWidth
                                         minHeight = 1/7 * windowHeight
                                         alignment = Pos.Center
@@ -376,11 +376,11 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                     alignment = Pos.Center
                     prefWidth = (1.5/5)*windowWidth
                     text = "Mode"
-                    style = "-fx-font-size: 20pt"
+                    style = f"-fx-font-size: 20pt; -fx-background-color: transparent; -fx-color: ${if !darkmode then bright.toString.replace("[SFX]0x","#") else dark.toString.replace("[SFX]0x","#")}"
                     onMouseClicked = (event) =>
                         darkmode = !darkmode
                         if darkmode then
-                            bright = new Color(100,100,100)
+                            bright = new Color(140,140,140)
                         else
                             bright = new Color(200,200,200)
                         rows = reihen(windowHeight, windowWidth)
@@ -392,7 +392,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                     alignment = Pos.Center
                     prefWidth = (1.5/5)*windowWidth
                     text = "Save"
-                    style = "-fx-font-size: 20pt"
+                    style = f"-fx-font-size: 20pt; -fx-background-color: transparent; -fx-color: ${if !darkmode then bright.toString.replace("[SFX]0x","#") else dark.toString.replace("[SFX]0x","#")}"
                     onMouseClicked = (event) => {
                         controler.save
                     }
@@ -401,7 +401,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                     alignment = Pos.Center
                     prefWidth = (1.5/5)*windowWidth
                     text = "Load"
-                    style = "-fx-font-size: 20pt"
+                    style = f"-fx-font-size: 20pt; -fx-background-color: transparent; -fx-color: ${if !darkmode then bright.toString.replace("[SFX]0x","#") else dark.toString.replace("[SFX]0x","#")}"
                     onMouseClicked = (event) => {
                         controler.load
                     }
