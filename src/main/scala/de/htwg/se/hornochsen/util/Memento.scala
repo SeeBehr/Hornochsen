@@ -7,13 +7,11 @@ import scala.util.Success
 
 trait Memento {
     val originator: InterfaceGameState
-    val stateName: String
     def restore(): InterfaceGameState 
 }
 
-class ConcreteMemento(origin: InterfaceGameState, state: String) extends Memento {
+class ConcreteMemento(origin: InterfaceGameState) extends Memento {
     val originator: InterfaceGameState = origin
-    val stateName: String = state
     override def restore(): InterfaceGameState = {
         originator
     }

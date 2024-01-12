@@ -26,7 +26,6 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
     val windowWidth: Double = 720
     val windowHeight: Double = 640
     var darkmode: Boolean = true
-    var state: String = "StatePlayCard"
     var rows: VBox = new VBox
     var ops: VBox = new VBox
     var active: HBox = new HBox
@@ -38,32 +37,25 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
         stage = InitStage(500,800)
     }
 
-    override def update(e:Event, name:String="0") = {
+    override def update(e:Event) = {
         if e == Event.Start then
-            state = "StatePlayCard"
+            println("Gui Start")
         else
             Platform.runLater(() =>
                 e match
                 case Event.Start =>
                     stage = InitStage(50,100)
-                case Event.First =>
-                    active = player(windowHeight, windowWidth, controler.gameState.playerActive)
-                    rows = reihen(windowHeight, windowWidth)
-                    ops = undoRedo(windowHeight, windowWidth)
-                    stage = MainStage(windowHeight, windowWidth)
                 case Event.nextPlayer =>
                     active = player(windowHeight, windowWidth, controler.gameState.playerActive)
                     rows = reihen(windowHeight, windowWidth)
                     ops = undoRedo(windowHeight, windowWidth)
                     stage = MainStage(windowHeight, windowWidth)
                 case Event.Undo =>
-                    state = "StatePlayCard"
                     active = player(windowHeight, windowWidth, controler.gameState.playerActive)
                     rows = reihen(windowHeight, windowWidth)
                     ops = undoRedo(windowHeight, windowWidth)
                     stage = MainStage(windowHeight, windowWidth)
                 case Event.Redo =>
-                    state = "StatePlayCard"
                     active = player(windowHeight, windowWidth, controler.gameState.playerActive)
                     rows = reihen(windowHeight, windowWidth)
                     ops = undoRedo(windowHeight, windowWidth)
@@ -364,8 +356,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                     prefHeight = ((3.0/5)*windowHeight)/5
                     prefWidth = ((3.0/5)*windowHeight)/5
                     onMouseClicked = (event) => {
-                        if state == "StatePlayCard" then
-                            controler.doOp("undo", "StatePlayCard")
+                        controler.doOp("undo")
                     }
                 },
                 new Button {
@@ -374,8 +365,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                     prefHeight = ((3.0/5)*windowHeight)/5
                     prefWidth = ((3.0/5)*windowHeight)/5
                     onMouseClicked = (event) => {
-                        if state == "StatePlayCard" then
-                            controler.doOp("redo", "StatePlayCard")
+                        controler.doOp("redo")
                     }
                 }
                 ,new Button {
@@ -400,8 +390,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                     text = "Save"
                     style = "-fx-font-size: 20pt"
                     onMouseClicked = (event) => {
-                        if state == "StatePlayCard" then
-                            controler.save
+                        controler.save
                     }
                 }
                 ,new Button {
@@ -410,8 +399,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                     text = "Load"
                     style = "-fx-font-size: 20pt"
                     onMouseClicked = (event) => {
-                        if state == "StatePlayCard" then
-                            controler.load
+                        controler.load
                     }
                 }
             )
@@ -466,8 +454,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                         val p = player
                         text = card.toString
                         onMouseClicked = (event) => {
-                            if state == "StatePlayCard" then
-                                controler.playCard(p, card, "StatePlayCard")
+                            controler.playCard(p, card)
                         }
                     }
                 ).toList
@@ -489,7 +476,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                 val p = player
                                 text = card.toString
                                 onMouseClicked = (event) => {
-                                    controler.playCard(p, card, "StatePlayCard")
+                                    controler.playCard(p, card)
                                 }
                             }
                         )
@@ -507,8 +494,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                 val p = player
                                 text = card.toString
                                 onMouseClicked = (event) => {
-                                    if state == "StatePlayCard" then
-                                        controler.playCard(p, card, "StatePlayCard")
+                                    controler.playCard(p, card)
                                 }
                             }
                         )

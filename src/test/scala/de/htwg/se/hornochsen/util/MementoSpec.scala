@@ -12,7 +12,7 @@ class MementoSpec extends AnyWordSpec {
     val (board, remDeck) = initBoard(1,1,initDeck(1))
     val gamestate = initGameState(allP=Vector[InterfacePlayer](makePlayer("Patrick",Vector[Int](1),ochsen=0)),board=board,deck=remDeck)
     var controler = Controler(gamestate)
-    val memento = ConcreteMemento(gamestate, "StatePlayCards")
+    val memento = ConcreteMemento(gamestate)
     "The Memento" should {
         "have a originator" in {
             memento.originator should be (gamestate)
@@ -20,7 +20,6 @@ class MementoSpec extends AnyWordSpec {
 
         "be as a string" in {
             memento.originator.toString() should be (gamestate.toString())
-            memento.stateName should be ("StatePlayCards")
         }
         
         "restore the originator" in {

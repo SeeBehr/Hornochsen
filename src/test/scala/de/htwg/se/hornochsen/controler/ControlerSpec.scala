@@ -22,12 +22,12 @@ class ControlerSpec extends AnyWordSpec {
         }
 
         "have a doOp method" in {
-            controler.doOp("undo", "StatePlayCards").isSuccess should be (true)
-            controler.doOp("redo", "StatePlayCards").isSuccess should be (true)
-            controler.doOp("save", "StatePlayCards").isSuccess should be (true)
-            controler.doOp("load", "StatePlayCards").isSuccess should be (true)
-            controler.doOp("end", "StatePlayCards").isSuccess should be (true)
-            controler.doOp("asdfkl", "StatePlayCards").isSuccess should be (false)
+            controler.doOp("undo").isSuccess should be (true)
+            controler.doOp("redo").isSuccess should be (true)
+            controler.doOp("save").isSuccess should be (true)
+            controler.doOp("load").isSuccess should be (true)
+            controler.doOp("end").isSuccess should be (true)
+            controler.doOp("asdfkl").isSuccess should be (false)
         }
 
         "have a playCard method" in {
@@ -35,9 +35,9 @@ class ControlerSpec extends AnyWordSpec {
             val p2 = makePlayer(name="Patrick",cards=Vector[Int](3))
             val g = GameState(playeractive=p1, playerswaiting=Vector(p2), playersdone=Vector.empty, myBoard=Board(rows=Vector(Row(Nummer=1, myCards=Vector(1,0,0,0))), playedCards=Vector.empty), RemDeck=Deck(cards=Vector.empty))
             val baseC = Controler(g)
-            baseC.playCard(p1,1, "StatePlayCard") should be (false)
-            baseC.playCard(p1,2, "StatePlayCard") should be (true)
-            baseC.playCard(p2,3, "StatePlayCard") should be (true)   
+            baseC.playCard(p1,1) should be (false)
+            baseC.playCard(p1,2) should be (true)
+            baseC.playCard(p2,3) should be (true)   
         }
 
         /*

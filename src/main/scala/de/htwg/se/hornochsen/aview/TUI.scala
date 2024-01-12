@@ -39,7 +39,6 @@ private case object StateInit extends UIState with TUIState {
 
 private case object StateEnd extends UIState with TUIState {
     var state: TUIState = StateEnd
-    val name: String = "StateEnd"
     def interpretLine(controler:InterfaceControler, input: String): Unit = {
         input match
             case "restart" =>
@@ -52,19 +51,18 @@ private case object StateEnd extends UIState with TUIState {
 
 private case object StatePlayCard extends UIState with TUIState {
     var state: TUIState = StatePlayCard
-    val name: String = "StatePlayCard"
     def interpretLine(controler:InterfaceControler, input: String): Unit = {
         val intPut: Try[Int] = Try(input.toInt)
         intPut match
         case Success(i) =>
-            var canplay = controler.playCard(controler.gameState.playerActive, input.toInt, name)
+            var canplay = controler.playCard(controler.gameState.playerActive, input.toInt)
             canplay match
             case true =>
             case false =>
                 println(s"Player ${controler.gameState.playerActive.name} can't play card ${input.toInt}")
                 interpretLine(controler, readLine)
         case Failure(exception) =>
-            val op = controler.doOp(input, name)
+            val op = controler.doOp(input)
             op match
             case Success(a) =>
 
@@ -77,10 +75,8 @@ private case object StatePlayCard extends UIState with TUIState {
 // Start of the Programm.
 case class TUI(controler:InterfaceControler) extends UI with TUIState{
     var state: TUIState = StateInit
-    val name: String = "TUI"
-    override def update(e:Event, name:String="0") = {
+    override def update(e:Event) = {
         e match
-            case Event.First =>
             case Event.Start =>
                 println("Start")
                 println("Enter (name add/remove\nor players to list all):")
@@ -125,9 +121,4 @@ case class TUI(controler:InterfaceControler) extends UI with TUIState{
     override def interpretLine(controler:InterfaceControler, input: String): Unit = {
         state.interpretLine(controler, input)
     }
-}
-
-def TUIplayerNames(a: Int): String = {
-    println(s"Spielername $a")
-    readLine
 }
