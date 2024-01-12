@@ -20,16 +20,36 @@ private case object StateInit extends UIState with TUIState {
     val name: String = "StateInit"
     var players: Vector[String] = Vector.empty
     def interpretLine(controler:InterfaceControler, input: String): Unit = {
-        input match 
+        val splitted = input.split(" ")
+        splitted(0) match 
             case "start" =>
                 if players.length < 2 then
                     println("Not enough players")
-                    interpretLine(controler, readLine)
                 else
                     state = StatePlayCard
                     controler.start(players)
+            case "players" =>
+                println(players.mkString("\n"))
             case _ =>
-                players = players.appended(input)
+                splitted(1) match
+                    case "add" =>
+                        players = players.appended(splitted(0))
+                    case "remove" =>
+                        players = players.filterNot(p => p == splitted(0))
+                    case _ =>
+                        println("Unknown Command")
+    }
+}
+
+private case object StateEnd extends UIState with TUIState {
+    var state: TUIState = StateEnd
+    val name: String = "StateEnd"
+    def interpretLine(controler:InterfaceControler, input: String): Unit = {
+        input match
+            case "restart" =>
+                controler.restart
+            case _ =>
+                println("Unknown Command")
                 interpretLine(controler, readLine)
     }
 }
@@ -60,14 +80,15 @@ private case object StatePlayCard extends UIState with TUIState {
 
 // Start of the Programm.
 case class TUI(controler:InterfaceControler) extends UI with TUIState{
-    var state: TUIState = StatePlayCard
+    var state: TUIState = StateInit
     val name: String = "TUI"
     override def update(e:Event, name:String="0") = {
         e match
             case Event.First =>
             case Event.Start =>
+                println("Start")
+                println("Enter (name add/remove\nor players to list all):")
                 state = StateInit
-                run
             case Event.nextPlayer =>
                 println("Next Player")
                 println(controler.gameState.board.toString())
@@ -89,7 +110,8 @@ case class TUI(controler:InterfaceControler) extends UI with TUIState{
                 println(s"Select card to play:")
                 state = StatePlayCard
             case Event.End =>
-                println("End. ")
+                end
+                state = StateEnd
     }
 
     override def run = {

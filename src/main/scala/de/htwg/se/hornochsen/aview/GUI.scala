@@ -145,7 +145,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                 val nameField = new TextField {
                     promptText = "Playername"
                     style = "-fx-font-size: 20pt"
-                    minWidth = 1/6 * windowWidth
+                    minWidth = 1/7 * windowWidth
                     minHeight = 1/7 * windowHeight
                     alignment = Pos.Center
                 }
@@ -157,23 +157,17 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                             fill = Red
                             alignment = Pos.Center
                         }
-                        ,new HBox {
-                            minHeight = 30
-                        }
+                        ,buffer(30,30,30,30)
                         ,new HBox {
                             children = Seq(
-                                new HBox {
-                                    minWidth = 30
-                                }
+                                buffer(30,30,30,30)
                                 ,new Text {
                                     text = "Wilkommen bei Hornochsen\nFür eine kurze Einführung klicke auf den Button"
                                     style = "-fx-font-size: 20pt"
                                     fill = bright
                                     alignment = Pos.CenterLeft
                                 }
-                                ,new HBox {
-                                    minWidth = 30
-                                }
+                                ,buffer(30,30,30,30)
                                 ,new Button {
                                     text = "Tutorial"
                                     style = "-fx-font-size: 20pt"
@@ -186,11 +180,9 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                 }
                             )
                         }
-                        ,new HBox {
-                            minHeight = 30
-                        }
+                        ,buffer(30,30,30,30)
                         ,new Text {
-                            text = "Es müssen 2-6 Spieler spielen"
+                            text = "Es kann mit 2-6 Spielern gespielt werden"
                             style = "-fx-font-size: 20pt"
                             fill = bright
                             alignment = Pos.Center
@@ -198,67 +190,88 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                         ,new HBox {
                             minHeight = 1/3 * windowHeight
                             minWidth = windowWidth
-                            alignment = Pos.CenterRight
+                            alignment = Pos.Center
                             children = Seq(
                                 new Text {
                                     text = "Playername"
                                     style = "-fx-font-size: 20pt"
                                     fill = bright
                                 }
-                                ,new HBox {
-                                    minWidth = 10
-                                }
+                                ,buffer(10,10,10,10)
                                 ,nameField
-                                ,new HBox {
-                                    minWidth = 10
+                                ,buffer(10,10,10,10)
+                                ,new VBox{
+                                    children = Seq(new Button {
+                                        text = "Add"
+                                        style = "-fx-font-size: 15pt"
+                                        minWidth = 2/7 * windowWidth
+                                        minHeight = 2/7 * windowHeight
+                                        alignment = Pos.Center
+                                        onMouseClicked = (event) => {
+                                            player = player :+ nameField.text.value
+                                            nameField.clear()
+                                        }
+                                    }
+                                    ,buffer(10,10,10,10)
+                                    ,new Button {
+                                        text = "Remove"
+                                        style = "-fx-font-size: 10pt"
+                                        minWidth = 1/7 * windowWidth
+                                        minHeight = 1/7 * windowHeight
+                                        alignment = Pos.Center
+                                        onMouseClicked = (event) => {
+                                            player = player.filterNot(p => p == nameField.text.value)
+                                            nameField.clear()
+                                        }
+                                    })
                                 }
+                                ,buffer(10,10,10,10)
                                 ,new Button {
-                                    text = "Add"
-                                    style = "-fx-font-size: 20pt"
-                                    minWidth = 1/6 * windowWidth
-                                    minHeight = 1/6 * windowHeight
+                                    text = "Spielerliste"
+                                    style = "-fx-font-size: 10pt"
+                                    minWidth = 1/7 * windowWidth
+                                    minHeight = 1/7 * windowHeight
                                     alignment = Pos.Center
                                     onMouseClicked = (event) => {
-                                        player = player :+ nameField.text.value
-                                        nameField.clear()
+                                        val alert = new Alert(Alert.AlertType.Information) {
+                                            initOwner(stage)
+                                            title = "Spielerliste"
+                                            headerText = "Spielerliste"
+                                            contentText = player.mkString("\n")
+                                        }
+                                        alert.showAndWait()
                                     }
                                 }
-                                ,new HBox {
-                                    minWidth = 10
-                                }
-                                ,new Button {
-                                    text = "Start"
-                                    style = "-fx-font-size: 20pt"
-                                    minWidth = 1/6 * windowWidth
-                                    minHeight = 1/6 * windowHeight
-                                    alignment = Pos.Center
-                                    onMouseClicked = (event) => {
-                                        if player.length > 1 then
-                                            print("Start Game\n")
-                                            controler.start(player)
+                                ,buffer(10,10,10,10)
+                                ,new VBox {
+                                    children = Seq(new Button {
+                                        text = "Start"
+                                        style = "-fx-font-size: 15pt"
+                                        minWidth = 1/7 * windowWidth
+                                        minHeight = 1/7 * windowHeight
+                                        alignment = Pos.Center
+                                        onMouseClicked = (event) => {
+                                            if player.length > 1 then
+                                                print("Start Game\n")
+                                                controler.start(player)
+                                        }
                                     }
+                                    ,buffer(10,10,10,10)
+                                    ,new Button {
+                                        text = "Load"
+                                        style = "-fx-font-size: 15pt"
+                                        minWidth = 1/7 * windowWidth
+                                        minHeight = 1/7 * windowHeight
+                                        alignment = Pos.Center
+                                        onMouseClicked = (event) => {
+                                            controler.load
+                                        }
+                                    })
                                 }
-                                ,new HBox {
-                                    minWidth = 30
-                                }
-                                ,new Button {
-                                    text = "Load"
-                                    style = "-fx-font-size: 20pt"
-                                    minWidth = 1/6 * windowWidth
-                                    minHeight = 1/6 * windowHeight
-                                    alignment = Pos.Center
-                                    onMouseClicked = (event) => {
-                                        controler.load
-                                    }
-                                }
-                                ,new HBox {
-                                    minWidth = 30
-                                }
+                                ,buffer(30,30,30,30)
                             )
                         }
-                        ,new HBox {
-                            minHeight = 30
-                        }
+                        ,buffer(30,30,30,30)
                     )
                 }
                 resizable = false
@@ -556,6 +569,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                             minHeight = 1/6 * windowHeight
                                             alignment = Pos.Center
                                             onMouseClicked = (event) => {
+                                                stage = InitStage(500,800)
                                                 controler.restart
                                             }
                                         }

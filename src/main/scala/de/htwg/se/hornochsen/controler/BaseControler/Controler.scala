@@ -31,9 +31,12 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
     }
 
     override def restart = {
+        notifyObservers(Event.Start)
+        /*
         val newP = ProcessBuilder("./start.bat")
         newP.start()
         System.exit(0)
+        */
     }
     override def doOp(input: String, stateName: String): Try[Boolean] = {
         input match
