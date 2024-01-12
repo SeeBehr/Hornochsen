@@ -24,7 +24,6 @@ import scalafx.geometry.Bounds
 import java.io.File
 import scalafx.stage.Popup
 import scalafx.util.Duration
-import scalafx.scene.input.KeyCode.G
 
 
 class GUI(controler: InterfaceControler) extends UI with JFXApp3{
@@ -43,28 +42,31 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
     }
 
     override def update(e:Event) = {
-        Platform.runLater(() =>
-            e match
-            case Event.Start =>
-                stage = InitStage(50,100)
-            case Event.nextPlayer =>
-                active = player(windowHeight, windowWidth, controler.gameState.playerActive)
-                rows = reihen(windowHeight, windowWidth)
-                ops = undoRedo(windowHeight, windowWidth)
-                stage = MainStage(windowHeight, windowWidth)
-            case Event.Undo =>
-                active = player(windowHeight, windowWidth, controler.gameState.playerActive)
-                rows = reihen(windowHeight, windowWidth)
-                ops = undoRedo(windowHeight, windowWidth)
-                stage = MainStage(windowHeight, windowWidth)
-            case Event.Redo =>
-                active = player(windowHeight, windowWidth, controler.gameState.playerActive)
-                rows = reihen(windowHeight, windowWidth)
-                ops = undoRedo(windowHeight, windowWidth)
-                stage = MainStage(windowHeight, windowWidth)
-            case Event.End =>
-                end
-        )
+        if e == Event.Start then
+            println("Gui Start")
+        else
+            Platform.runLater(() =>
+                e match
+                case Event.Start =>
+                    stage = InitStage(50,100)
+                case Event.nextPlayer =>
+                    active = player(windowHeight, windowWidth, controler.gameState.playerActive)
+                    rows = reihen(windowHeight, windowWidth)
+                    ops = undoRedo(windowHeight, windowWidth)
+                    stage = MainStage(windowHeight, windowWidth)
+                case Event.Undo =>
+                    active = player(windowHeight, windowWidth, controler.gameState.playerActive)
+                    rows = reihen(windowHeight, windowWidth)
+                    ops = undoRedo(windowHeight, windowWidth)
+                    stage = MainStage(windowHeight, windowWidth)
+                case Event.Redo =>
+                    active = player(windowHeight, windowWidth, controler.gameState.playerActive)
+                    rows = reihen(windowHeight, windowWidth)
+                    ops = undoRedo(windowHeight, windowWidth)
+                    stage = MainStage(windowHeight, windowWidth)
+                case Event.End =>
+                    end
+            )
     }
 
     def mediaPlayer: Popup = {
