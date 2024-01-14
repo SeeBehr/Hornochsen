@@ -56,14 +56,14 @@ class GameStateSpec extends AnyWordSpec {
 
         /*
         "have a save/loadToXML method" in {
-            gameState.saveToXML("test.xml")
-            val g = gameState.loadFromXML("test.xml")
+            gameState.saveToXML("Save/test.xml")
+            val g = gameState.loadFromXML("Save/test.xml")
             g.toString should be (gameState.toString)
         }
 
         "have a save/loadToJson method" in {
-            gameState.saveToJson("test.json")
-            val g = gameState.loadFromJson("test.json")
+            gameState.saveToJson("Save/test.json")
+            val g = gameState.loadFromJson("Save/test.json")
             g.toString should be (gameState.toString)
         }
         */
