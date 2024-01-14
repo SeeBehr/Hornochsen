@@ -92,22 +92,22 @@ case class GameState (
     }
 
     override def loadFromXML(file: String): InterfaceGameState = {
-      val p = makePlayer()
-      val b = makeDummyBoard()
-      val d = makeDummyDeck()
+        val p = makePlayer()
+        val b = makeDummyBoard()
+        val d = makeDummyDeck()
 
-      val xml = XML.loadFile(file).head
-      val playersWaiting = if ((xml \ "playerswaiting").contains("player")) {
-        val waiting = (xml \ "playerswaiting" \ "player")
-        waiting.map(p.loadFromXML).toVector
-      } else {
-        Vector[InterfacePlayer]()
-      }
-      val playerActive = p.loadFromXML((xml \ "playeractive" \ "player").head)
-      val playersDone = (xml \ "playersdone" \ "player").map(p.loadFromXML).toVector
-      val board = b.loadFromXML((xml \ "board").head)
-      val remDeck = d.loadFromXML((xml \ "deck").head)
+        val xml = XML.loadFile(file).head
+        val playersWaiting = if ((xml \ "playerswaiting").contains("player")) {
+            val waiting = (xml \ "playerswaiting" \ "player")
+            waiting.map(p.loadFromXML).toVector
+        } else {
+            Vector[InterfacePlayer]()
+        }
+        val playerActive = p.loadFromXML((xml \ "playeractive" \ "player").head)
+        val playersDone = (xml \ "playersdone" \ "player").map(p.loadFromXML).toVector
+        val board = b.loadFromXML((xml \ "board").head)
+        val remDeck = d.loadFromXML((xml \ "deck").head)
 
-      GameState(playersWaiting, playerActive, playersDone, board, remDeck)
+        GameState(playersWaiting, playerActive, playersDone, board, remDeck)
     }
 }

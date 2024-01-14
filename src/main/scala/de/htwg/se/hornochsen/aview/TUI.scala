@@ -87,20 +87,6 @@ case class TUI(controler:InterfaceControler) extends UI with TUIState{
                 println(controler.gameState.playerActive.toString())
                 println(s"Select Card to play:")
                 state = StatePlayCard
-            case Event.Undo =>
-                println("Undo:\n new Gamestate:")
-                println("Next Player")
-                println(controler.gameState.board.toString())
-                println(controler.gameState.playerActive.toString())
-                println(s"Select Card to play:")
-                state = StatePlayCard
-            case Event.Redo =>
-                println("Redo:\n new Gamestate:")
-                println("Next Player")
-                println(controler.gameState.board.toString)
-                println(controler.gameState.board.playedCardsToString)
-                println(s"Select card to play:")
-                state = StatePlayCard
             case Event.End =>
                 end
                 state = StateEnd

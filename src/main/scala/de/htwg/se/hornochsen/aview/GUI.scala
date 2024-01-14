@@ -50,16 +50,6 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                     rows = reihen(windowHeight, windowWidth)
                     ops = undoRedo(windowHeight, windowWidth)
                     stage = MainStage(windowHeight, windowWidth)
-                case Event.Undo =>
-                    active = player(windowHeight, windowWidth, controler.gameState.playerActive)
-                    rows = reihen(windowHeight, windowWidth)
-                    ops = undoRedo(windowHeight, windowWidth)
-                    stage = MainStage(windowHeight, windowWidth)
-                case Event.Redo =>
-                    active = player(windowHeight, windowWidth, controler.gameState.playerActive)
-                    rows = reihen(windowHeight, windowWidth)
-                    ops = undoRedo(windowHeight, windowWidth)
-                    stage = MainStage(windowHeight, windowWidth)
                 case Event.End =>
                     end
             )

@@ -151,7 +151,7 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
         case Success(a) =>
             redoHistory.save(ConcreteMemento(stateState))
             stateState = a.restore()
-            notifyObservers(Event.Undo)
+            notifyObservers(Event.nextPlayer)
         case Failure(b) =>
             println(b)
     }
@@ -162,7 +162,7 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
         case Success(a) =>
             undoHistory.save(ConcreteMemento(stateState))
             stateState = a.restore()
-            notifyObservers(Event.Redo)
+            notifyObservers(Event.nextPlayer)
         case Failure(b) =>
             println(b)
     }

@@ -1,0 +1,21 @@
+<gamestate><playerswaiting><player>
+          <name>Sebastian</name>
+          <cards><card>3</card></cards>
+          <ochsen>0</ochsen>
+        </player></playerswaiting><playeractive><player>
+          <name>Patrick</name>
+          <cards><card>2</card></cards>
+          <ochsen>0</ochsen>
+        </player></playeractive><playersdone></playersdone><board>
+            <rows><row>
+            <nummer>1</nummer>
+            <cards><card>1</card><card>0</card><card>0</card><card>0</card></cards>
+            <filled>1</filled>
+            <value>1</value>
+        </row></rows>
+            <playedCards>
+                
+            </playedCards>
+        </board><deck>
+          <cards></cards>
+        </deck></gamestate>

@@ -12,6 +12,4 @@ trait Observable:
 enum Event:
     case Start
     case nextPlayer
-    case Undo
-    case Redo
     case End
