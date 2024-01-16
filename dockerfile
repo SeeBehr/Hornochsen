@@ -1,4 +1,4 @@
-FROM hseeberger/scala-sbt:8u222_1.3.5_2.13.1
+FROM hseeberger/scala-sbt:graalvm-ce-21.3.0-java17_1.6.2_3.1.1
 WORKDIR /hornochsen
 ADD . /hornochsen
-CMD sbt run
+CMD sbt clean run
