@@ -1,4 +1,4 @@
-FROM hseeberger/scala-sbt:graalvm-ce-21.3.0-java17_1.6.2_3.1.1
+FROM sbtscala/scala-sbt:eclipse-temurin-focal-17.0.9_9_1.9.8_3.3.1
+ENV DISPLAY=:0.0
 WORKDIR /hornochsen
 ADD . /hornochsen
-CMD sbt clean run
