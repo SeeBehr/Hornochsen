@@ -6,6 +6,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import de.htwg.se.hornochsen.model._
 import de.htwg.se.hornochsen.model.BaseModel._
 import de.htwg.se.hornochsen.controler.BaseControler.initializeGame
+import scala.io.Source
 
 class GameStateSpec extends AnyWordSpec {
     "The Gamestate" should {
@@ -60,12 +61,12 @@ class GameStateSpec extends AnyWordSpec {
             val g = gameState.loadFromXML("Save/test.xml")
             g.toString should be (gameState.toString)
         }
+        */
 
         "have a save/loadToJson method" in {
             gameState.saveToJson("Save/test.json")
-            val g = gameState.loadFromJson("Save/test.json")
+            val g = gameState.loadFromJson(Source.fromFile("Save/test.json").getLines.mkString)
             g.toString should be (gameState.toString)
         }
-        */
     }
 }

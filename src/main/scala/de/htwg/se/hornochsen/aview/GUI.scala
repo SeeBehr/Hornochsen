@@ -56,7 +56,10 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
 
     def mediaPlayer: Popup = {
         val mediap = new MediaPlayer(
-                new Media(new File("src/main/resources/video/tutorial.mp4").toURI().toString())
+                new Media(if System.nanoTime()%3 > 3 then 
+                    new File("src/main/resources/video/RickRoll.mp4").toURI().toString()
+                else
+                    new File("src/main/resources/video/tutorial.mp4").toURI().toString())
             )
             mediap.setAutoPlay(true)
             mediap.volume = 0.1
