@@ -10,17 +10,19 @@ import scala.concurrent.{Await, Future}
 def start() = {
     val controler = summon[de.htwg.se.hornochsen.controler.InterfaceControler]
     var tui = new TUI(controler)
-    var gui = new GUI(controler)
-    controler.add(gui)
+    //var gui = new GUI(controler)
+    //controler.add(gui)
     controler.add(tui)
     
+    /*
     implicit val context = scala.concurrent.ExecutionContext.global
     val f = Future {
         println("Starting GUI")
         gui.main(Array())
     }
+    */
     controler.notifyObservers(Event.Start)
     tui.run
 
-    Await.ready(f, scala.concurrent.duration.Duration.Inf)
+    //Await.ready(f, scala.concurrent.duration.Duration.Inf)
 }
