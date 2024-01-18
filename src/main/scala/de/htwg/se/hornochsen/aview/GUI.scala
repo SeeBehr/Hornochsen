@@ -5,17 +5,17 @@ import de.htwg.se.hornochsen.model.InterfacePlayer
 import de.htwg.se.hornochsen.util.Event
 import de.htwg.se.hornochsen.{controler, model, util}
 
-import scalafx.Includes.*
+import scalafx.Includes._
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.geometry.{Insets, Pos}
-import scalafx.scene.control.{Alert, Button, TextField}
-import scalafx.scene.image.Image
-import scalafx.scene.layout.*
-import scalafx.scene.media.{Media, MediaPlayer, MediaView}
-import scalafx.scene.paint.*
-import scalafx.scene.paint.Color.*
-import scalafx.scene.text.{Text, TextAlignment}
-import scalafx.scene.*
+import scalafx.scene._
+import control.{Alert, Button, TextField}
+import image.Image
+import layout._
+import media.{Media, MediaPlayer, MediaView}
+import paint._
+import paint.Color._
+import text.{Text, TextAlignment}
 import scalafx.stage.Popup
 import scalafx.util.Duration
 

@@ -8,6 +8,5 @@ trait Command {
     def PlayCard: Unit
     def Undo: Try[GameState]
     def Redo: Try[GameState]
-    def TakeRow: Unit
     def End: Unit
 }
