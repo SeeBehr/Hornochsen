@@ -8,8 +8,11 @@ import scala.xml.XML
 
 
 case class GameState (
+    //Players that are waiting for their turn
     var playerswaiting: Vector[InterfacePlayer],
+    //Player that is currently playing
     var playeractive: InterfacePlayer,
+    //Players that are done playing
     var playersdone: Vector[InterfacePlayer],
     var myBoard: InterfaceBoard,
     var RemDeck: InterfaceDeck
@@ -24,6 +27,9 @@ case class GameState (
 
     override def playersWaiting: Vector[InterfacePlayer] = playerswaiting
     
+    /* 
+     Returns a Vector of all Players in the Gamestate
+     */
     override def players: Vector[InterfacePlayer] = {
         if playerActive != makePlayer() then
             playersDone.appended(playerActive).appendedAll(playersWaiting)

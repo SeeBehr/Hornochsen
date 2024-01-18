@@ -7,6 +7,11 @@ trait InterfaceRow {
     def nummer: Int
     def cards: Vector[Int]
     def filled: Int
+    /*
+     retuns the Ochsen value of the row
+     if card is 0, it is not counted
+     if card % 10 == 0 then 10 else if card % 5 == 0 then 5 else 1
+     */
     def value: Int
     def copy(nummer: Int = nummer, cards: Vector[Int] = cards, Filled: Int = 1): InterfaceRow
     def saveToXML(): xml.Elem
@@ -17,8 +22,11 @@ trait InterfaceRow {
 
 trait InterfaceBoard {
     def rows: Vector[InterfaceRow]
+    // Returns Touples of (playedCard, player)
     def playedCards: Vector[(Int, InterfacePlayer)]
+    // adds a card to the row
     def addCard(playedCard: Int, num: Int): InterfaceBoard
+    // returns the row number, on which the card can be placed and the placed card is added to teh Row
     def takeRow(card: Int, nummer: Int): (InterfaceBoard, Int)
     def copy(
         myRows: Vector[InterfaceRow] = rows,

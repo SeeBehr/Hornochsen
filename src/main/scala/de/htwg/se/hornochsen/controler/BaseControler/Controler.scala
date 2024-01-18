@@ -28,6 +28,7 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
     override def restart = {
         notifyObservers(Event.Start)
     }
+
     override def doOp(input: String): Try[Boolean] = {
         input match
             case "undo" =>
@@ -92,6 +93,14 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
             false
     }
     
+    /* 
+     This Method is called from the method play card, after every player has played a card.
+     First the played cards are sorted by the card value.
+     Then the method checks for every card where and weather it can be placed on the board.
+     If the card can't be placed at the intended row, the player ad to take this row.
+     If there is no valid row to add the card, the player has to take the row with the least points.
+     In the end the played cards, the active player and the players waiting are reset.
+     */
     def placeCards(): Unit = {
         stateState = stateState.copy(Board=stateState.board.copy(myRows=stateState.board.rows, playedCards=stateState.board.playedCards.sortBy((card: Int, player: InterfacePlayer) => card: Int)))
 
@@ -126,6 +135,10 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
     }
     
 
+    /*
+     This method returns the row numbe, on which the card can be placed.
+     If there is no valid row, the method returns -1.
+     */
     def where(b: InterfaceBoard, card: Int): Int = {
         val lastElements: Vector[Int] = b.rows.map(row => row.cards(row.filled-1))
         val possibleRows = lastElements.filter(x => (card - x) > 0)
@@ -135,11 +148,13 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
         return (lastElements.indexOf(possibleRows.sortBy(x=>(card-x)).head))
     }
 
+    // This method returns, weather the card can be placed in the row given by the where method.
     def canAdd(index: Int): Boolean = {
         if index < 0 | index >= stateState.board.rows(0).cards.length then return false
         return stateState.board.rows(index).filled < stateState.board.rows(index).cards.length
     }
 
+    // This method is called when the player has to take a row.
     def takeRow(player: InterfacePlayer, card: Int, row: Int, statename: String = "0"): (InterfaceBoard, Int) = {
         if statename != "0" then undoHistory.save(ConcreteMemento(stateState))
         stateState.board.takeRow(card, row)

@@ -5,6 +5,7 @@ import play.api.libs.json._
 
 trait InterfaceDeck {
     def shuffle(): InterfaceDeck
+    // removes count cards from the deck and returns them
     def remcount(count: Int): InterfaceDeck
     def getCards: Vector[Int]
     def saveToXML(): xml.Elem

@@ -45,6 +45,9 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                 case Event.Start =>
                     stage = InitStage(50,100)
                 case Event.nextPlayer =>
+                    /*
+                     build up theupdated GUI
+                     */
                     active = player(windowHeight, windowWidth, controler.gameState.playerActive)
                     rows = reihen(windowHeight, windowWidth)
                     ops = undoRedo(windowHeight, windowWidth)
@@ -56,7 +59,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
 
     def mediaPlayer: Popup = {
         val mediap = new MediaPlayer(
-                new Media(if System.nanoTime()%3 > 3 then 
+                new Media(if System.nanoTime()%10 > 6 then 
                     new File("src/main/resources/video/RickRoll.mp4").toURI().toString()
                 else
                     new File("src/main/resources/video/tutorial.mp4").toURI().toString())
