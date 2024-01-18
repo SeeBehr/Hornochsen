@@ -191,8 +191,9 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                         minHeight = 2/7 * windowHeight
                                         alignment = Pos.Center
                                         onMouseClicked = (event) => {
-                                            player = player :+ nameField.text.value
-                                            nameField.clear()
+                                            if nameField.text.value != "" then
+                                                player = player :+ nameField.text.value
+                                                nameField.clear()
                                         }
                                     }
                                     ,buffer(10,10,10,10)
@@ -218,6 +219,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                     onMouseClicked = (event) => {
                                         val alert = new Alert(Alert.AlertType.Information) {
                                             initOwner(stage)
+                                            fill = dark
                                             title = "Spielerliste"
                                             headerText = "Spielerliste"
                                             contentText = player.mkString("\n")
@@ -357,7 +359,8 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                         controler.doOp("undo")
                     }
                 },
-                new Button {
+                buffer(5,5,5,5)
+                ,new Button {
                     alignment = Pos.Center
                     style = "-fx-background-image: url('images/redoButton.png'); -fx-background-color: transparent; -fx-background-size: cover; -fx-font-size: 20pt"
                     prefHeight = ((3.0/5)*windowHeight)/5
@@ -366,6 +369,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                         controler.doOp("redo")
                     }
                 }
+                ,buffer(5,5,5,5)
                 ,new Button {
                     alignment = Pos.Center
                     prefWidth = (1.5/5)*windowWidth
@@ -433,7 +437,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                 }
                 ,buffer(10,10,10,10)
             )
-            prefHeight = (2.0/5)*windowHeight
+            prefHeight = (1.0/5)*windowHeight
             prefWidth = windowWidth
         }
     }
