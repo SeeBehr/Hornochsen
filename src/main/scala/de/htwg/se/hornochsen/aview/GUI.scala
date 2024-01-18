@@ -31,7 +31,6 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
     var active: HBox = new HBox
     var dark: Color = new Color(50,50,50)
     var bright: Color = new Color(140,140,140)
-    var player: Vector[String] = Vector.empty;
     
     override def start(): Unit = {
         stage = InitStage(500,800)
@@ -112,6 +111,7 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
     }
 
     def InitStage(windowHeight: Double, windowWidth: Double): JFXApp3.PrimaryStage = {
+        var player: Vector[String] = Vector.empty;
         new JFXApp3.PrimaryStage {
             onCloseRequest = (event) => {
                 System.exit(0)
@@ -229,8 +229,10 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                         alignment = Pos.Center
                                         onMouseClicked = (event) => {
                                             if player.length > 1 then
+                                                val p = player
+                                                player = Vector.empty
                                                 print("Start Game\n")
-                                                controler.start(player)
+                                                controler.start(p)
                                         }
                                     }
                                     ,buffer(10,10,10,10)
@@ -516,8 +518,8 @@ class GUI(controler: InterfaceControler) extends UI with JFXApp3{
                                     children = Seq(
                                         buffer(10,10,10,10)
                                         ,new Text {
-                                            text = order.head.name + " hat mit " + order.head.ochsen + " Ochsen gewonnen"
-                                            style = "-fx-font-size: 40pt; -fx-font-weight: bold"
+                                            text = order.head.name + " hat Gewonnen\n " + order.head.ochsen + " Ochsen"
+                                            style = "-fx-font-size: 40pt; -fx-font-weight: bold; -fx-text-alignment: center"
                                             fill = Green
                                             alignment = Pos.Center
                                         }

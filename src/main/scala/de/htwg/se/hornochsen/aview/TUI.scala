@@ -23,7 +23,9 @@ private case object StateInit extends UIState with TUIState {
                     println("Not enough players")
                 else
                     state = StatePlayCard
-                    controler.start(players)
+                    val p = players
+                    players = Vector.empty
+                    controler.start(p)
             case "players" =>
                 println(players.mkString("\n"))
             case _ =>
