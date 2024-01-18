@@ -29,6 +29,9 @@ private case object StateInit extends UIState with TUIState {
             case "players" =>
                 println(players.mkString("\n"))
             case _ =>
+                if splitted.length < 2 then
+                    println("Not enough arguments")
+                else
                 splitted(1) match
                     case "add" =>
                         players = players.appended(splitted(0))

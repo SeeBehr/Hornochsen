@@ -1,4 +1,8 @@
-FROM hseeberger/scala-sbt:8u222_1.3.5_2.13.1
+FROM sbtscala/scala-sbt:eclipse-temurin-focal-17.0.9_9_1.9.8_3.3.1
+ENV DISPLAY=$DISPLAY
 WORKDIR /hornochsen
-ADD . /hornochsen
-CMD sbt run
+COPY . /hornochsen
+RUN apt-get update && apt-get install -y firefox
+RUN apt-get update && apt-get install -y libgl1-mesa-glx
+
+#CMD ["/usr/bin/firefox"]
