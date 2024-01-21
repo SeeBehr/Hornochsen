@@ -55,13 +55,11 @@ class GameStateSpec extends AnyWordSpec {
             gameState.remDeck should be (Deck(cards=Vector.empty))
         }
 
-        /*
         "have a save/loadToXML method" in {
             gameState.saveToXML("Save/test.xml")
             val g = gameState.loadFromXML("Save/test.xml")
             g.toString should be (gameState.toString)
         }
-        */
 
         "have a save/loadToJson method" in {
             gameState.saveToJson("Save/test.json")

@@ -103,12 +103,8 @@ case class GameState (
         val d = makeDummyDeck()
 
         val xml = XML.loadFile(file).head
-        val playersWaiting = if ((xml \ "playerswaiting").contains("player")) {
-            val waiting = (xml \ "playerswaiting" \ "player")
-            waiting.map(p.loadFromXML).toVector
-        } else {
-            Vector[InterfacePlayer]()
-        }
+        val playersWaiting = (xml \ "playerswaiting" \ "player").map(p.loadFromXML).toVector
+
         val playerActive = p.loadFromXML((xml \ "playeractive" \ "player").head)
         val playersDone = (xml \ "playersdone" \ "player").map(p.loadFromXML).toVector
         val board = b.loadFromXML((xml \ "board").head)
