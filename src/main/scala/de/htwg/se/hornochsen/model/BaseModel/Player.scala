@@ -47,15 +47,6 @@ case class Player(val Name: String = "", val Cards: Vector[Int] = Vector.empty[I
 
     override def saveToXML(): xml.Elem = {
         val cardXml = Cards.map{card => <card>{card}</card>};
-        
-        /*
-        s"<person>" +
-          s"<name>${name}</name>" +
-          s"<cards>${cardXml}</cards>" +
-          s"<ochsen>${ochsen}</ochsen>" +
-        s"</person>"
-        */
-
         <player>
           <name>{name}</name>
           <cards>{cardXml}</cards>
