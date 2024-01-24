@@ -18,10 +18,6 @@ case class Player(val Name: String = "", val Cards: Vector[Int] = Vector.empty[I
       	Player(Name = this.Name, Cards = this.Cards,Ochsen=Ochsen + anzahlOchsen)
     }
 
-    override def drawCards(cards: Vector[Int]): Player = {
-        Player(name, this.Cards.appendedAll(cards), ochsen)
-    }
-
     override def canPlay(card: Int): Boolean = {
         Cards.contains(card)
     }

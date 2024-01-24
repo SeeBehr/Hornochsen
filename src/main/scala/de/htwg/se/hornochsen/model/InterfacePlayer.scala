@@ -6,7 +6,6 @@ import play.api.libs.json._
 trait InterfacePlayer {
     def playCard(cardNr: Int): InterfacePlayer
     def addOchsen(anzahlOchsen: Int): InterfacePlayer
-    def drawCards(cards: Vector[Int]): InterfacePlayer
     def canPlay(card: Int): Boolean
     def getCards: Vector[Int]
     def name: String

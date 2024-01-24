@@ -155,8 +155,8 @@ class Controler(var stateState: InterfaceGameState) extends Observable with Inte
     }
 
     // This method is called when the player has to take a row.
-    def takeRow(player: InterfacePlayer, card: Int, row: Int, statename: String = "0"): (InterfaceBoard, Int) = {
-        if statename != "0" then undoHistory.save(ConcreteMemento(stateState))
+    def takeRow(player: InterfacePlayer, card: Int, row: Int): (InterfaceBoard, Int) = {
+        undoHistory.save(ConcreteMemento(stateState))
         stateState.board.takeRow(card, row)
     }
 
