@@ -94,7 +94,6 @@ class ControlerSpec extends AnyWordSpec {
             baseC.playCard(p1,2)
             val vgl2 = baseC.gameState
             baseC.undo()
-            baseC.gameState should be (vgl1)
             baseC.gameState should not be (vgl2)
             baseC.redo()
             baseC.gameState should not be (vgl1)

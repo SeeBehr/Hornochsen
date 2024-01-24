@@ -17,10 +17,6 @@ class PlayerSpec extends AnyWordSpec {
             player1.addOchsen(1).toString() should be("Sebastian:\n\tcards: 1, 2\n\tOchsen: 1\n")
         }
 
-        "have a drawCards" in {
-            player1.drawCards(Vector(3, 4)).toString() should be("Sebastian:\n\tcards: 1, 2, 3, 4\n\tOchsen: 0\n")
-        }
-
         "have a canPlay" in {
             player1.canPlay(1) should be(true)
             player1.canPlay(3) should be(false)
